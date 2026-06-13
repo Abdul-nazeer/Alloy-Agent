@@ -338,7 +338,7 @@ MANUAL REFERENCE: {mapping['equipment']} Maintenance Manual Section {np.random.r
         # Metadata
         metadata = {
             'source': 'UCI_AI4I',
-            'failure_type': failure_type,
+            'fault_mode': failure_type,  # Changed from failure_type to fault_mode for consistency
             'severity': severity,
             'equipment': mapping['equipment'],
             'record_id': index,
