@@ -11,10 +11,8 @@ from .embedder import Embedder, get_embedder
 from .vector_store import VectorStore, get_vector_store
 from .document_processor import DocumentProcessor, get_document_processor
 from .config import (
-    COLLECTION_MANUALS,
-    COLLECTION_SOPS,
-    COLLECTION_LOGS,
-    COLLECTION_FAULTS,
+    COLLECTION_DOCUMENTS,
+    COLLECTION_CHUNKS,
     validate_config,
 )
 
@@ -25,10 +23,8 @@ __all__ = [
     'get_vector_store',
     'DocumentProcessor',
     'get_document_processor',
-    'COLLECTION_MANUALS',
-    'COLLECTION_SOPS',
-    'COLLECTION_LOGS',
-    'COLLECTION_FAULTS',
+    'COLLECTION_DOCUMENTS',
+    'COLLECTION_CHUNKS',
     'validate_config',
 ]
 

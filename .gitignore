@@ -23,10 +23,9 @@ wheels/
 .installed.cfg
 *.egg
 
-# Environment
+# Environment (sensitive credentials)
 .env
 .env.local
-*.env
 
 # IDEs
 .vscode/
@@ -45,27 +44,8 @@ wheels/
 ehthumbs.db
 Thumbs.db
 
-# Data (large files)
-data/raw/**
-!data/raw/.gitkeep
-data/processed/**
-!data/processed/.gitkeep
-data/training/**
-!data/training/.gitkeep
-*.csv
-*.txt
-*.zip
-*.tar.gz
-
-# Models (large files)
-models/**
-!models/.gitkeep
-*.safetensors
-*.bin
-*.pt
-*.pth
-*.onnx
-*.h5
+# DATA IS INCLUDED IN GIT FOR HACKATHON
+# (Normally would be ignored, but judges need to see it)
 
 # Notebooks
 .ipynb_checkpoints/
@@ -83,6 +63,7 @@ wandb/
 
 # Docker
 *.pid
+qdrant_storage/
 
 # Testing
 .pytest_cache/
@@ -97,8 +78,6 @@ yarn-debug.log*
 yarn-error.log*
 .next/
 out/
-build/
-dist/
 
 # Temporary
 tmp/

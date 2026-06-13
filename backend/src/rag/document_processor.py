@@ -1,68 +1,39 @@
 """
-Document Processor: Production-Grade Document Parsing
-Handles PDFs with tables, images, complex layouts using Docling + fallbacks
+Document Processor: Lightweight PDF Parsing (No GPU Required)
+Handles PDFs with tables using PyPDF2 + pdfplumber
 
 Features:
-- Docling (IBM) for advanced PDF parsing
-- Table extraction and conversion to markdown
-- Image OCR for diagrams and charts
-- Multiple fallback parsers
+- PyPDF2 for basic text extraction
+- pdfplumber for tables and complex layouts (CPU-only)
 - Smart chunking with context preservation
+- No GPU dependencies (production-ready for free hosting)
 """
 
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Optional
 from pathlib import Path
 import json
 import re
-import io
-import base64
 
-# Core PDF processing
-try:
-    from docling.document_converter import DocumentConverter
-    HAS_DOCLING = True
-except ImportError:
-    HAS_DOCLING = False
-    print("Warning: Docling not installed. Using fallback parsers.")
-
+# Core PDF processing (lightweight, no GPU)
 try:
     import PyPDF2
     import pdfplumber
     HAS_PDF = True
 except ImportError:
     HAS_PDF = False
-
-# Table extraction
-try:
-    import tabula
-    import camelot
-    HAS_TABLE_EXTRACTION = True
-except ImportError:
-    HAS_TABLE_EXTRACTION = False
-    print("Warning: Table extraction libraries not installed.")
-
-# Image OCR
-try:
-    from PIL import Image
-    import pytesseract
-    HAS_OCR = True
-except ImportError:
-    HAS_OCR = False
-    print("Warning: OCR not available. Install: pip install pillow pytesseract")
+    print("Warning: Install PDF libraries: pip install PyPDF2 pdfplumber")
 
 from .config import CHUNK_SIZE, CHUNK_OVERLAP, MAX_CHUNKS_PER_DOC
 
 
 class DocumentProcessor:
-    """Production-grade document processing with multiple parsing strategies"""
+    """Lightweight document processing (CPU-only, no GPU required)"""
     
     def __init__(
         self,
         chunk_size: int = CHUNK_SIZE,
         chunk_overlap: int = CHUNK_OVERLAP,
-        use_docling: bool = True,
-        extract_tables: bool = True,
-        ocr_images: bool = True
+        extract_tables: bool = True
     ):
         """
         Initialize document processor
@@ -70,69 +41,20 @@ class DocumentProcessor:
         Args:
             chunk_size: Target chunk size in tokens
             chunk_overlap: Overlap between chunks in tokens
-            use_docling: Use Docling for PDF parsing (recommended)
             extract_tables: Extract and convert tables to markdown
-            ocr_images: Use OCR on images
         """
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        self.use_docling = use_docling and HAS_DOCLING
-        self.extract_tables = extract_tables and HAS_TABLE_EXTRACTION
-        self.ocr_images = ocr_images and HAS_OCR
+        self.extract_tables = extract_tables
         
-        # Initialize Docling converter if available
-        if self.use_docling:
-            self.docling_converter = DocumentConverter()
-            print("✓ Using Docling for advanced PDF parsing")
-        else:
-            print("⚠️  Docling not available, using fallback parsers")
-    
-    def extract_pdf_with_docling(self, pdf_path: Path) -> Dict[str, Any]:
-        """
-        Extract PDF using Docling (best quality, handles tables/images)
+        if not HAS_PDF:
+            raise ImportError("Install: pip install PyPDF2 pdfplumber")
         
-        Args:
-            pdf_path: Path to PDF file
-            
-        Returns:
-            Dict with text, tables, images, and metadata
-        """
-        if not self.use_docling:
-            raise ImportError("Docling not available")
-        
-        try:
-            # Convert PDF
-            result = self.docling_converter.convert(str(pdf_path))
-            
-            # Extract content
-            doc_data = {
-                'text': result.document.export_to_markdown(),  # Full text with tables as markdown
-                'pages': len(result.pages) if hasattr(result, 'pages') else 0,
-                'tables': [],
-                'images': [],
-                'metadata': {
-                    'parser': 'docling',
-                    'source': pdf_path.name
-                }
-            }
-            
-            # Extract tables separately if available
-            if hasattr(result, 'tables'):
-                for table in result.tables:
-                    doc_data['tables'].append({
-                        'markdown': table.export_to_markdown(),
-                        'page': table.page_number if hasattr(table, 'page_number') else None
-                    })
-            
-            return doc_data
-            
-        except Exception as e:
-            print(f"Docling parsing failed: {e}")
-            return None
+        print("✓ Document processor initialized (CPU-only, no GPU required)")
     
     def extract_pdf_with_pdfplumber(self, pdf_path: Path) -> str:
         """
-        Fallback: Extract text with pdfplumber (handles tables well)
+        Extract text with pdfplumber (handles tables well, CPU-only)
         
         Args:
             pdf_path: Path to PDF file
@@ -161,7 +83,7 @@ class DocumentProcessor:
     
     def extract_pdf_with_pypdf(self, pdf_path: Path) -> str:
         """
-        Fallback: Basic text extraction with PyPDF2
+        Basic text extraction with PyPDF2 (fallback)
         
         Args:
             pdf_path: Path to PDF file
@@ -181,40 +103,6 @@ class DocumentProcessor:
         
         return text.strip()
     
-    def extract_tables_from_pdf(self, pdf_path: Path) -> List[str]:
-        """
-        Extract tables using specialized libraries
-        
-        Args:
-            pdf_path: Path to PDF file
-            
-        Returns:
-            List of tables as markdown strings
-        """
-        if not self.extract_tables:
-            return []
-        
-        tables_markdown = []
-        
-        # Try Camelot first (best for complex tables)
-        try:
-            tables = camelot.read_pdf(str(pdf_path), pages='all', flavor='lattice')
-            for table in tables:
-                df = table.df
-                tables_markdown.append(df.to_markdown(index=False))
-        except Exception as e:
-            print(f"Camelot failed: {e}, trying tabula...")
-            
-            # Fallback to Tabula
-            try:
-                tables = tabula.read_pdf(str(pdf_path), pages='all', multiple_tables=True)
-                for df in tables:
-                    tables_markdown.append(df.to_markdown(index=False))
-            except Exception as e:
-                print(f"Tabula also failed: {e}")
-        
-        return tables_markdown
-    
     def _table_to_markdown(self, table: List[List[str]]) -> str:
         """Convert table array to markdown format"""
         if not table or not table[0]:
@@ -232,12 +120,11 @@ class DocumentProcessor:
     
     def extract_pdf_text(self, pdf_path: Path) -> str:
         """
-        Main PDF extraction with cascading fallbacks
+        Main PDF extraction with fallback
         
         Priority:
-        1. Docling (best quality, tables, images)
-        2. pdfplumber (good tables, decent text)
-        3. PyPDF2 (basic text only)
+        1. pdfplumber (good tables, decent text)
+        2. PyPDF2 (basic text only)
         
         Args:
             pdf_path: Path to PDF file
@@ -247,36 +134,23 @@ class DocumentProcessor:
         """
         print(f"Extracting: {pdf_path.name}")
         
-        # Try Docling first
-        if self.use_docling:
-            try:
-                doc_data = self.extract_pdf_with_docling(pdf_path)
-                if doc_data and doc_data['text']:
-                    print(f"  ✓ Docling: {doc_data['pages']} pages, {len(doc_data['tables'])} tables")
-                    return doc_data['text']
-            except Exception as e:
-                print(f"  ⚠️  Docling failed: {e}")
-        
-        # Fallback to pdfplumber
-        if HAS_PDF:
-            try:
-                text = self.extract_pdf_with_pdfplumber(pdf_path)
-                if text:
-                    print(f"  ✓ pdfplumber: {len(text)} chars")
-                    return text
-            except Exception as e:
-                print(f"  ⚠️  pdfplumber failed: {e}")
-            
-            # Last resort: PyPDF2
-            try:
-                text = self.extract_pdf_with_pypdf(pdf_path)
-                print(f"  ✓ PyPDF2: {len(text)} chars (basic extraction)")
+        # Try pdfplumber first
+        try:
+            text = self.extract_pdf_with_pdfplumber(pdf_path)
+            if text:
+                print(f"  ✓ pdfplumber: {len(text)} chars")
                 return text
-            except Exception as e:
-                print(f"  ❌ All PDF parsers failed: {e}")
-                raise
+        except Exception as e:
+            print(f"  ⚠️  pdfplumber failed: {e}")
         
-        raise ImportError("No PDF parsing libraries available")
+        # Fallback to PyPDF2
+        try:
+            text = self.extract_pdf_with_pypdf(pdf_path)
+            print(f"  ✓ PyPDF2: {len(text)} chars (basic extraction)")
+            return text
+        except Exception as e:
+            print(f"  ❌ All PDF parsers failed: {e}")
+            raise
     
     def extract_text_file(self, file_path: Path) -> str:
         """Extract text from text/markdown file"""

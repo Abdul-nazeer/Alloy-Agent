@@ -14,8 +14,7 @@ import uuid
 
 from .config import (
     QDRANT_URL, QDRANT_API_KEY, VECTOR_SIZE,
-    COLLECTION_MANUALS, COLLECTION_SOPS,
-    COLLECTION_LOGS, COLLECTION_FAULTS
+    COLLECTION_DOCUMENTS, COLLECTION_CHUNKS
 )
 
 
@@ -37,9 +36,15 @@ class VectorStore:
         
         # Connect to Qdrant
         if api_key:
-            self.client = QdrantClient(url=url, api_key=api_key)
+            self.client = QdrantClient(
+                url=url,
+                api_key=api_key,
+                timeout=60,
+                verify=True,
+                https=True
+            )
         else:
-            self.client = QdrantClient(url=url)
+            self.client = QdrantClient(url=url, timeout=60)
         
         print("✓ Connected to Qdrant")
     
@@ -61,8 +66,22 @@ class VectorStore:
             )
             print(f"✓ Created collection: {collection_name}")
         except Exception as e:
-            if "already exists" in str(e).lower():
+            error_msg = str(e).lower()
+            if "already exists" in error_msg:
                 print(f"  Collection {collection_name} already exists")
+            elif "forbidden" in error_msg or "403" in error_msg:
+                # Qdrant Cloud free tier blocks API collection creation
+                print(f"  ⚠️  Cannot create collection via API (Qdrant Cloud restriction)")
+                print(f"  Checking if {collection_name} already exists...")
+                if self.collection_exists(collection_name):
+                    print(f"  ✓ Collection {collection_name} exists, continuing...")
+                else:
+                    print(f"  ❌ Collection {collection_name} does not exist")
+                    print(f"  Please create it manually in Qdrant UI:")
+                    print(f"     1. Go to https://cloud.qdrant.io/")
+                    print(f"     2. Create collection '{collection_name}'")
+                    print(f"     3. Vector size: {vector_size}, Distance: Cosine")
+                    raise Exception(f"Collection '{collection_name}' must be created manually in Qdrant UI")
             else:
                 raise
     
@@ -73,8 +92,12 @@ class VectorStore:
     
     def collection_exists(self, collection_name: str) -> bool:
         """Check if collection exists"""
-        collections = self.client.get_collections().collections
-        return any(c.name == collection_name for c in collections)
+        try:
+            # Try to get collection info - if it exists, no error
+            self.client.get_collection(collection_name=collection_name)
+            return True
+        except:
+            return False
     
     def add_documents(
         self,
@@ -182,18 +205,114 @@ class VectorStore:
         }
     
     def initialize_collections(self):
-        """Create all required collections"""
-        collections = [
-            COLLECTION_MANUALS,
-            COLLECTION_SOPS,
-            COLLECTION_LOGS,
-            COLLECTION_FAULTS
-        ]
+        """Create parent-child collections"""
+        collections = [COLLECTION_DOCUMENTS, COLLECTION_CHUNKS]
         
         for collection in collections:
             self.create_collection(collection)
         
-        print(f"✓ Initialized {len(collections)} collections")
+        print(f"✓ Initialized {len(collections)} collections (parent-child architecture)")
+    
+    def add_document_with_chunks(
+        self,
+        document_id: str,
+        document_metadata: Dict[str, Any],
+        chunks_data: List[Dict[str, Any]]
+    ) -> Dict[str, List[str]]:
+        """
+        Add parent document and its child chunks
+        
+        Args:
+            document_id: Unique document ID
+            document_metadata: Document-level metadata
+            chunks_data: List of dicts with 'text', 'embedding', 'metadata'
+            
+        Returns:
+            Dict with 'document_id' and 'chunk_ids'
+        """
+        # Add child chunks with full parent metadata embedded
+        chunk_ids = []
+        chunk_points = []
+        
+        for i, chunk_data in enumerate(chunks_data):
+            chunk_id = f"{document_id}_chunk_{i}"
+            chunk_ids.append(chunk_id)
+            
+            # Combine parent metadata with chunk metadata
+            chunk_metadata = {
+                # Parent document metadata
+                **document_metadata,
+                'parent_document_id': document_id,
+                'num_chunks': len(chunks_data),
+                # Chunk-specific metadata
+                **chunk_data['metadata'],
+                'chunk_index': i,
+                'chunk_id': chunk_id,
+                'text': chunk_data['text']
+            }
+            
+            chunk_point = PointStruct(
+                id=chunk_id,
+                vector=chunk_data['embedding'],
+                payload=chunk_metadata
+            )
+            chunk_points.append(chunk_point)
+        
+        # Upload all chunks
+        self.client.upsert(
+            collection_name=COLLECTION_CHUNKS,
+            points=chunk_points
+        )
+        
+        print(f"✓ Added document {document_id} with {len(chunk_ids)} chunks")
+        
+        return {
+            'document_id': document_id,
+            'chunk_ids': chunk_ids
+        }
+    
+    def search_with_parent_context(
+        self,
+        query_vector: List[float],
+        limit: int = 5,
+        score_threshold: float = 0.0,
+        filter_dict: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Search chunks and return with parent document context
+        
+        Returns list of dicts with:
+        - chunk_text: The matched chunk text
+        - chunk_score: Similarity score
+        - parent_document_id: Parent document ID
+        - document_type: Type of source document
+        - source: Source information for citation
+        - full_metadata: Complete chunk payload including parent info
+        """
+        # Search chunks (they contain full parent metadata)
+        chunk_results = self.search(
+            collection_name=COLLECTION_CHUNKS,
+            query_vector=query_vector,
+            limit=limit,
+            score_threshold=score_threshold,
+            filter_dict=filter_dict
+        )
+        
+        # Format results with parent context (already in chunk metadata)
+        results = []
+        for chunk in chunk_results:
+            results.append({
+                'chunk_text': chunk.payload.get('text', ''),
+                'chunk_score': chunk.score,
+                'parent_document_id': chunk.payload.get('parent_document_id', ''),
+                'document_type': chunk.payload.get('document_type', 'unknown'),
+                'equipment_type': chunk.payload.get('equipment_type', ''),
+                'source': chunk.payload.get('source', ''),
+                'chunk_index': chunk.payload.get('chunk_index', 0),
+                'full_metadata': chunk.payload
+            })
+        
+        return results
 
 
 # Singleton instance

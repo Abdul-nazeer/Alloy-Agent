@@ -1,0 +1,200 @@
+================================================================================
+DATA VALIDATION AND COMBINATION REPORT
+Generated: 2026-06-08 18:51:26
+================================================================================
+
+OVERALL STATISTICS
+--------------------------------------------------------------------------------
+Total Samples Processed: 1973
+Valid Samples: 1973
+Invalid Samples: 0
+Duplicates Removed: 0
+Success Rate: 100.00%
+
+
+================================================================================
+DATASET: uci_samples.jsonl
+================================================================================
+
+Total Samples: 355
+Valid Samples: 355
+Invalid Samples: 0
+Success Rate: 100.00%
+
+STATISTICS:
+--------------------------------------------------------------------------------
+
+Source Distribution:
+  UCI_AI4I: 355
+
+Severity Distribution:
+  CRITICAL: 105
+  HIGH: 213
+  MEDIUM: 37
+
+Equipment Type Distribution:
+  Rolling Mill: 144
+  Compressor: 115
+  Conveyor Motor: 95
+  Various: 1
+
+Fault Mode Distribution:
+  PWF: 95
+  OSF: 98
+  TWF: 46
+  HDF: 115
+  RNF: 1
+
+RUL (Remaining Useful Life) Distribution:
+  0-10h: 355
+  10-50h: 0
+  50-100h: 0
+  100-200h: 0
+  200-500h: 0
+  500h+: 0
+
+Average Field Lengths:
+  Instruction: 115 chars
+  Input: 291 chars
+  Output: 935 chars
+
+
+================================================================================
+DATASET: cmapss_samples.jsonl
+================================================================================
+
+Total Samples: 1418
+Valid Samples: 1418
+Invalid Samples: 0
+Success Rate: 100.00%
+
+STATISTICS:
+--------------------------------------------------------------------------------
+
+Source Distribution:
+  CMAPSS: 1418
+
+Severity Distribution:
+  CRITICAL: 144
+  HIGH: 198
+  LOW: 709
+  MEDIUM: 367
+
+Equipment Type Distribution:
+  Air Compressor Unit: 1068
+  Cooling Fan System: 350
+
+Fault Mode Distribution:
+  HPC_degradation: 1068
+  Fan_degradation: 350
+
+RUL (Remaining Useful Life) Distribution:
+  0-10h: 52
+  10-50h: 116
+  50-100h: 127
+  100-200h: 300
+  200-500h: 712
+  500h+: 111
+
+Average Field Lengths:
+  Instruction: 98 chars
+  Input: 469 chars
+  Output: 1525 chars
+
+
+================================================================================
+DATASET: synthetic_samples.jsonl
+================================================================================
+
+Total Samples: 200
+Valid Samples: 200
+Invalid Samples: 0
+Success Rate: 100.00%
+
+STATISTICS:
+--------------------------------------------------------------------------------
+
+Source Distribution:
+  SYNTHETIC: 200
+
+Severity Distribution:
+  CRITICAL: 50
+  HIGH: 81
+  LOW: 25
+  MEDIUM: 44
+
+Equipment Type Distribution:
+  Cooling Fan System: 105
+  Air Compressor Unit: 95
+
+Fault Mode Distribution:
+  Fan_degradation: 105
+  HPC_degradation: 95
+
+RUL (Remaining Useful Life) Distribution:
+  0-10h: 52
+  10-50h: 56
+  50-100h: 24
+  100-200h: 36
+  200-500h: 18
+  500h+: 14
+
+Average Field Lengths:
+  Instruction: 93 chars
+  Input: 563 chars
+  Output: 1656 chars
+
+
+================================================================================
+DATASET: COMBINED
+================================================================================
+
+Total Samples: 1973
+Valid Samples: 1973
+Invalid Samples: 0
+Success Rate: 100.00%
+
+STATISTICS:
+--------------------------------------------------------------------------------
+
+Source Distribution:
+  UCI_AI4I: 355
+  CMAPSS: 1418
+  SYNTHETIC: 200
+
+Severity Distribution:
+  CRITICAL: 299
+  HIGH: 492
+  LOW: 734
+  MEDIUM: 448
+
+Equipment Type Distribution:
+  Air Compressor Unit: 1163
+  Cooling Fan System: 455
+  Rolling Mill: 144
+  Compressor: 115
+  Conveyor Motor: 95
+  Various: 1
+
+Fault Mode Distribution:
+  PWF: 95
+  OSF: 98
+  TWF: 46
+  HDF: 115
+  RNF: 1
+  HPC_degradation: 1163
+  Fan_degradation: 455
+
+RUL (Remaining Useful Life) Distribution:
+  0-10h: 459
+  10-50h: 172
+  50-100h: 151
+  100-200h: 336
+  200-500h: 730
+  500h+: 125
+
+Average Field Lengths:
+  Instruction: 101 chars
+  Input: 447 chars
+  Output: 1432 chars
+
