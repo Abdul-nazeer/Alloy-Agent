@@ -10,7 +10,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: "3.11"
       - key: QDRANT_URL
         sync: false
       - key: QDRANT_API_KEY
