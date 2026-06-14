@@ -1,326 +1,191 @@
 """
-Vector Store: Qdrant client wrapper
-Handles connection, collection management, and CRUD operations
+Qdrant vector store manager.
+
+Handles:
+- Collection creation with named vectors (dense + sparse for hybrid)
+- Batch upsert of chunks
+- HNSW config for production retrieval speed
 """
 
-from typing import List, Dict, Optional, Any
+import os
+import uuid
+import logging
+from typing import Optional
+from dataclasses import asdict
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
-    Distance, VectorParams, PointStruct,
-    Filter, FieldCondition, MatchValue,
-    SearchRequest, ScoredPoint
+    Distance,
+    VectorParams,
+    PointStruct,
+    HnswConfigDiff,
+    OptimizersConfigDiff,
+    SparseVectorParams,
+    SparseIndexParams,
 )
-import uuid
+from sentence_transformers import SentenceTransformer
 
-from .config import (
-    QDRANT_URL, QDRANT_API_KEY, VECTOR_SIZE,
-    COLLECTION_DOCUMENTS, COLLECTION_CHUNKS
-)
+from backend.src.rag.chunker import Chunk
+from backend.src.rag.config import QDRANT_URL, QDRANT_API_KEY, EMBEDDING_MODEL, VECTOR_SIZE
+
+logger = logging.getLogger(__name__)
+
+COLLECTION_NAME = "alloy_maintenance"  # Match Alloy-Agent naming
+DENSE_VECTOR_NAME = "dense"
+SPARSE_VECTOR_NAME = "sparse"
+EMBEDDING_DIM = VECTOR_SIZE  # From config (384)
+BATCH_SIZE = 64
 
 
-class VectorStore:
-    """Qdrant vector database client"""
-    
-    def __init__(self, url: str = QDRANT_URL, api_key: str = QDRANT_API_KEY):
-        """
-        Initialize Qdrant client
-        
-        Args:
-            url: Qdrant server URL
-            api_key: API key for Qdrant Cloud (optional for local)
-        """
-        self.url = url
-        self.api_key = api_key
-        
-        print(f"Connecting to Qdrant: {url}")
-        
-        # Connect to Qdrant
-        if api_key:
-            self.client = QdrantClient(
-                url=url,
-                api_key=api_key,
-                timeout=60,
-                verify=True,
-                https=True
-            )
-        else:
-            self.client = QdrantClient(url=url, timeout=60)
-        
-        print("✓ Connected to Qdrant")
-    
-    def create_collection(self, collection_name: str, vector_size: int = VECTOR_SIZE):
-        """
-        Create a new collection
-        
-        Args:
-            collection_name: Name of collection
-            vector_size: Dimension of vectors
-        """
-        try:
-            self.client.create_collection(
-                collection_name=collection_name,
-                vectors_config=VectorParams(
-                    size=vector_size,
-                    distance=Distance.COSINE  # Cosine similarity
+class VectorStoreManager:
+    def __init__(
+        self,
+        qdrant_url: Optional[str] = None,
+        qdrant_api_key: Optional[str] = None,
+        collection_name: str = COLLECTION_NAME,
+    ):
+        url = qdrant_url or os.getenv("QDRANT_URL", "http://localhost:6333")
+        api_key = qdrant_api_key or os.getenv("QDRANT_API_KEY")
+
+        self.client = QdrantClient(url=url, api_key=api_key, timeout=60)
+        self.collection_name = collection_name
+        self.embedder = SentenceTransformer(EMBEDDING_MODEL)
+        logger.info(f"Connected to Qdrant at {url}, collection={collection_name}")
+
+    def ensure_collection(self):
+        """Create collection if it doesn't exist."""
+        existing = [c.name for c in self.client.get_collections().collections]
+        if self.collection_name in existing:
+            logger.info(f"Collection '{self.collection_name}' already exists")
+            return
+
+        self.client.create_collection(
+            collection_name=self.collection_name,
+            vectors_config={
+                DENSE_VECTOR_NAME: VectorParams(
+                    size=EMBEDDING_DIM,
+                    distance=Distance.COSINE,
+                    hnsw_config=HnswConfigDiff(
+                        m=16,              # connections per node
+                        ef_construct=200,  # build quality
+                        full_scan_threshold=10_000,
+                    ),
                 )
-            )
-            print(f"✓ Created collection: {collection_name}")
-        except Exception as e:
-            error_msg = str(e).lower()
-            if "already exists" in error_msg:
-                print(f"  Collection {collection_name} already exists")
-            elif "forbidden" in error_msg or "403" in error_msg:
-                # Qdrant Cloud free tier blocks API collection creation
-                print(f"  ⚠️  Cannot create collection via API (Qdrant Cloud restriction)")
-                print(f"  Checking if {collection_name} already exists...")
-                if self.collection_exists(collection_name):
-                    print(f"  ✓ Collection {collection_name} exists, continuing...")
-                else:
-                    print(f"  ❌ Collection {collection_name} does not exist")
-                    print(f"  Please create it manually in Qdrant UI:")
-                    print(f"     1. Go to https://cloud.qdrant.io/")
-                    print(f"     2. Create collection '{collection_name}'")
-                    print(f"     3. Vector size: {vector_size}, Distance: Cosine")
-                    raise Exception(f"Collection '{collection_name}' must be created manually in Qdrant UI")
-            else:
-                raise
-    
-    def delete_collection(self, collection_name: str):
-        """Delete a collection"""
-        self.client.delete_collection(collection_name=collection_name)
-        print(f"✓ Deleted collection: {collection_name}")
-    
-    def collection_exists(self, collection_name: str) -> bool:
-        """Check if collection exists"""
-        try:
-            # Try to get collection info - if it exists, no error
-            self.client.get_collection(collection_name=collection_name)
-            return True
-        except:
-            return False
-    
-    def add_documents(
-        self,
-        collection_name: str,
-        texts: List[str],
-        embeddings: List[List[float]],
-        metadatas: Optional[List[Dict[str, Any]]] = None,
-        ids: Optional[List[str]] = None
-    ) -> List[str]:
-        """
-        Add documents to collection
-        
-        Args:
-            collection_name: Target collection
-            texts: Document texts
-            embeddings: Document embeddings
-            metadatas: Optional metadata dicts
-            ids: Optional custom IDs
-            
-        Returns:
-            List of document IDs
-        """
-        if ids is None:
-            ids = [str(uuid.uuid4()) for _ in texts]
-        
-        if metadatas is None:
-            metadatas = [{} for _ in texts]
-        
-        # Add text to metadata
-        for i, text in enumerate(texts):
-            metadatas[i]['text'] = text
-        
-        # Create points
-        points = [
-            PointStruct(
-                id=id_,
-                vector=embedding,
-                payload=metadata
-            )
-            for id_, embedding, metadata in zip(ids, embeddings, metadatas)
-        ]
-        
-        # Upload to Qdrant
-        self.client.upsert(
-            collection_name=collection_name,
-            points=points
+            },
+            sparse_vectors_config={
+                SPARSE_VECTOR_NAME: SparseVectorParams(
+                    index=SparseIndexParams(on_disk=False)
+                )
+            },
+            optimizers_config=OptimizersConfigDiff(
+                indexing_threshold=20_000,
+                memmap_threshold=50_000,
+            ),
         )
-        
-        print(f"✓ Added {len(points)} documents to {collection_name}")
-        return ids
-    
-    def search(
-        self,
-        collection_name: str,
-        query_vector: List[float],
-        limit: int = 5,
-        score_threshold: float = 0.0,
-        filter_dict: Optional[Dict[str, Any]] = None
-    ) -> List[ScoredPoint]:
-        """
-        Search for similar documents
-        
-        Args:
-            collection_name: Collection to search
-            query_vector: Query embedding
-            limit: Max results
-            score_threshold: Minimum similarity score
-            filter_dict: Metadata filters
-            
-        Returns:
-            List of search results with scores
-        """
-        # Build filter
-        query_filter = None
-        if filter_dict:
-            conditions = []
-            for key, value in filter_dict.items():
-                conditions.append(
-                    FieldCondition(
-                        key=key,
-                        match=MatchValue(value=value)
+        logger.info(f"Created collection '{self.collection_name}'")
+
+    def upsert_chunks(self, chunks: list[Chunk]) -> int:
+        """Embed and upsert chunks in batches. Returns count of upserted."""
+        self.ensure_collection()
+        total = 0
+
+        for i in range(0, len(chunks), BATCH_SIZE):
+            batch = chunks[i : i + BATCH_SIZE]
+
+            # Embed the context-enriched text
+            texts = [c.text_for_embedding for c in batch]
+            embeddings = self.embedder.encode(
+                texts, batch_size=32, show_progress_bar=False, normalize_embeddings=True
+            )
+
+            points = []
+            for chunk, embedding in zip(batch, embeddings):
+                payload = chunk.to_qdrant_payload()
+
+                # Sparse vector via BM25-style term weights (simple TF approach)
+                # For production, replace with SPLADE or BM42
+                sparse_indices, sparse_values = self._build_sparse_vector(chunk.text)
+
+                points.append(
+                    PointStruct(
+                        id=str(uuid.uuid5(uuid.NAMESPACE_DNS, chunk.chunk_id)),
+                        vector={
+                            DENSE_VECTOR_NAME: embedding.tolist(),
+                            SPARSE_VECTOR_NAME: {
+                                "indices": sparse_indices,
+                                "values": sparse_values,
+                            },
+                        },
+                        payload=payload,
                     )
                 )
-            query_filter = Filter(must=conditions)
-        
-        # Search
-        results = self.client.search(
-            collection_name=collection_name,
-            query_vector=query_vector,
-            limit=limit,
-            score_threshold=score_threshold,
-            query_filter=query_filter
+
+            self.client.upsert(
+                collection_name=self.collection_name,
+                points=points,
+                wait=True,
+            )
+            total += len(points)
+            logger.info(f"Upserted batch {i//BATCH_SIZE + 1}: {total}/{len(chunks)} chunks")
+
+        return total
+
+    def _build_sparse_vector(self, text: str) -> tuple[list[int], list[float]]:
+        """
+        Simple TF-based sparse vector for hybrid search.
+        Production: replace with SPLADE model for better recall.
+        """
+        import re
+        from collections import Counter
+
+        tokens = re.findall(r"\b[a-z]{3,}\b", text.lower())
+        # Remove common stopwords
+        stopwords = {
+            "the", "and", "for", "are", "was", "with", "this", "that",
+            "from", "have", "been", "will", "all", "but", "not", "they"
+        }
+        tokens = [t for t in tokens if t not in stopwords]
+
+        if not tokens:
+            return [0], [0.0]
+
+        tf = Counter(tokens)
+        total = len(tokens)
+
+        # Use dict to avoid duplicate indices
+        index_value_map = {}
+        for token, count in tf.most_common(50):  # top-50 terms
+            # Hash token to index space [0, 30000]
+            idx = hash(token) % 30000
+            tf_score = count / total
+            # If collision, add scores (simple aggregation)
+            if idx in index_value_map:
+                index_value_map[idx] += tf_score
+            else:
+                index_value_map[idx] = tf_score
+
+        # Convert to sorted lists (indices must be unique and sorted)
+        sorted_items = sorted(index_value_map.items())
+        indices = [idx for idx, _ in sorted_items]
+        values = [float(val) for _, val in sorted_items]
+
+        return indices, values
+
+    def delete_document(self, doc_id: str):
+        """Remove all chunks belonging to a document."""
+        from qdrant_client.models import Filter, FieldCondition, MatchValue
+        self.client.delete(
+            collection_name=self.collection_name,
+            points_selector=Filter(
+                must=[FieldCondition(key="doc_id", match=MatchValue(value=doc_id))]
+            ),
         )
-        
-        return results
-    
-    def get_collection_info(self, collection_name: str) -> Dict[str, Any]:
-        """Get collection statistics"""
-        info = self.client.get_collection(collection_name=collection_name)
+        logger.info(f"Deleted all chunks for doc_id={doc_id}")
+
+    def get_collection_info(self) -> dict:
+        info = self.client.get_collection(self.collection_name)
         return {
-            "name": collection_name,
             "vectors_count": info.vectors_count,
             "points_count": info.points_count,
-            "status": info.status,
+            "status": str(info.status),
         }
-    
-    def initialize_collections(self):
-        """Create parent-child collections"""
-        collections = [COLLECTION_DOCUMENTS, COLLECTION_CHUNKS]
-        
-        for collection in collections:
-            self.create_collection(collection)
-        
-        print(f"✓ Initialized {len(collections)} collections (parent-child architecture)")
-    
-    def add_document_with_chunks(
-        self,
-        document_id: str,
-        document_metadata: Dict[str, Any],
-        chunks_data: List[Dict[str, Any]]
-    ) -> Dict[str, List[str]]:
-        """
-        Add parent document and its child chunks
-        
-        Args:
-            document_id: Unique document ID
-            document_metadata: Document-level metadata
-            chunks_data: List of dicts with 'text', 'embedding', 'metadata'
-            
-        Returns:
-            Dict with 'document_id' and 'chunk_ids'
-        """
-        # Add child chunks with full parent metadata embedded
-        chunk_ids = []
-        chunk_points = []
-        
-        for i, chunk_data in enumerate(chunks_data):
-            chunk_id = f"{document_id}_chunk_{i}"
-            chunk_ids.append(chunk_id)
-            
-            # Combine parent metadata with chunk metadata
-            chunk_metadata = {
-                # Parent document metadata
-                **document_metadata,
-                'parent_document_id': document_id,
-                'num_chunks': len(chunks_data),
-                # Chunk-specific metadata
-                **chunk_data['metadata'],
-                'chunk_index': i,
-                'chunk_id': chunk_id,
-                'text': chunk_data['text']
-            }
-            
-            chunk_point = PointStruct(
-                id=chunk_id,
-                vector=chunk_data['embedding'],
-                payload=chunk_metadata
-            )
-            chunk_points.append(chunk_point)
-        
-        # Upload all chunks
-        self.client.upsert(
-            collection_name=COLLECTION_CHUNKS,
-            points=chunk_points
-        )
-        
-        print(f"✓ Added document {document_id} with {len(chunk_ids)} chunks")
-        
-        return {
-            'document_id': document_id,
-            'chunk_ids': chunk_ids
-        }
-    
-    def search_with_parent_context(
-        self,
-        query_vector: List[float],
-        limit: int = 5,
-        score_threshold: float = 0.0,
-        filter_dict: Optional[Dict[str, Any]] = None
-    ) -> List[Dict[str, Any]]:
-        """
-        Search chunks and return with parent document context
-        
-        Returns list of dicts with:
-        - chunk_text: The matched chunk text
-        - chunk_score: Similarity score
-        - parent_document_id: Parent document ID
-        - document_type: Type of source document
-        - source: Source information for citation
-        - full_metadata: Complete chunk payload including parent info
-        """
-        # Search chunks (they contain full parent metadata)
-        chunk_results = self.search(
-            collection_name=COLLECTION_CHUNKS,
-            query_vector=query_vector,
-            limit=limit,
-            score_threshold=score_threshold,
-            filter_dict=filter_dict
-        )
-        
-        # Format results with parent context (already in chunk metadata)
-        results = []
-        for chunk in chunk_results:
-            results.append({
-                'chunk_text': chunk.payload.get('text', ''),
-                'chunk_score': chunk.score,
-                'parent_document_id': chunk.payload.get('parent_document_id', ''),
-                'document_type': chunk.payload.get('document_type', 'unknown'),
-                'equipment_type': chunk.payload.get('equipment_type', ''),
-                'source': chunk.payload.get('source', ''),
-                'chunk_index': chunk.payload.get('chunk_index', 0),
-                'full_metadata': chunk.payload
-            })
-        
-        return results
-
-
-# Singleton instance
-_vector_store_instance = None
-
-def get_vector_store() -> VectorStore:
-    """Get singleton vector store instance"""
-    global _vector_store_instance
-    if _vector_store_instance is None:
-        _vector_store_instance = VectorStore()
-    return _vector_store_instance

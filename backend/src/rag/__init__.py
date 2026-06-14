@@ -1,31 +1,45 @@
 """
-RAG (Retrieval-Augmented Generation) System
+RAG Package — Hybrid Search with Citations
 
-Core components for knowledge retrieval:
-- Embedder: Convert text to vectors
-- Vector Store: Qdrant client for semantic search
-- Document Processor: Process PDFs and documents
+Architecture:
+- Dense vectors (semantic similarity)
+- Sparse vectors (BM25-style keyword matching)
+- Cross-encoder reranking
+- Citation tracking with PDF bboxes
+
+Collections:
+  alloy_maintenance — Single collection with named vectors (dense + sparse)
+
+Modules:
+  config, pdf_extractor, chunker, vector_store, retriever,
+  citation_builder, pipeline, ingest
 """
 
-from .embedder import Embedder, get_embedder
-from .vector_store import VectorStore, get_vector_store
-from .document_processor import DocumentProcessor, get_document_processor
 from .config import (
-    COLLECTION_DOCUMENTS,
-    COLLECTION_CHUNKS,
+    QDRANT_URL,
+    QDRANT_API_KEY,
+    VECTOR_SIZE,
+    EMBEDDING_MODEL,
+    HF_MODEL_ID,
+    HF_TOKEN,
+    TOP_K,
+    SCORE_THRESHOLD,
+    UPLOADS_DIR,
     validate_config,
 )
+from .pipeline import RAGPipeline, get_rag_pipeline
+from .retriever import HybridRetriever
+from .vector_store import VectorStoreManager
+from .citation_builder import CitationBuilder
 
 __all__ = [
-    'Embedder',
-    'get_embedder',
-    'VectorStore',
-    'get_vector_store',
-    'DocumentProcessor',
-    'get_document_processor',
-    'COLLECTION_DOCUMENTS',
-    'COLLECTION_CHUNKS',
-    'validate_config',
+    "QDRANT_URL", "QDRANT_API_KEY", "VECTOR_SIZE", "EMBEDDING_MODEL",
+    "HF_MODEL_ID", "HF_TOKEN", "TOP_K", "SCORE_THRESHOLD",
+    "UPLOADS_DIR", "validate_config",
+    "RAGPipeline", "get_rag_pipeline",
+    "HybridRetriever",
+    "VectorStoreManager",
+    "CitationBuilder",
 ]
 
-__version__ = '1.0.0'
+__version__ = "4.0.0-hybrid"

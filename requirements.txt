@@ -8,15 +8,25 @@ langgraph==0.0.26
 sentence-transformers==2.4.0
 transformers==4.38.2
 torch==2.2.0
+huggingface-hub==0.20.3
+
+# FastAPI & Web Server
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+python-multipart==0.0.9
 
 # Vector DB & RAG
 chromadb==0.4.22
 faiss-cpu==1.7.4
+qdrant-client==1.7.3
+rank-bm25==0.2.2
+PyMuPDF==1.23.26
 
 # Database
 psycopg2-binary==2.9.9
 influxdb-client==1.40.0
 neo4j==5.17.0
+sqlalchemy==2.0.27
 
 # ML & Data Processing
 numpy==1.26.4

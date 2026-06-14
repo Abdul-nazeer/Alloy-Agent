@@ -1,0 +1,7 @@
+log_id,equipment_id,timestamp,event_type,description,parts_used,cost,downtime_hours,engineer
+LOG-001,AC-001,2024-05-15 14:30:00,bearing_replacement,Replaced worn bearing due to overheating,SKF-22220,450.0,4.0,John Smith
+LOG-002,CF-003,2024-06-01 09:00:00,preventive_maintenance,Routine lubrication and inspection,NLGI-2-HT,25.0,0.5,Jane Doe
+LOG-003,AC-002,2024-06-01 11:00:00,inspection,"Vibration levels slightly elevated, monitoring",,0.0,0.0,Mike Johnson
+LOG-004,RM-005,2024-05-20 16:00:00,alignment_check,Roll alignment verified within spec,,0.0,2.0,Sarah Williams
+LOG-005,CM-007,2024-06-10 08:00:00,belt_replacement,Replaced conveyor belt as scheduled,CTB-1200-EP400,3500.0,6.0,John Smith
+LOG-006,AC-001,2024-03-10 10:30:00,seal_replacement,Motor seal replaced due to oil leak,4521-BR-SEAL,85.0,2.0,Jane Doe

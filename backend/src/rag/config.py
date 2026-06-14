@@ -1,203 +1,110 @@
 """
-RAG System Configuration
-Centralized config for Qdrant, embeddings, and retrieval settings
-Supports both local development and production deployment
+RAG Configuration — Single source of truth for all RAG settings.
+
+Loads credentials from .env at project root.
+Supports development (local Qdrant) and production (Qdrant Cloud).
 """
 
 import os
 from pathlib import Path
-
-# ============================================================================
-# ENVIRONMENT DETECTION
-# ============================================================================
-
-ENVIRONMENT = os.getenv("ENVIRONMENT", "development")  # development | production
-IS_PRODUCTION = ENVIRONMENT == "production"
-
-# ============================================================================
-# QDRANT CONFIGURATION
-# ============================================================================
-
-# Load environment variables
 from dotenv import load_dotenv
-load_dotenv()
 
-# Production: Qdrant Cloud (free 1GB cluster)
-# Development: Local Qdrant (Docker)
-if IS_PRODUCTION:
-    QDRANT_URL = os.getenv("QDRANT_URL")
-    QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
-    if not QDRANT_URL or not QDRANT_API_KEY:
-        raise ValueError("Production mode requires QDRANT_URL and QDRANT_API_KEY in environment")
-else:
-    # Local development with Docker Qdrant
-    QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-    QDRANT_API_KEY = None
+# ── Project paths ────────────────────────────────────────────────────────────
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
+load_dotenv(PROJECT_ROOT / ".env")
 
-print(f"🔧 Environment: {ENVIRONMENT}")
-print(f"📍 Qdrant URL: {QDRANT_URL}")
-
-# Collection names (parent-child architecture)
-COLLECTION_DOCUMENTS = "documents"  # Parent: full document metadata
-COLLECTION_CHUNKS = "chunk"         # Child: searchable text chunks (matches Qdrant UI)
-
-# Vector dimensions (all-MiniLM-L6-v2 = 384 dims)
-VECTOR_SIZE = 384
-
-# ============================================================================
-# EMBEDDING CONFIGURATION
-# ============================================================================
-
-# Embedding model (lightweight, fast, good quality)
-EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
-# Note: Model auto-downloads on first run (~80MB)
-
-# Embedding device detection
-import torch
-if torch.cuda.is_available():
-    EMBEDDING_DEVICE = "cuda"
-elif torch.backends.mps.is_available():
-    EMBEDDING_DEVICE = "mps"  # Apple Silicon
-else:
-    EMBEDDING_DEVICE = "cpu"
-
-print(f"💻 Embedding device: {EMBEDDING_DEVICE}")
-
-# ============================================================================
-# DOCUMENT PROCESSING
-# ============================================================================
-
-# Paths (relative to project root)
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
-RAW_MANUALS = DATA_DIR / "raw" / "manuals"
-RAW_SOPS = DATA_DIR / "raw" / "sops"
-PROCESSED_DIR = DATA_DIR / "processed"
-TRAINING_DATA = DATA_DIR / "training" / "train.jsonl"
+RAW_MANUALS_DIR = DATA_DIR / "raw" / "manuals"
+RAW_SOPS_DIR = DATA_DIR / "raw" / "sops"
+TRAINING_DATA_PATH = DATA_DIR / "training" / "train.jsonl"
+UPLOADS_DIR = DATA_DIR / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
-# Create directories if they don't exist
-PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+# ── Environment ──────────────────────────────────────────────────────────────
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
-# Chunking settings
-CHUNK_SIZE = 512  # tokens (~2000 characters)
-CHUNK_OVERLAP = 50  # tokens overlap for context
-MAX_CHUNKS_PER_DOC = 200  # Prevent huge documents
+# ── Qdrant ───────────────────────────────────────────────────────────────────
+QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 
-# ============================================================================
-# RETRIEVAL CONFIGURATION
-# ============================================================================
+# Parent-Child architecture — two collections per knowledge source
+#   Parent: stores document-level metadata (no vectors)
+#   Child:  stores chunk vectors, each linked to parent via parent_doc_id
+COLLECTION_DOCUMENTS = os.getenv("QDRANT_COLLECTION_DOCS", "alloy_documents")
+COLLECTION_CHUNKS = os.getenv("QDRANT_COLLECTION_CHUNKS", "alloy_chunks")
 
-# Search settings
-TOP_K_RETRIEVAL = 10  # Retrieve more, rerank to fewer
-TOP_K_FINAL = 5  # Final results after reranking
-SCORE_THRESHOLD = 0.5  # Minimum similarity score (0-1)
+# Separate child collection for user uploads
+COLLECTION_UPLOAD_CHUNKS = os.getenv("QDRANT_COLLECTION_UPLOADS", "alloy_upload_chunks")
 
-# Reranking (improves relevance)
-USE_RERANKING = True
-RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+# ── Knowledge Base ───────────────────────────────────────────────────────────
+KNOWLEDGE_DIR = DATA_DIR / "knowledge"
+INCIDENTS_PATH = KNOWLEDGE_DIR / "incidents.json"
+SPARE_PARTS_PATH = KNOWLEDGE_DIR / "spare_parts.csv"
 
-# ============================================================================
-# LLM CONFIGURATION (HuggingFace)
-# ============================================================================
+VECTOR_SIZE = 384  # all-MiniLM-L6-v2 output dimension
 
-# Fine-tuned model on HuggingFace
-LLM_MODEL = "abdul-nazeer/alloy-agent-phi3-maintenance"
-HF_TOKEN = os.getenv("HF_TOKEN")  # Optional, increases rate limit
+# ── Embedding model ──────────────────────────────────────────────────────────
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
-# Generation settings
-MAX_CONTEXT_LENGTH = 2048  # tokens for RAG context
-GENERATION_TEMPERATURE = 0.7
-GENERATION_MAX_TOKENS = 400
-GENERATION_TOP_P = 0.9
+# ── Chunking ─────────────────────────────────────────────────────────────────
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "500"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
+MAX_CHUNKS_PER_DOC = int(os.getenv("MAX_CHUNKS_PER_DOC", "300"))
 
-# ============================================================================
-# METADATA FILTERS
-# ============================================================================
+# ── Retrieval ────────────────────────────────────────────────────────────────
+TOP_K = int(os.getenv("TOP_K", "5"))
+SCORE_THRESHOLD = float(os.getenv("SCORE_THRESHOLD", "0.25"))
+NEIGHBOR_EXPANSION = int(os.getenv("NEIGHBOR_EXPANSION", "1"))  # ±N neighboring chunks
 
-# Equipment types for filtering
-EQUIPMENT_TYPES = [
-    "Air Compressor",
-    "Cooling Fan",
-    "Rolling Mill",
-    "Conveyor Motor",
-    "Turbine",
-    "Pump",
-    "Blast Furnace",
-    "Heat Exchanger",
-    "Hydraulic System"
+# ── LLM Configuration ──────────────────────────────────────────────────────
+# Supports: "ollama", "huggingface", "openai"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
+
+# HuggingFace settings
+HF_MODEL_ID = os.getenv("HF_MODEL_ID", "CodeMasterAbdul/alloy-phi3-steel-maintenance")
+HF_TOKEN = os.getenv("HF_TOKEN", "")
+
+# Ollama settings (local, fast, offline!)
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "phi3:mini")
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+
+# OpenAI settings (optional)
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+
+# Generation parameters
+GENERATION_MAX_TOKENS = int(os.getenv("GENERATION_MAX_TOKENS", "800"))  # Increased for detailed diagnostics
+GENERATION_TEMPERATURE = float(os.getenv("GENERATION_TEMPERATURE", "0.3"))  # Lower for factual accuracy
+
+# ── Domain (guardrails) ─────────────────────────────────────────────────────
+ALLOWED_DOMAIN_KEYWORDS = [
+    "maintenance", "equipment", "motor", "compressor", "bearing", "vibration",
+    "temperature", "pressure", "torque", "rpm", "lubrication", "corrosion",
+    "pump", "valve", "turbine", "conveyor", "mill", "roller", "fan", "cooling",
+    "furnace", "steel", "alloy", "sensor", "fault", "failure", "diagnosis",
+    "predictive", "inspection", "sop", "downtime", "spare", "repair",
+    "overhaul", "alignment", "calibration", "hydraulic", "pneumatic",
+    "electrical", "mechanical", "degradation", "wear", "fatigue", "crack",
+    "leak", "overheating", "shutdown", "alert", "risk", "rul", "remaining",
+    "useful", "life", "schedule", "plan", "priority", "recommendation",
 ]
 
-# Document types
-DOC_TYPES = ["manual", "sop", "log", "fault"]
+EQUIPMENT_TYPES = [
+    "Air Compressor", "Cooling Fan System", "Rolling Mill",
+    "Conveyor Motor", "Turbine", "Pump", "Blast Furnace",
+    "Heat Exchanger", "Hydraulic System",
+]
 
-# Severity levels
 SEVERITY_LEVELS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
 
-# ============================================================================
-# CACHING (Production Only)
-# ============================================================================
 
-ENABLE_CACHE = IS_PRODUCTION
-CACHE_TTL = 3600  # seconds (1 hour)
-
-# ============================================================================
-# LOGGING
-# ============================================================================
-
-LOG_LEVEL = "INFO" if IS_PRODUCTION else "DEBUG"
-LOG_QUERIES = True  # Log all queries for analysis
-
-# ============================================================================
-# RATE LIMITING (Production Only)
-# ============================================================================
-
-if IS_PRODUCTION:
-    RATE_LIMIT_PER_MINUTE = 60
-    RATE_LIMIT_PER_HOUR = 500
-else:
-    RATE_LIMIT_PER_MINUTE = None
-    RATE_LIMIT_PER_HOUR = None
-
-# ============================================================================
-# VALIDATION
-# ============================================================================
-
-def validate_config():
-    """Validate configuration settings"""
+def validate_config() -> bool:
+    """Raise if critical config is missing."""
     errors = []
-    
     if not QDRANT_URL:
-        errors.append("QDRANT_URL not set")
-    
-    if IS_PRODUCTION and QDRANT_URL.startswith("https://") and not QDRANT_API_KEY:
-        errors.append("QDRANT_API_KEY required for Qdrant Cloud in production")
-    
-    if not DATA_DIR.exists():
-        errors.append(f"Data directory not found: {DATA_DIR}")
-    
+        errors.append("QDRANT_URL is not set")
+    if QDRANT_URL.startswith("https://") and not QDRANT_API_KEY:
+        errors.append("QDRANT_API_KEY required for Qdrant Cloud")
     if errors:
-        raise ValueError(f"❌ Configuration errors:\n  - " + "\n  - ".join(errors))
-    
-    print("✓ Configuration validated")
+        raise ValueError("Config errors:\n  • " + "\n  • ".join(errors))
     return True
-
-# Export all config
-__all__ = [
-    'ENVIRONMENT',
-    'IS_PRODUCTION',
-    'QDRANT_URL',
-    'QDRANT_API_KEY',
-    'COLLECTION_DOCUMENTS',
-    'COLLECTION_CHUNKS',
-    'VECTOR_SIZE',
-    'EMBEDDING_MODEL',
-    'EMBEDDING_DEVICE',
-    'CHUNK_SIZE',
-    'CHUNK_OVERLAP',
-    'TOP_K_RETRIEVAL',
-    'TOP_K_FINAL',
-    'SCORE_THRESHOLD',
-    'LLM_MODEL',
-    'HF_TOKEN',
-    'validate_config',
-]

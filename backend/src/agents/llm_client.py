@@ -1,0 +1,329 @@
+"""
+LLM Client — Multi-provider interface for LLM generation
+Supports: Ollama (local), HuggingFace, OpenAI
+"""
+
+import logging
+import os
+from typing import Dict, Any, Optional
+
+import requests
+
+from backend.src.rag.config import (
+    GENERATION_MAX_TOKENS,
+    GENERATION_TEMPERATURE,
+    LLM_PROVIDER,
+    HF_MODEL_ID,
+    HF_TOKEN,
+    OLLAMA_MODEL,
+    OLLAMA_BASE_URL,
+    OPENAI_API_KEY,
+    OPENAI_MODEL,
+)
+
+logger = logging.getLogger(__name__)
+
+
+class LLMClient:
+    """
+    Unified interface for LLM generation across multiple providers.
+    
+    Providers:
+    - Ollama: Local, fast, offline (RECOMMENDED for demos)
+    - HuggingFace: Cloud API
+    - OpenAI: GPT models
+    """
+    
+    def __init__(
+        self,
+        provider: str = None,
+        model_id: str = None,
+        temperature: float = None,
+        max_tokens: int = None
+    ):
+        self.provider = provider or LLM_PROVIDER
+        self.temperature = temperature or GENERATION_TEMPERATURE
+        self.max_tokens = max_tokens or GENERATION_MAX_TOKENS
+        
+        # Provider-specific setup
+        if self.provider == "ollama":
+            self.model_id = model_id or OLLAMA_MODEL
+            self.base_url = OLLAMA_BASE_URL
+            logger.info(f"LLM Client initialized: Ollama - {self.model_id}")
+            
+        elif self.provider == "huggingface":
+            self.model_id = model_id or HF_MODEL_ID
+            self.token = HF_TOKEN
+            self.api_url = f"https://api-inference.huggingface.co/models/{self.model_id}"
+            self.headers = {"Authorization": f"Bearer {self.token}"} if self.token else {}
+            logger.info(f"LLM Client initialized: HuggingFace - {self.model_id}")
+            
+        elif self.provider == "openai":
+            self.model_id = model_id or OPENAI_MODEL
+            self.api_key = OPENAI_API_KEY
+            logger.info(f"LLM Client initialized: OpenAI - {self.model_id}")
+            
+        else:
+            raise ValueError(f"Unknown LLM provider: {self.provider}")
+    
+    def generate(
+        self,
+        prompt: str,
+        temperature: Optional[float] = None,
+        max_tokens: Optional[int] = None,
+        **kwargs
+    ) -> str:
+        """
+        Generate text from prompt using configured provider.
+        
+        Args:
+            prompt: Input prompt
+            temperature: Sampling temperature (overrides default)
+            max_tokens: Max new tokens (overrides default)
+            **kwargs: Additional provider-specific parameters
+        
+        Returns:
+            Generated text
+        
+        Raises:
+            Exception: If generation fails
+        """
+        if self.provider == "ollama":
+            return self._generate_ollama(prompt, temperature, max_tokens, **kwargs)
+        elif self.provider == "huggingface":
+            return self._generate_huggingface(prompt, temperature, max_tokens, **kwargs)
+        elif self.provider == "openai":
+            return self._generate_openai(prompt, temperature, max_tokens, **kwargs)
+        else:
+            raise ValueError(f"Unknown provider: {self.provider}")
+    
+    def _generate_ollama(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
+        """Generate using Ollama (local, fast, offline)."""
+        payload = {
+            "model": self.model_id,
+            "prompt": prompt,
+            "stream": False,
+            "options": {
+                "temperature": temperature or self.temperature,
+                "num_predict": max_tokens or self.max_tokens,
+                **kwargs
+            }
+        }
+        
+        try:
+            response = requests.post(
+                f"{self.base_url}/api/generate",
+                json=payload,
+                timeout=60
+            )
+            response.raise_for_status()
+            result = response.json()
+            return result.get("response", "")
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ollama generation failed: {e}")
+            raise Exception(f"Ollama generation failed: {e}")
+    
+    def _generate_huggingface(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
+        """Generate using HuggingFace Inference API with retry logic."""
+        import time
+        
+        payload = {
+            "inputs": prompt,
+            "parameters": {
+                "max_new_tokens": max_tokens or self.max_tokens,
+                "temperature": temperature or self.temperature,
+                "return_full_text": False,
+                "do_sample": True if (temperature or self.temperature) > 0 else False,
+                **kwargs
+            },
+            "options": {
+                "wait_for_model": True,  # Wait if model is loading
+                "use_cache": False  # Fresh generation
+            }
+        }
+        
+        max_retries = 3
+        retry_delay = 20  # seconds
+        
+        for attempt in range(max_retries):
+            try:
+                response = requests.post(
+                    self.api_url,
+                    headers=self.headers,
+                    json=payload,
+                    timeout=60  # Increased timeout for model loading
+                )
+                
+                # Handle 503 (model loading) - retry with backoff
+                if response.status_code == 503:
+                    if attempt < max_retries - 1:
+                        logger.warning(
+                            f"Model loading (attempt {attempt + 1}/{max_retries}). "
+                            f"Retrying in {retry_delay}s..."
+                        )
+                        time.sleep(retry_delay)
+                        retry_delay *= 1.5  # Exponential backoff
+                        continue
+                    else:
+                        raise Exception(
+                            "Model is still loading after multiple attempts. "
+                            "Please try again in 1-2 minutes."
+                        )
+                
+                # Handle rate limiting
+                if response.status_code == 429:
+                    raise Exception(
+                        "Rate limit exceeded. Please wait a moment and try again. "
+                        "Consider adding HF_TOKEN to .env for higher limits."
+                    )
+                
+                response.raise_for_status()
+                result = response.json()
+                
+                # Parse HuggingFace response format
+                if isinstance(result, list) and len(result) > 0:
+                    if "generated_text" in result[0]:
+                        text = result[0]["generated_text"].strip()
+                        logger.info(f"✓ Generated {len(text)} chars")
+                        return text
+                elif isinstance(result, dict):
+                    if "error" in result:
+                        error_msg = result["error"]
+                        # Handle specific errors
+                        if "is currently loading" in error_msg:
+                            if attempt < max_retries - 1:
+                                logger.warning(f"Model loading, retry in {retry_delay}s...")
+                                time.sleep(retry_delay)
+                                retry_delay *= 1.5
+                                continue
+                        raise Exception(error_msg)
+                    if "generated_text" in result:
+                        text = result["generated_text"].strip()
+                        logger.info(f"✓ Generated {len(text)} chars")
+                        return text
+                
+                # Fallback
+                logger.warning(f"Unexpected response format: {result}")
+                return str(result)
+                
+            except requests.exceptions.Timeout:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Timeout (attempt {attempt + 1}), retrying...")
+                    time.sleep(retry_delay)
+                    continue
+                raise Exception("Request timed out after multiple attempts")
+                
+            except requests.exceptions.RequestException as e:
+                if attempt < max_retries - 1 and "503" in str(e):
+                    logger.warning(f"Connection error, retrying in {retry_delay}s...")
+                    time.sleep(retry_delay)
+                    continue
+                logger.error(f"HuggingFace generation failed: {e}")
+                raise Exception(f"HuggingFace generation failed: {e}")
+        
+        raise Exception("Max retries exceeded")
+    
+    def _generate_openai(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
+        """Generate using OpenAI API."""
+        try:
+            import openai
+            openai.api_key = self.api_key
+            
+            response = openai.ChatCompletion.create(
+                model=self.model_id,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature or self.temperature,
+                max_tokens=max_tokens or self.max_tokens,
+                **kwargs
+            )
+            return response.choices[0].message.content
+            
+        except Exception as e:
+            logger.error(f"OpenAI generation failed: {e}")
+            raise Exception(f"OpenAI generation failed: {e}")
+    
+    def generate_structured(
+        self,
+        prompt: str,
+        schema: Dict[str, Any],
+        **kwargs
+    ) -> Dict[str, Any]:
+        """
+        Generate structured JSON output (best-effort).
+        
+        Note: HuggingFace Inference API doesn't natively support
+        structured generation, so we rely on prompt engineering.
+        
+        Args:
+            prompt: Prompt that requests JSON output
+            schema: Expected output schema (for documentation)
+            **kwargs: Additional generation parameters
+        
+        Returns:
+            Parsed JSON dict
+        """
+        import json
+        
+        raw_output = self.generate(prompt, temperature=0.1, **kwargs)
+        
+        # Try to parse JSON
+        try:
+            return json.loads(raw_output)
+        except json.JSONDecodeError:
+            # Fallback: extract JSON from text
+            import re
+            match = re.search(r'\{.*\}', raw_output, re.DOTALL)
+            if match:
+                try:
+                    return json.loads(match.group(0))
+                except:
+                    pass
+            
+            logger.warning("Could not parse structured output, returning raw text")
+            return {"raw_output": raw_output}
+    
+    def chat(
+        self,
+        messages: list,
+        **kwargs
+    ) -> str:
+        """
+        Multi-turn chat (converts to single prompt for now).
+        
+        Args:
+            messages: List of {"role": "user"|"assistant", "content": str}
+            **kwargs: Generation parameters
+        
+        Returns:
+            Generated response
+        """
+        # Convert chat history to prompt
+        prompt_parts = []
+        for msg in messages:
+            role = msg["role"]
+            content = msg["content"]
+            
+            if role == "system":
+                prompt_parts.append(f"<|system|>\n{content}<|end|>")
+            elif role == "user":
+                prompt_parts.append(f"<|user|>\n{content}<|end|>")
+            elif role == "assistant":
+                prompt_parts.append(f"<|assistant|>\n{content}<|end|>")
+        
+        prompt_parts.append("<|assistant|>")
+        prompt = "\n".join(prompt_parts)
+        
+        return self.generate(prompt, **kwargs)
+
+
+# Singleton instance
+_client: Optional[LLMClient] = None
+
+
+def get_llm_client() -> LLMClient:
+    """Get or create singleton LLM client."""
+    global _client
+    if _client is None:
+        _client = LLMClient()
+    return _client

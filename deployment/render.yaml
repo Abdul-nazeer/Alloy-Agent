@@ -1,0 +1,25 @@
+services:
+  # Backend API Service
+  - type: web
+    name: alloy-agent-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.src.api.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: HF_MODEL_ID
+        value: CodeMasterAbdul/alloy-phi3-steel-maintenance
+      - key: HF_TOKEN
+        sync: false
+      - key: LLM_PROVIDER
+        value: huggingface
+      - key: ENVIRONMENT
+        value: production

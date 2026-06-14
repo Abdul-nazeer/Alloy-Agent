@@ -1,0 +1,6 @@
+equipment_id,equipment_type,location,install_date,last_maintenance,operating_hours,status
+AC-001,Air Compressor,Zone-A,2020-03-15,2024-05-15,12450,CRITICAL
+AC-002,Air Compressor,Zone-A,2020-03-20,2024-06-01,11200,HIGH
+CF-003,Cooling Fan System,Zone-B,2019-11-20,2024-06-01,18200,MEDIUM
+RM-005,Rolling Mill,Zone-C,2018-07-10,2024-05-20,24500,LOW
+CM-007,Conveyor Motor,Zone-D,2021-01-05,2024-06-10,8900,NORMAL

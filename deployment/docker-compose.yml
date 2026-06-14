@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: alloy_postgres
+    environment:
+      POSTGRES_DB: alloy_maintenance
+      POSTGRES_USER: alloy_user
+      POSTGRES_PASSWORD: alloy_secure_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alloy_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # InfluxDB for Time-Series Data
+  influxdb:
+    image: influxdb:2.7-alpine
+    container_name: alloy_influxdb
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: alloy_admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: alloy_influx_pass
+      DOCKER_INFLUXDB_INIT_ORG: alloy_plant
+      DOCKER_INFLUXDB_INIT_BUCKET: sensor_data
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: alloy_secret_token
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Neo4j (Optional - for equipment hierarchy)
+  neo4j:
+    image: neo4j:5.16-community
+    container_name: alloy_neo4j
+    environment:
+      NEO4J_AUTH: neo4j/alloy_neo4j_pass
+      NEO4J_PLUGINS: '["graph-data-science"]'
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "alloy_neo4j_pass", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Streamlit Dashboard
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alloy_dashboard
+    environment:
+      - POSTGRES_HOST=postgres
+      - INFLUXDB_URL=http://influxdb:8086
+      - NEO4J_URI=bolt://neo4j:7687
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./dashboard:/app/dashboard
+      - ./src:/app/src
+      - ./data/chromadb:/app/data/chromadb
+      - ./models:/app/models
+      - ./.env:/app/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+
+  # IoT Simulator (runs as separate service)
+  iot_simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alloy_iot_simulator
+    environment:
+      - INFLUXDB_URL=http://influxdb:8086
+      - POSTGRES_HOST=postgres
+    volumes:
+      - ./src:/app/src
+      - ./.env:/app/.env
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    command: python scripts/run_simulation.py
+
+volumes:
+  postgres_data:
+  influxdb_data:
+  neo4j_data:
+  neo4j_logs:
+
+networks:
+  default:
+    name: alloy_network
