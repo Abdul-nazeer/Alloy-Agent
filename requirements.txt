@@ -4,20 +4,17 @@ uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.6.0
 
-# Multi-Agent System (only langgraph + core dependencies)
+# Multi-Agent System (only what's actually imported)
 langgraph==0.2.45
-langchain-core==0.3.17
-langchain-openai==0.2.8
 
-# AI/ML (Inference only - no local model)
+# AI/ML - Embeddings & Retrieval
 sentence-transformers==2.3.1
-transformers==4.37.2
 
 # RAG & Vector Database
 qdrant-client==1.12.1
 
-# PDF Processing
-pypdf==4.0.1
+# PDF Processing (for fitz/PyMuPDF)
+pymupdf==1.24.14
 pdfplumber==0.10.4
 
 # Database
@@ -25,7 +22,11 @@ sqlalchemy==2.0.25
 
 # HTTP Client
 httpx==0.26.0
-aiohttp==3.9.1
+requests==2.31.0
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.3
 
 # Utilities
 python-dotenv==1.0.0
