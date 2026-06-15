@@ -97,7 +97,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
 # Generation parameters
-GENERATION_MAX_TOKENS = int(os.getenv("GENERATION_MAX_TOKENS", "800"))  # Increased for detailed diagnostics
+GENERATION_MAX_TOKENS = int(os.getenv("GENERATION_MAX_TOKENS", "3000"))  # Increased for comprehensive reports
 GENERATION_TEMPERATURE = float(os.getenv("GENERATION_TEMPERATURE", "0.3"))  # Lower for factual accuracy
 
 # ── Domain (guardrails) ─────────────────────────────────────────────────────

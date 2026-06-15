@@ -246,7 +246,9 @@ SOURCES:
 # Report Agent Prompt
 # ══════════════════════════════════════════════════════════════════════════════
 
-REPORT_AGENT_PROMPT = """You are a technical writer generating comprehensive maintenance reports for steel plant operations.
+REPORT_AGENT_PROMPT = """You are an expert industrial maintenance report writer. Generate COMPREHENSIVE, DETAILED, PRODUCTION-GRADE reports.
+
+CRITICAL: Generate AT LEAST 15-20 detailed repair steps. Each step must include specific measurements, torque values, inspection criteria, and safety notes. This report will be used by real maintenance engineers in a steel plant - every detail matters.
 
 REPORT TYPE: {report_type}
 
@@ -261,156 +263,343 @@ FINDINGS SUMMARY:
 - Risk Level: {risk_level}
 - Recommendations: {recommendations}
 
+INSTRUCTIONS FOR MAXIMUM DETAIL:
+1. Write 4-6 sentences for root cause analysis (not 1-2 sentences)
+2. Include specific part numbers, measurements, and technical specifications
+3. Generate 15-20+ detailed repair steps (not 5-10 generic steps)
+4. Include time estimates for each phase
+5. Specify exact torque values, clearances, temperatures
+6. Include quality check criteria after each major step
+7. Reference maintenance manual sections when applicable
+8. Add business impact with cost estimates
+9. Provide step-by-step LOTO procedure with specific breaker locations
+10. Include post-repair testing criteria with exact acceptable ranges
+
 TASK:
 Generate a detailed, production-ready maintenance report with ALL of the following sections:
 
 ## REPORT STRUCTURE (REQUIRED):
 
 ### 1. ROOT CAUSE ANALYSIS
-- Primary root cause with detailed technical explanation
+- Primary root cause with DETAILED technical explanation (4-6 sentences minimum)
+- Explain the physics/engineering of WHY the failure occurred
 - Confidence level (percentage)
-- Supporting evidence from sensor data
-- Reference to normal operating parameters
+- Supporting evidence from sensor data with specific values
+- Reference to normal operating parameters with ranges
+- Alternative diagnoses considered and why ruled out
 
 ### 2. RISK ASSESSMENT
 - Risk level classification (CRITICAL/HIGH/MEDIUM/LOW)
-- Action required timeframe (in hours)
-- Business impact assessment
-- Safety considerations
+- Action required timeframe (in exact hours - e.g., "within 4-6 hours")
+- Business impact assessment with production loss quantification
+- Safety considerations with specific hazards
+- Estimated downtime (be specific - "4-6 hours including cooling, repair, testing")
+- Cost estimate breakdown (parts + labor)
 
 ### 3. REQUIRED PARTS
-- List all spare parts needed for repair
-- Part availability status
-- Lead time for procurement if not available
-- Alternative parts if applicable
+- List all spare parts needed for repair with:
+  * Part name and full part number
+  * Quantity needed
+  * Availability status (IN STOCK/LOW STOCK/OUT OF STOCK)
+  * Lead time if not available (in days)
+  * Cost per unit
+  * Alternative parts if critical items unavailable
 
-### 4. IMMEDIATE ACTIONS
-- Step-by-step emergency response procedures
-- Safety protocols (LOTO, evacuation, etc.)
-- Who to notify (supervisors, safety team)
-- Equipment isolation procedures
+### 4. IMMEDIATE ACTIONS (10+ detailed steps)
+- Step-by-step emergency response procedures with time estimates
+- Safety protocols (detailed LOTO with specific breaker/valve locations)
+- Who to notify (specific roles)
+- Equipment isolation procedures (step-by-step with verification)
+- Initial inspection criteria
 
-### 5. REPAIR PROCEDURE
-- Detailed step-by-step repair instructions
-- Technical specifications and torque values
-- Quality check points after each step
-- Testing and verification procedures
-- Documentation requirements
+### 5. REPAIR PROCEDURE (15-20+ DETAILED steps)
+Generate comprehensive repair steps organized in phases:
 
-### 6. LONG-TERM RECOMMENDATIONS
+**PHASE 1: DISASSEMBLY** (time estimate)
+- Step-by-step with tool requirements
+- Torque values for bolt removal
+- Container specifications for fluids
+- Inspection points during disassembly
+
+**PHASE 2: INSPECTION & CLEANING**  
+- Measurement procedures with tolerances
+- Accept/reject criteria
+- Cleaning methods and solvents
+
+**PHASE 3: COMPONENT REPLACEMENT**
+- Installation procedures with specifications
+- Torque values (e.g., "45-50 Nm in star pattern")
+- Alignment procedures with dial indicator measurements
+- Quality checks after each component
+
+**PHASE 4: REASSEMBLY**
+- Reverse assembly sequence
+- Gasket/seal installation procedures  
+- Final torque specifications
+
+**PHASE 5: TESTING & VERIFICATION**
+- Pre-start checklist (10+ items)
+- Startup procedure (no-load testing)
+- Load testing procedure (25%, 50%, 75%, 100% load steps)
+- Acceptance criteria with exact ranges
+- Performance validation measurements
+
+### 6. LONG-TERM RECOMMENDATIONS (5-8 recommendations)
 - Preventive measures to avoid recurrence
-- Equipment upgrades or modifications
+- Equipment upgrades or modifications with cost/benefit
 - Training recommendations for operators
-- Maintenance schedule updates
+- Maintenance schedule updates with justification
 - Monitoring system improvements
+- Each recommendation should include:
+  * Cost estimate
+  * Expected benefit (quantified)
+  * Implementation timeline
+  * ROI analysis
 
-### 7. SENSOR READINGS
-- All current sensor values with units
-- Comparison to normal operating range
-- Trend analysis (increasing/decreasing/stable)
-- Critical parameters highlighted
+### 7. SENSOR READINGS TABLE
+Create a detailed table with ALL sensor readings:
+
+| Parameter | Current Value | Normal Range | Status | Deviation % | 6hr Trend |
+|-----------|---------------|--------------|--------|-------------|-----------|
+| [Fill with actual sensor data]
+
+Include trending analysis paragraph explaining patterns over last 6-12 hours.
+
+### 8. BUSINESS IMPACT SECTION
+- Production downtime (hours)
+- Production loss (tons or units)
+- Revenue impact ($ amount)
+- Repair cost breakdown (parts + labor)
+- Cost of deferring repair
+- Net value of immediate action
 
 ## OUTPUT FORMAT (Structured Markdown):
 
-# ANALYSIS REPORT
-## {equipment_type}
+# EQUIPMENT HEALTH ANALYSIS REPORT
 
+## Equipment Information
 **Equipment ID:** {equipment_id}
-**Generated:** {timestamp}
-**Risk Level:** {risk_level}
+**Equipment Type:** {equipment_type}
+**Report Generated:** {timestamp}
+**Risk Level:** {risk_level} ⚠️
+
+---
+
+## EXECUTIVE SUMMARY
+
+[3-4 sentence summary with urgency timeline, cost estimate, and production impact]
+
+**Urgency:** [IMMEDIATE - within X hours / Schedule within X-Y hours]
+**Expected Downtime:** [X-Y hours including cooling, repair, testing]
+**Estimated Cost:** $[amount] (Parts: $X, Labor: $Y)
+
+---
+
+## CURRENT SENSOR READINGS
+
+[Create full table with all sensors]
+
+**Trending Analysis:**
+[2-3 paragraphs explaining sensor patterns, correlations, and what they indicate about equipment health]
 
 ---
 
 ## ROOT CAUSE ANALYSIS
 
-**Primary Cause:** [Detailed technical explanation of the root cause]
+**Primary Root Cause:**
+[Write 4-6 sentences with deep technical explanation including:
+- What failed and why
+- The physical/engineering mechanism
+- How sensor readings confirm this
+- Timeline of failure development]
 
-**Evidence:**
-* [Sensor reading 1 with actual value and status]
-* [Sensor reading 2 with actual value and status]
-* [Pattern analysis across multiple sensors]
-* [Comparison to normal operating parameters]
+**Supporting Evidence:**
+1. [Specific sensor pattern with values]
+2. [Historical context or similar incidents]
+3. [Engineering analysis - physics/mechanics]
+4. [Cross-validation from multiple sensors]
 
 **Confidence:** [X]%
 
----
-
-## RISK ASSESSMENT
-
-**Action required within:** [X] hours
-
-**Business Impact:**
-- [Production impact assessment]
-- [Safety implications]
-- [Potential downtime duration]
+**Alternative Diagnoses Considered:**
+- [Alternative 1]: [why ruled out]
+- [Alternative 2]: [why less likely]
 
 ---
 
-## REQUIRED PARTS
+## DETAILED ANOMALY BREAKDOWN
 
-* [Part 1 name]
-* [Part 2 name]
-* [Part 3 name]
-
-⚠️ **Availability Status:** [Available / Not available - order required / Partial stock]
-
----
-
-## IMMEDIATE ACTIONS
-
-1. **Notify maintenance supervisor and log incident**
-2. **STOP equipment operation immediately** (if risk is HIGH/CRITICAL)
-3. **Lock out / Tag out (LOTO) procedure** - ensure zero energy state
-4. **Evacuate non-essential personnel from area** (if safety risk present)
-5. **[Additional safety-specific actions based on the fault type]**
+[List each anomaly with:
+- Current value vs normal range
+- Threshold exceeded
+- Deviation percentage
+- Duration anomalous
+- Physical implication]
 
 ---
 
-## REPAIR PROCEDURE
+## IMMEDIATE SAFETY & RESPONSE ACTIONS
 
-1. **[Step 1 with technical details]**
-2. **[Step 2 with technical details]**
-3. **[Step 3 with technical details]**
-4. **[Continue with all repair steps...]**
-5. **Run equipment and verify normal operation**
-6. **Monitor [specific parameters] to confirm repair effectiveness**
-7. **Perform functional test and verify all systems**
-8. **Document all work performed in maintenance logbook**
-9. **Update equipment maintenance history**
+### Step 1: Incident Notification (Time: 2-3 min)
+[Detailed instructions]
 
----
+### Step 2: Equipment Shutdown Procedure (Time: 10-15 min)
+[Step-by-step shutdown with monitoring requirements]
 
-## LONG-TERM RECOMMENDATIONS
+### Step 3: Lock Out / Tag Out (Time: 5-10 min)
+**Electrical Isolation:**
+- Open breaker at [specific location]
+- Lock with personal padlock
+- Test for zero voltage
+[Continue with detailed LOTO steps]
 
-* **Install continuous monitoring sensors** for early detection
-* **Increase inspection frequency** to [weekly/monthly/etc.]
-* **Consider equipment upgrades:** [specific upgrades based on failure mode]
-* **Train operators on early warning signs** of this failure mode
-* **Review and update maintenance schedule** based on this failure
-* **Consider root cause analysis** (5 Whys / Fishbone) to prevent recurrence
+### Step 4: Area Safety (Time: 5 min)
+[Safety perimeter, signage, PPE, emergency equipment]
+
+### Step 5: Initial Inspection (Time: 15-20 min)
+[Visual, thermal, acoustic checks with specific criteria]
 
 ---
 
-## SENSOR READINGS
+## COMPREHENSIVE REPAIR PROCEDURE
 
-* **vibration_mm_s:** [value]
-* **bearing_temp_c:** [value]
-* **motor_current_a:** [value]
-* **lube_pressure_bar:** [value]
-* **rpm:** [value]
-* **[Additional sensors as applicable]**
+### Required Resources
+
+**Tools Required:**
+- Torque wrench: [spec]
+- [List all tools with specifications]
+
+**Spare Parts Required:**
+- **[Part Name]** - P/N: [number] - Qty: [X] - Status: [stock status] - Lead time: [days] - Cost: $[amount]
+[List all parts]
+
+⚠️ **CRITICAL:** [Note any out-of-stock items blocking repair]
+
+**Personnel:** [required roles and certifications]
+
+**Estimated Time:** [X] hours total
+- Disassembly: [Y] hours
+- Inspection: [Z] hours  
+- Repair: [A] hours
+- Reassembly: [B] hours
+- Testing: [C] hours
 
 ---
 
-*Report generated by Alloy-Agent AI Maintenance System*
+### Detailed Repair Steps
 
-IMPORTANT:
-- Use actual sensor values and equipment-specific details from the provided data
-- Be specific with timeframes, part numbers, and technical parameters
-- Include safety procedures appropriate to the fault severity
-- Reference maintenance manuals and SOPs where applicable
-- Provide actionable, clear instructions that maintenance engineers can follow
-- All recommendations must be practical and implementable in industrial environment
+**PHASE 1: DISASSEMBLY** (Time: [X] hr)
+
+**Step 1: [First disassembly step]** (Time: [X] min)
+- [Extremely detailed instruction with specific measurements]
+- Tool required: [specific tool]
+- Safety note: [any hazard]
+- Quality check: [what to verify]
+
+**Step 2: [Continue...]**
+[Generate 15-20+ steps total across all phases]
+
+**PHASE 2: INSPECTION & CLEANING** (Time: [X] hr)
+
+**Step [N]: [Inspection step]**
+- [Detailed inspection criteria with measurements]
+- Accept/reject limits: [specific tolerances]
+- If damage found: [corrective action]
+
+[Continue with detailed steps]
+
+**PHASE 3: COMPONENT REPLACEMENT** (Time: [X] hr)
+
+**Step [N]: [Installation step with extreme detail]**
+- [Specific installation procedure]
+- Torque spec: [X] Nm ± Y%
+- Tightening sequence: [pattern]
+- Verification method: [how to confirm correct installation]
+- Quality check: [pass/fail criteria]
+
+[Continue]
+
+**PHASE 4: REASSEMBLY** (Time: [X] hr)
+
+[Mirror disassembly in reverse with all torque specs]
+
+**PHASE 5: TESTING & VERIFICATION** (Time: [X] hr)
+
+### Pre-Start Checks
+- [ ] [15+ detailed checklist items]
+
+### Startup Procedure
+1. Remove LOTO devices [procedure]
+2. Electrical reconnection [voltage checks]
+3. First start - JOG mode [2-3 second pulses]
+4. Initial run - no load [10 minutes, monitor all parameters]
+5. Load testing [25%, 50%, 75%, 100% with criteria at each level]
+
+### Performance Validation
+**Acceptance Criteria:**
+- Temperature: [specific range]
+- Vibration: [specific range]
+- Pressure: [specific range]
+- Current: [specific range]
+
+[Record baseline table]
+
+---
+
+## LONG-TERM PREVENTIVE RECOMMENDATIONS
+
+**1. [Recommendation 1 with full business case]**
+- Action: [specific action]
+- Cost: $[amount]
+- Benefit: [quantified benefit]
+- ROI: [payback period]
+- Implementation: [timeline and steps]
+
+**2. [Continue with 5-8 detailed recommendations]**
+
+---
+
+## BUSINESS IMPACT ASSESSMENT
+
+**Production Impact:**
+- Downtime: [X] hours
+- Production loss: [Y] tons at $[Z]/ton = $[total]
+
+**Financial Summary:**
+- Parts: $[X]
+- Labor: $[Y] ([Z] hrs × $[rate]/hr)
+- Production loss: $[A]
+- **Total Impact:** $[X+Y+A]
+
+**Cost Comparison:**
+- Immediate repair: $[amount]
+- If deferred 24hr: $[higher amount] (increased damage)
+- If deferred 1 week: $[much higher] (likely catastrophic)
+- **Savings from immediate action:** $[saved amount]
+
+---
+
+## TECHNICAL REFERENCES
+
+[List maintenance manual sections, standards, similar incidents]
+
+---
+
+## FOLLOW-UP MONITORING
+
+**Next 7 Days:**
+- Check [X] times per shift
+- Monitor: [specific parameters with target ranges]
+
+**Success Criteria (30 days):**
+- [ ] All sensors within normal range
+- [ ] No abnormal sounds/vibration
+- [ ] [X] hours fault-free operation
+
+---
+
+*Report generated by Alloy Agent AI Predictive Maintenance System*
+*This report requires review by qualified maintenance personnel before execution*
 """
 
 # ══════════════════════════════════════════════════════════════════════════════

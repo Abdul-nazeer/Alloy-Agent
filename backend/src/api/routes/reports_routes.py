@@ -39,6 +39,32 @@ async def get_reports(equipment_id: Optional[str] = None, days: int = 30):
         reports = []
         for row in rows:
             report_data = json.loads(row['report_data']) if row['report_data'] else {}
+            
+            # Extract all content properly
+            content_obj = {
+                # Core report data
+                "title": report_data.get('title', 'Analysis Report'),
+                "summary": report_data.get('summary', 'No summary available'),
+                "content": report_data.get('content', ''),
+                
+                # Structured data
+                "root_causes": report_data.get('root_causes', []),
+                "recommendations": report_data.get('recommendations', []),
+                "anomalies": report_data.get('anomalies', []),
+                "sensor_readings": report_data.get('sensor_readings', {}),
+                
+                # Metadata
+                "risk_level": report_data.get('risk_level', 'UNKNOWN'),
+                "agents_used": report_data.get('agents_used', []),
+                "incident_id": report_data.get('incident_id'),
+                "equipment_type": report_data.get('equipment_type'),
+                "timestamp": report_data.get('timestamp'),
+                
+                # Role-specific summaries
+                "supervisor_summary": report_data.get('supervisor_summary', ''),
+                "engineer_summary": report_data.get('engineer_summary', ''),
+            }
+            
             reports.append({
                 "id": row['report_id'],
                 "equipment_id": row['equipment_id'],
@@ -46,7 +72,7 @@ async def get_reports(equipment_id: Optional[str] = None, days: int = 30):
                 "title": report_data.get('title', 'Analysis Report'),
                 "status": report_data.get('risk_level', 'normal').lower(),
                 "findings": report_data.get('summary', 'No summary available'),
-                "content": report_data.get('content', ''),
+                "content": content_obj,  # Full structured content
                 "date": row['created_at'],
             })
         
