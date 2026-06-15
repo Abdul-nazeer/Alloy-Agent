@@ -32,7 +32,7 @@ function AppContent() {
     const fetchUnreadAlerts = async () => {
       try {
         const response = await alertsAPI.getUnread();
-        setUnreadAlertCount(response.count);
+        setUnreadAlertCount(response.data.count);
       } catch (err) {
         console.error('Failed to fetch unread alerts:', err);
       }
@@ -192,7 +192,7 @@ function AppContent() {
                 onClose={() => setShowAlertsPanel(false)}
                 onAlertUpdate={() => {
                   // Refresh unread count when alert is marked as read
-                  alertsAPI.getUnread().then(res => setUnreadAlertCount(res.count));
+                  alertsAPI.getUnread().then(res => setUnreadAlertCount(res.data.count));
                 }}
               />
             </div>
