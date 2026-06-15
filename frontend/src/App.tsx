@@ -9,6 +9,8 @@ import DocumentsView from './components/DocumentsView';
 import ReportsView from './components/ReportsView';
 import LogbookView from './components/LogbookView';
 import AlertsPanel from './components/AlertsPanel';
+import SparePartsInventory from './components/SparePartsInventory';
+import HistoricalDataUpload from './components/HistoricalDataUpload';
 import { Activity, Clock, Bell } from 'lucide-react';
 import { alertsAPI } from './api/client';
 
@@ -214,6 +216,8 @@ function AppContent() {
           {currentView === 'documents' && <DocumentsView />}
           {currentView === 'reports' && <ReportsView />}
           {currentView === 'logs' && <LogbookView />}
+          {currentView === 'spareparts' && <SparePartsInventory />}
+          {currentView === 'historical' && <HistoricalDataUpload />}
         </main>
 
         {/* Footer */}

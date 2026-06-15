@@ -212,6 +212,18 @@ def _create_final_answer(state: AgentState) -> str:
     else:
         parts.append(f"✓ Analysis complete for {equipment_id} (Risk: {risk})")
     
+    # RUL prediction (if available)
+    rul_data = state.get("metadata", {}).get("remaining_useful_life")
+    if rul_data:
+        parts.append(f"\n**⏰ RUL Prediction:** {rul_data.get('message', 'N/A')}")
+        if rul_data.get('estimated_days_remaining') is not None:
+            days = rul_data['estimated_days_remaining']
+            if days == 0:
+                parts.append(f"   - **URGENT:** Equipment at failure threshold")
+            else:
+                parts.append(f"   - Estimated {days} days remaining until failure")
+        parts.append(f"   - Degradation: {rul_data.get('degradation_percent', 0)}% | Confidence: {rul_data.get('confidence', 'N/A')}")
+    
     # Diagnosis
     if state.get("diagnosis"):
         parts.append(f"\n**Diagnosis:** {state['diagnosis']}")
@@ -226,10 +238,17 @@ def _create_final_answer(state: AgentState) -> str:
         top_rec = state["recommendations"][0]
         parts.append(f"\n**Immediate Action:** {top_rec.action}")
     
-    # RUL if available
-    if state.get("rul_estimate"):
-        rul = state["rul_estimate"]
-        parts.append(f"\n**Remaining Life:** {rul.get('estimate', 'Unknown')}")
+    # Spare parts status (critical parts needing procurement)
+    from backend.src.agents.tools import get_critical_spare_parts
+    equipment_type = state.get("equipment_type", "")
+    if equipment_type:
+        critical_parts = get_critical_spare_parts(equipment_type)
+        if critical_parts:
+            out_of_stock = [p for p in critical_parts if p['status'] == 'OUT_OF_STOCK']
+            if out_of_stock:
+                parts.append(f"\n⚠️ **Procurement Alert:** {len(out_of_stock)} critical part(s) out of stock")
+                for part in out_of_stock[:2]:  # Show top 2
+                    parts.append(f"   - {part['part_number']}: {part['description']} (Lead time: {part['lead_time_days']} days)")
     
     # Citations count
     if state.get("citations"):

@@ -52,25 +52,52 @@ def recommendation_node(state: AgentState) -> AgentState:
     logger.info(f"Retrieving procedures for: {procedure_query}")
     rag_result = rag_retrieve(procedure_query, top_k=5)
     
-    # Step 2: Lookup spare parts availability
+    # Step 2: Lookup spare parts availability from database
+    from backend.src.agents.tools import get_critical_spare_parts
+    
     spare_parts_info = []
     
-    # Try to identify required parts from root causes
+    # Get all parts for this equipment type
+    all_parts = spare_parts_lookup(equipment_type=equipment_type)
+    
+    # Get critical/out-of-stock parts
+    critical_parts = get_critical_spare_parts(equipment_type)
+    
+    # Try to identify specific required parts from root causes
     part_keywords = _identify_parts(root_causes, diagnosis)
-    for keyword in part_keywords:
-        part_data = spare_parts_lookup(keyword)
-        if part_data:
-            spare_parts_info.append(part_data)
+    
+    if part_keywords:
+        for keyword in part_keywords:
+            matching_parts = spare_parts_lookup(equipment_type=equipment_type, part_keyword=keyword)
+            spare_parts_info.extend(matching_parts)
+    
+    # If no specific parts identified, show critical parts that need attention
+    if not spare_parts_info and critical_parts:
+        spare_parts_info = critical_parts[:3]  # Top 3 critical parts
     
     # Format spare parts for prompt
     if spare_parts_info:
         spare_parts_text = "\n".join([
             f"- {p['part_number']}: {p['description']} | "
-            f"Stock: {p['in_stock']} | Lead time: {p['lead_time_days']} days | ${p['cost']}"
+            f"Status: {p['status']} ({p['in_stock']} in stock) | "
+            f"Lead time: {p['lead_time_days']} days | "
+            f"Cost: ${p['cost']:.2f} | "
+            f"Criticality: {p['criticality']} | "
+            f"Supplier: {p['supplier']}"
             for p in spare_parts_info
         ])
     else:
-        spare_parts_text = "No specific parts identified. Generic spares available."
+        spare_parts_text = "No critical spare parts identified for this equipment type."
+    
+    # Add RUL prediction if available
+    rul_info = state.get("metadata", {}).get("remaining_useful_life", {})
+    if rul_info:
+        rul_text = f"\n\nREMAINING USEFUL LIFE PREDICTION:\n{rul_info.get('message', 'N/A')}"
+        rul_text += f"\nEstimated days remaining: {rul_info.get('estimated_days_remaining', 'Unknown')}"
+        rul_text += f"\nDegradation: {rul_info.get('degradation_percent', 0)}%"
+        rul_text += f"\nUrgency: {rul_info.get('urgency', 'MEDIUM')}"
+    else:
+        rul_text = ""
     
     # Step 3: Generate recommendations with LLM
     llm = get_llm_client()
@@ -83,6 +110,7 @@ def recommendation_node(state: AgentState) -> AgentState:
         risk_level=risk_level,
         user_role=user_role,
         spare_parts=spare_parts_text,
+        rul_prediction=rul_text,
         rag_context=rag_result.context if rag_result.grounded else "No procedures found.",
     )
     

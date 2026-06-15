@@ -107,59 +107,113 @@ def threshold_lookup(
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Spare Parts Lookup Tool (Simulated)
+# Spare Parts Lookup Tool
 # ══════════════════════════════════════════════════════════════════════════════
 
-SPARE_PARTS_DB = {
-    "bearing": {
-        "part_number": "SKF-22220",
-        "description": "Deep groove ball bearing",
-        "in_stock": 3,
-        "lead_time_days": 0,
-        "cost": 450.0,
-    },
-    "motor_seal": {
-        "part_number": "4521-BR-SEAL",
-        "description": "Motor bearing seal",
-        "in_stock": 0,
-        "lead_time_days": 5,
-        "cost": 85.0,
-    },
-    "lubricant": {
-        "part_number": "NLGI-2-HT",
-        "description": "High-temp bearing grease (NLGI Grade 2)",
-        "in_stock": 12,
-        "lead_time_days": 0,
-        "cost": 25.0,
-    },
-    "belt": {
-        "part_number": "CTB-1200-EP400",
-        "description": "ContiTech conveyor belt 1200mm",
-        "in_stock": 1,
-        "lead_time_days": 7,
-        "cost": 3500.0,
-    },
-    "pressure_sensor": {
-        "part_number": "PS-100-BAR",
-        "description": "Pressure sensor 0-100 bar",
-        "in_stock": 2,
-        "lead_time_days": 2,
-        "cost": 180.0,
-    },
-}
-
-
-def spare_parts_lookup(part_keyword: str) -> Optional[dict]:
+def spare_parts_lookup(equipment_type: str = None, part_keyword: str = None) -> list[dict]:
     """
-    Lookup spare part availability.
+    Lookup spare parts from database.
     
     Args:
-        part_keyword: Part keyword (bearing, seal, lubricant, etc.)
+        equipment_type: Filter by equipment type (e.g., "Air Compressor")
+        part_keyword: Search keyword in part name (e.g., "bearing", "valve")
     
     Returns:
-        Part info dict or None
+        List of matching spare parts with availability info
     """
-    return SPARE_PARTS_DB.get(part_keyword.lower())
+    from backend.src.database.schema import get_connection
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        # Build query
+        query = "SELECT * FROM spare_parts WHERE 1=1"
+        params = []
+        
+        if equipment_type:
+            query += " AND equipment_type = ?"
+            params.append(equipment_type)
+        
+        if part_keyword:
+            query += " AND (part_name LIKE ? OR part_id LIKE ?)"
+            params.extend([f"%{part_keyword}%", f"%{part_keyword}%"])
+        
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        conn.close()
+        
+        # Convert to dict format
+        parts = []
+        for row in rows:
+            parts.append({
+                "part_number": row["part_id"],
+                "description": row["part_name"],
+                "in_stock": row["quantity_available"],
+                "lead_time_days": row["lead_time_days"],
+                "cost": row["unit_cost"],
+                "status": row["status"],
+                "criticality": row["criticality"],
+                "supplier": row["supplier"],
+            })
+        
+        return parts
+        
+    except Exception as e:
+        logger.error(f"Spare parts lookup failed: {e}")
+        return []
+
+
+def get_critical_spare_parts(equipment_type: str) -> list[dict]:
+    """
+    Get critical/out-of-stock parts for an equipment type.
+    
+    Args:
+        equipment_type: Equipment type to check
+    
+    Returns:
+        List of parts needing procurement attention
+    """
+    from backend.src.database.schema import get_connection
+    
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT * FROM spare_parts 
+            WHERE equipment_type = ? 
+            AND (status = 'OUT_OF_STOCK' OR status = 'LOW_STOCK')
+            ORDER BY 
+                CASE criticality
+                    WHEN 'CRITICAL' THEN 1
+                    WHEN 'HIGH' THEN 2
+                    WHEN 'MEDIUM' THEN 3
+                    ELSE 4
+                END
+        """, (equipment_type,))
+        
+        rows = cursor.fetchall()
+        conn.close()
+        
+        parts = []
+        for row in rows:
+            parts.append({
+                "part_number": row["part_id"],
+                "description": row["part_name"],
+                "in_stock": row["quantity_available"],
+                "lead_time_days": row["lead_time_days"],
+                "cost": row["unit_cost"],
+                "status": row["status"],
+                "criticality": row["criticality"],
+                "supplier": row["supplier"],
+            })
+        
+        return parts
+        
+    except Exception as e:
+        logger.error(f"Critical parts lookup failed: {e}")
+        return []
 
 
 # ══════════════════════════════════════════════════════════════════════════════

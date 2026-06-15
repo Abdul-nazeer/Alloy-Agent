@@ -161,11 +161,13 @@ USER ROLE: {user_role}
 SPARE PARTS AVAILABILITY:
 {spare_parts}
 
+{rul_prediction}
+
 RELEVANT PROCEDURES:
 {rag_context}
 
 TASK:
-Generate prioritized, actionable maintenance recommendations:
+Generate prioritized, actionable maintenance recommendations including procurement strategy:
 
 1. IMMEDIATE ACTIONS (if CRITICAL/HIGH risk)
    - Safety procedures (lockout/tagout)
@@ -178,12 +180,24 @@ Generate prioritized, actionable maintenance recommendations:
    - Estimated time
    - Safety precautions
 
-3. PARTS REQUIRED
-   - Part numbers with availability
-   - Alternatives if out of stock
-   - Procurement priority
+3. SPARE PARTS & PROCUREMENT STRATEGY
+   - Required parts with P/N, availability status, and lead time
+   - Priority ranking based on:
+     * Equipment criticality
+     * Part availability (OUT_OF_STOCK = highest priority)
+     * Lead time (longer = higher priority)
+     * Risk level of failure
+   - Alternatives if critical parts out of stock
+   - Recommended procurement timeline
 
-4. POST-REPAIR MONITORING
+4. PRIORITY SCORING
+   - Calculate repair priority based on:
+     * Risk level (CRITICAL=4, HIGH=3, MEDIUM=2, LOW=1)
+     * Spare availability (OUT_OF_STOCK=3, LOW_STOCK=2, IN_STOCK=1)
+     * RUL urgency (IMMEDIATE=4, URGENT=3, HIGH=2, MEDIUM=1)
+   - Total priority score determines intervention urgency
+
+5. POST-REPAIR MONITORING
    - What to check after repair
    - Monitoring schedule
    - Success criteria
@@ -194,7 +208,7 @@ OUTPUT DEPTH:
 - Manager role: Business impact summary + cost estimate + decision options
 
 OUTPUT FORMAT:
-PRIORITY 1 - IMMEDIATE:
+PRIORITY 1 - IMMEDIATE SAFETY:
 Step 1: [Action with citation [1]]
 Step 2: [Action with citation [2]]
 
@@ -202,14 +216,28 @@ PRIORITY 2 - REPAIR PROCEDURE:
 Step 1: [Detailed instruction]
 ...
 
-REQUIRED PARTS:
-- Part: [name] | P/N: [number] | Availability: [status] | Lead time: [days]
+REQUIRED PARTS & PROCUREMENT:
+HIGH PRIORITY (Order Immediately):
+- Part: [name] | P/N: [number] | Status: OUT_OF_STOCK | Lead time: [X days] | Cost: $[amount]
+  Priority Reason: Critical part, long lead time
+
+MEDIUM PRIORITY (Order Within Week):
+- Part: [name] | P/N: [number] | Status: LOW_STOCK | Lead time: [X days] | Cost: $[amount]
+
+IN STOCK (Ready for Use):
+- Part: [name] | P/N: [number] | Available: [qty] units
+
+PRIORITY SCORE: [Total score]/10
+- Risk level contribution: [X]/4
+- Spare availability: [X]/3  
+- RUL urgency: [X]/4
 
 POST-REPAIR CHECKS:
 - [Check item with success criterion]
 
 ESTIMATED DOWNTIME: [hours]
 ESTIMATED COST: $[amount]
+PROCUREMENT LEAD TIME: [days for critical parts]
 
 SOURCES:
 [1] Procedure manual | Section | Page"""

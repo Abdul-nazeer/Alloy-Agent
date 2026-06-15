@@ -164,6 +164,13 @@ def anomaly_detection_node(state: AgentState) -> AgentState:
     state["requires_escalation"] = requires_escalation
     state["retrieved_chunks"].extend(retrieved_chunks)
     
+    # Step 6: Calculate Remaining Useful Life (RUL) if anomalies detected
+    if anomalies:
+        rul_prediction = _calculate_rul(sensor_readings, anomalies, equipment_type)
+        if rul_prediction:
+            state["metadata"]["remaining_useful_life"] = rul_prediction
+            logger.info(f"📊 RUL prediction: {rul_prediction}")
+    
     logger.info(f"✅ Anomaly Detection complete: {len(anomalies)} anomalies, risk={risk_level}")
     
     # Auto-escalate if CRITICAL
@@ -177,3 +184,102 @@ def anomaly_detection_node(state: AgentState) -> AgentState:
         )
     
     return state
+
+
+def _calculate_rul(sensor_readings: list, anomalies: list, equipment_type: str) -> dict:
+    """
+    Calculate Remaining Useful Life based on sensor trends and anomaly severity.
+    
+    Uses simplified degradation model:
+    RUL = (failure_threshold - current_value) / degradation_rate
+    
+    Args:
+        sensor_readings: Current sensor readings
+        anomalies: Detected anomalies
+        equipment_type: Equipment type
+    
+    Returns:
+        Dict with RUL estimation and confidence
+    """
+    from backend.src.agents.tools import threshold_lookup
+    
+    # Get most critical anomaly
+    critical_anomaly = None
+    for anomaly in anomalies:
+        if anomaly.severity in ["CRITICAL", "HIGH"]:
+            critical_anomaly = anomaly
+            break
+    
+    if not critical_anomaly:
+        return None
+    
+    # Get thresholds for sensor
+    threshold = threshold_lookup(equipment_type, critical_anomaly.sensor_type)
+    if not threshold:
+        return None
+    
+    # Calculate degradation rate (simplified: 1% per day for demonstration)
+    # In production, use ML model trained on historical failure data
+    current_value = critical_anomaly.current_value
+    failure_threshold = threshold.critical_threshold
+    normal_max = threshold.warning_threshold
+    
+    # Calculate how far into degradation zone
+    if current_value >= failure_threshold:
+        # Already at failure threshold
+        degradation_percent = 100
+        days_remaining = 0
+        confidence = "HIGH"
+    elif current_value >= normal_max:
+        # In degradation zone
+        degradation_percent = ((current_value - normal_max) / (failure_threshold - normal_max)) * 100
+        
+        # Estimate rate of change (assume 5% per day in warning zone, 10% per day in critical zone)
+        if current_value >= failure_threshold * 0.95:
+            rate_per_day = 10  # Fast degradation near failure
+            confidence = "HIGH"
+        else:
+            rate_per_day = 5  # Slower degradation in warning zone
+            confidence = "MEDIUM"
+        
+        remaining_percent = 100 - degradation_percent
+        days_remaining = max(1, int(remaining_percent / rate_per_day))
+    else:
+        # Normal operation
+        days_remaining = None
+        confidence = "LOW"
+        degradation_percent = 0
+    
+    if days_remaining is None:
+        return {
+            "status": "HEALTHY",
+            "degradation_percent": 0,
+            "confidence": "LOW",
+            "message": "Equipment operating within normal parameters"
+        }
+    
+    # Generate RUL message
+    if days_remaining == 0:
+        rul_message = "⚠️ IMMEDIATE INTERVENTION REQUIRED - Equipment at failure threshold"
+        urgency = "IMMEDIATE"
+    elif days_remaining <= 3:
+        rul_message = f"⚠️ Estimated {days_remaining} days until failure - Schedule urgent maintenance"
+        urgency = "URGENT"
+    elif days_remaining <= 7:
+        rul_message = f"⚠️ Estimated {days_remaining} days until failure - Plan maintenance within 1 week"
+        urgency = "HIGH"
+    else:
+        rul_message = f"Estimated {days_remaining} days of safe operation remaining"
+        urgency = "MEDIUM"
+    
+    return {
+        "sensor_type": critical_anomaly.sensor_type,
+        "current_value": current_value,
+        "failure_threshold": failure_threshold,
+        "degradation_percent": round(degradation_percent, 1),
+        "estimated_days_remaining": days_remaining,
+        "confidence": confidence,
+        "urgency": urgency,
+        "message": rul_message,
+        "recommendation": "Schedule preventive maintenance before estimated failure date"
+    }

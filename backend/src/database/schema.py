@@ -134,6 +134,25 @@ def init_database():
         )
     """)
     
+    # ═══════════════════════════════════════════════════════════════
+    # SPARE PARTS TABLE (for procurement planning)
+    # ═══════════════════════════════════════════════════════════════
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS spare_parts (
+            part_id TEXT PRIMARY KEY,
+            part_name TEXT NOT NULL,
+            equipment_type TEXT NOT NULL,
+            quantity_available INTEGER DEFAULT 0,
+            minimum_stock INTEGER DEFAULT 1,
+            unit_cost REAL DEFAULT 0.0,
+            lead_time_days INTEGER DEFAULT 7,
+            supplier TEXT,
+            last_ordered TEXT,
+            status TEXT DEFAULT 'IN_STOCK',
+            criticality TEXT DEFAULT 'MEDIUM'
+        )
+    """)
+    
     conn.commit()
     conn.close()
     logger.info(f"✓ Database initialized: {DB_PATH}")

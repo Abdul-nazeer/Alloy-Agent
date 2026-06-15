@@ -33,6 +33,8 @@ export default function Sidebar({
     { id: 'documents', label: 'Documents', icon: FileText, permission: 'canViewDocuments' },
     { id: 'reports', label: 'Analysis Reports', icon: BarChart2, permission: 'canViewReports' },
     { id: 'logs', label: 'Operations Logbook', icon: FileCheck, permission: 'canViewLogbook' },
+    { id: 'spareparts', label: 'Spare Parts', icon: FileCheck, permission: 'canViewReports' },
+    { id: 'historical', label: 'Data Import', icon: FileText, permission: 'canViewReports' },
   ];
 
   const filteredNavItems = navItems.filter(item => 
@@ -41,10 +43,11 @@ export default function Sidebar({
 
   const equipmentTypes = [
     'All Equipment',
-    'General Industrial Motor',
-    'Synchronous Motor',
-    'Heavy-Duty Industrial Motor',
-    'AC Drive Motor'
+    'AC-001 (Air Compressor)',
+    'AC-002 (Air Compressor)',
+    'CF-003 (Cooling Fan)',
+    'RM-005 (Rolling Mill)',
+    'CM-007 (Conveyor Motor)'
   ];
 
   const badgeStyle = getRoleBadgeStyle();

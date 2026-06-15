@@ -17,6 +17,9 @@ from backend.src.api.routes.agent_routes import router as agent_router
 from backend.src.api.routes.sensor_routes import router as sensor_router
 from backend.src.api.routes.reports_routes import router as reports_router
 from backend.src.api.routes.alerts_routes import router as alerts_router
+from backend.src.api.routes.historical_routes import router as historical_router
+from backend.src.api.routes.spare_parts_routes import router as spare_parts_router
+from backend.src.api.routes.feedback_routes import router as feedback_router
 from backend.src.database import init_database
 from backend.src.services.sensor_data_service import get_sensor_service
 from backend.src.services.sensor_simulator import get_sensor_simulator
@@ -142,6 +145,9 @@ app.include_router(agent_router)
 app.include_router(sensor_router)
 app.include_router(reports_router)
 app.include_router(alerts_router)
+app.include_router(historical_router)
+app.include_router(spare_parts_router)
+app.include_router(feedback_router)
 
 @app.get("/health")
 def health_check():
