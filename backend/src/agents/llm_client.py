@@ -382,8 +382,16 @@ class LLMClient:
     
     def _generate_groq(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
         """Generate using Groq API (ultra-fast, free tier)."""
+        
+        # Ensure we're using Groq's API URL, not HuggingFace
+        groq_api_url = "https://api.groq.com/openai/v1/chat/completions"
+        groq_headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
         payload = {
-            "model": self.model_id,
+            "model": GROQ_MODEL,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": temperature or self.temperature,
             "max_tokens": max_tokens or self.max_tokens,
@@ -392,8 +400,8 @@ class LLMClient:
         
         try:
             response = requests.post(
-                self.api_url,
-                headers=self.headers,
+                groq_api_url,
+                headers=groq_headers,
                 json=payload,
                 timeout=30  # Groq is FAST
             )
