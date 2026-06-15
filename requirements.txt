@@ -6,10 +6,10 @@ pydantic-settings==2.6.0
 
 # Multi-Agent System
 langgraph==0.0.69
-langchain==0.1.20
-langchain-openai==0.0.8
-langchain-core==0.1.52
-langchain-community==0.0.38
+langchain==0.2.16
+langchain-openai==0.1.25
+langchain-core==0.2.38
+langchain-community==0.2.16
 
 # AI/ML (Inference only - no local model)
 sentence-transformers==2.3.1
