@@ -49,97 +49,26 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
     setInput('');
     setLoading(true);
 
-    // Add empty assistant message that will be filled via streaming
-    const assistantMessageIndex = messages.length + 1;
-    setMessages(prev => [...prev, {
-      role: 'assistant',
-      content: '',
-      timestamp: new Date()
-    }]);
-
     try {
-      // Use streaming endpoint
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app'}/api/agents/chat/stream`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: messageText,
-            session_id: 'default'
-          })
-        }
-      );
+      // Use regular chat endpoint (streaming disabled for now - compatibility issues)
+      const response = await agentAPI.chat(messageText);
+      
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: response.data.response || response.data.answer || 'No response',
+        timestamp: new Date(),
+        citations: response.data.citations || []
+      };
 
-      if (!response.ok || !response.body) {
-        throw new Error('Streaming not supported');
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let accumulatedText = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const data = JSON.parse(line.substring(6));
-            
-            if (data.error) {
-              throw new Error(data.error);
-            }
-            
-            if (data.token) {
-              accumulatedText += data.token;
-              // Update the last message with accumulated text
-              setMessages(prev => {
-                const newMessages = [...prev];
-                newMessages[assistantMessageIndex] = {
-                  ...newMessages[assistantMessageIndex],
-                  content: accumulatedText
-                };
-                return newMessages;
-              });
-            }
-          }
-        }
-      }
-
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
-      
-      // Fallback to non-streaming if streaming fails
-      try {
-        const response = await agentAPI.chat(messageText);
-        setMessages(prev => {
-          const newMessages = [...prev];
-          newMessages[assistantMessageIndex] = {
-            role: 'assistant',
-            content: response.data.response || response.data.answer || 'No response',
-            timestamp: new Date(),
-            citations: response.data.citations || []
-          };
-          return newMessages;
-        });
-      } catch (fallbackError) {
-        console.error('Fallback chat error:', fallbackError);
-        setMessages(prev => {
-          const newMessages = [...prev];
-          newMessages[assistantMessageIndex] = {
-            role: 'assistant',
-            content: 'Error processing request. Please try again.',
-            timestamp: new Date()
-          };
-          return newMessages;
-        });
-      }
+      const errorMessage: Message = {
+        role: 'assistant',
+        content: 'Error processing request. Please try again.',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
       inputRef.current?.focus();
