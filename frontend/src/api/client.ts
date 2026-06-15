@@ -133,6 +133,14 @@ export const reportsAPI = {
     api.post('/api/reports/generate', { equipment_id: equipmentId, report_type: reportType }),
 };
 
+export const alertsAPI = {
+  getUnread: () => api.get<{ count: number; alerts: any[] }>('/api/alerts/unread'),
+  getAll: (limit: number = 50) => api.get<{ total: number; unread_count: number; alerts: any[] }>(`/api/alerts/all?limit=${limit}`),
+  markAsRead: (alertId: string) => api.post(`/api/alerts/${alertId}/mark-read`),
+  markAllAsRead: () => api.post('/api/alerts/mark-all-read'),
+  deleteAlert: (alertId: string) => api.delete(`/api/alerts/${alertId}`),
+};
+
 // Named exports for convenience
 export const getEquipment = equipmentAPI.getAll;
 export const sensorAPI = {

@@ -16,6 +16,7 @@ from backend.src.api.routes.rag_routes import router as rag_router
 from backend.src.api.routes.agent_routes import router as agent_router
 from backend.src.api.routes.sensor_routes import router as sensor_router
 from backend.src.api.routes.reports_routes import router as reports_router
+from backend.src.api.routes.alerts_routes import router as alerts_router
 from backend.src.database import init_database
 from backend.src.services.sensor_data_service import get_sensor_service
 from backend.src.services.sensor_simulator import get_sensor_simulator
@@ -26,6 +27,52 @@ logger = logging.getLogger(__name__)
 
 # Get PDF directory path
 PDF_DIR = Path(__file__).parent.parent.parent.parent / "data" / "raw" / "manuals"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# AUTONOMOUS MONITORING LOOP
+# ══════════════════════════════════════════════════════════════════════════════
+
+async def autonomous_monitoring_loop():
+    """
+    Background task that continuously monitors all equipment
+    and auto-generates reports when anomalies detected.
+    
+    Runs every 30 seconds to check all equipment health.
+    """
+    simulator = get_sensor_simulator()
+    report_generator = get_report_generator()
+    
+    logger.info("🤖 Autonomous monitoring loop started")
+    
+    while True:
+        try:
+            # Get all equipment IDs
+            equipment_ids = simulator.get_all_equipment_ids()
+            
+            for equipment_id in equipment_ids:
+                # Get latest reading with anomaly check
+                reading = simulator.get_latest_reading_with_anomaly(equipment_id)
+                
+                # Auto-generate report if CRITICAL or HIGH anomaly detected
+                if reading and reading.get('has_anomaly'):
+                    anomalies = reading.get('anomalies', [])
+                    critical_count = sum(1 for a in anomalies if a.get('severity') == 'CRITICAL')
+                    high_count = sum(1 for a in anomalies if a.get('severity') == 'HIGH')
+                    
+                    if critical_count > 0 or high_count > 0:
+                        logger.info(f"🚨 Autonomous: Critical anomaly on {equipment_id} - generating report")
+                        await report_generator.process_sensor_reading(reading)
+            
+            # Check every 30 seconds
+            await asyncio.sleep(30)
+            
+        except asyncio.CancelledError:
+            logger.info("Autonomous monitoring loop cancelled")
+            break
+        except Exception as e:
+            logger.error(f"Monitoring loop error: {e}")
+            await asyncio.sleep(30)  # Continue despite errors
 
 
 @asynccontextmanager
@@ -50,12 +97,28 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Sensor service initialization failed: {e}")
     
+    # Start background autonomous monitoring
+    monitoring_task = None
+    try:
+        monitoring_task = asyncio.create_task(autonomous_monitoring_loop())
+        logger.info("✓ Autonomous monitoring started")
+    except Exception as e:
+        logger.error(f"Monitoring startup failed: {e}")
+    
     logger.info("✓ Alloy Agent API ready\n")
     
     yield  # Application runs here
     
     # ── SHUTDOWN ─────────────────────────────────────────────────────
     logger.info("Shutting down Alloy Agent API...")
+    if monitoring_task:
+        monitoring_task.cancel()
+        try:
+            await monitoring_task
+        except asyncio.CancelledError:
+            pass
+        logger.info("✓ Autonomous monitoring stopped")
+    logger.info("✓ Shutdown complete")
 
 
 app = FastAPI(
@@ -78,6 +141,7 @@ app.include_router(rag_router)
 app.include_router(agent_router)
 app.include_router(sensor_router)
 app.include_router(reports_router)
+app.include_router(alerts_router)
 
 @app.get("/health")
 def health_check():
@@ -99,10 +163,6 @@ async def get_pdf(filename: str):
             }
         )
     return {"error": "PDF not found"}, 404
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("backend.src.api.main:app", host="0.0.0.0", port=8000, reload=True)
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -161,9 +221,14 @@ async def websocket_sensor_stream(websocket: WebSocket, equipment_id: str):
             # Send reading to client
             await websocket.send_json(reading)
             
-            # Auto-generate reports if anomalies detected
+            # Auto-generate reports if CRITICAL/HIGH anomalies detected
             if reading.get('has_anomaly'):
-                asyncio.create_task(report_generator.process_sensor_reading(reading))
+                anomalies = reading.get('anomalies', [])
+                critical_count = sum(1 for a in anomalies if a.get('severity') == 'CRITICAL')
+                high_count = sum(1 for a in anomalies if a.get('severity') == 'HIGH')
+                
+                if critical_count > 0 or high_count > 0:
+                    asyncio.create_task(report_generator.process_sensor_reading(reading))
                 
     except WebSocketDisconnect:
         manager.disconnect(websocket, equipment_id)

@@ -8,7 +8,9 @@ import ChatPanel from './components/ChatPanel';
 import DocumentsView from './components/DocumentsView';
 import ReportsView from './components/ReportsView';
 import LogbookView from './components/LogbookView';
-import { Activity, Clock } from 'lucide-react';
+import AlertsPanel from './components/AlertsPanel';
+import { Activity, Clock, Bell } from 'lucide-react';
+import { alertsAPI } from './api/client';
 
 function AppContent() {
   const { isAuthenticated, logout } = useAuth();
@@ -16,11 +18,29 @@ function AppContent() {
   const [equipmentFilter, setEquipmentFilter] = useState('All Equipment');
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [unreadAlertCount, setUnreadAlertCount] = useState(0);
+  const [showAlertsPanel, setShowAlertsPanel] = useState(false);
 
   // Update clock every second
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Poll for unread alerts every 5 seconds
+  useEffect(() => {
+    const fetchUnreadAlerts = async () => {
+      try {
+        const response = await alertsAPI.getUnread();
+        setUnreadAlertCount(response.count);
+      } catch (err) {
+        console.error('Failed to fetch unread alerts:', err);
+      }
+    };
+
+    fetchUnreadAlerts();
+    const alertTimer = setInterval(fetchUnreadAlerts, 5000);
+    return () => clearInterval(alertTimer);
   }, []);
 
   if (!isAuthenticated) {
@@ -70,6 +90,29 @@ function AppContent() {
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Alert Bell Icon with Badge */}
+            <button
+              onClick={() => setShowAlertsPanel(!showAlertsPanel)}
+              className="relative px-2 py-1.5 text-xs font-medium font-sans rounded-sm transition-all hover:opacity-80"
+              style={{
+                color: unreadAlertCount > 0 ? '#ef4444' : 'var(--text-secondary)',
+                backgroundColor: unreadAlertCount > 0 ? 'rgba(239, 68, 68, 0.1)' : 'transparent'
+              }}
+            >
+              <Bell className="w-4 h-4" />
+              {unreadAlertCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[10px] font-bold flex items-center justify-center"
+                  style={{
+                    backgroundColor: '#ef4444',
+                    color: '#fff'
+                  }}
+                >
+                  {unreadAlertCount > 9 ? '9+' : unreadAlertCount}
+                </span>
+              )}
+            </button>
+            
             <button
               onClick={() => setCurrentView('monitor')}
               className="px-3 py-1.5 text-xs font-medium font-sans rounded-sm transition-all"
@@ -135,7 +178,26 @@ function AppContent() {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <main className="flex-1 overflow-y-auto p-6 relative">
+          {/* Alerts Panel Overlay */}
+          {showAlertsPanel && (
+            <div 
+              className="absolute top-0 right-0 z-50 w-96 h-full shadow-2xl"
+              style={{ 
+                backgroundColor: 'var(--bg-surface)',
+                borderLeft: '1px solid var(--border-default)'
+              }}
+            >
+              <AlertsPanel 
+                onClose={() => setShowAlertsPanel(false)}
+                onAlertUpdate={() => {
+                  // Refresh unread count when alert is marked as read
+                  alertsAPI.getUnread().then(res => setUnreadAlertCount(res.count));
+                }}
+              />
+            </div>
+          )}
+          
           {currentView === 'monitor' && !selectedEquipmentId && (
             <Dashboard 
               onEquipmentSelect={handleEquipmentSelect} 

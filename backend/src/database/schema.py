@@ -113,6 +113,27 @@ def init_database():
         )
     """)
     
+    # ═══════════════════════════════════════════════════════════════
+    # ALERTS TABLE (for real-time notifications)
+    # ═══════════════════════════════════════════════════════════════
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS alerts (
+            alert_id TEXT PRIMARY KEY,
+            equipment_id TEXT NOT NULL,
+            equipment_name TEXT NOT NULL,
+            alert_type TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            title TEXT NOT NULL,
+            message TEXT NOT NULL,
+            report_id TEXT,
+            incident_id TEXT,
+            is_read INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (report_id) REFERENCES reports(report_id),
+            FOREIGN KEY (incident_id) REFERENCES incidents(incident_id)
+        )
+    """)
+    
     conn.commit()
     conn.close()
     logger.info(f"✓ Database initialized: {DB_PATH}")

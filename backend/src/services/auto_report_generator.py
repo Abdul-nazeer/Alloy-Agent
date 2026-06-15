@@ -130,10 +130,37 @@ class AutoReportGenerator:
                 datetime.now().isoformat()
             ))
             
+            # Create alert for frontend notification
+            alert_id = f"ALERT-{uuid.uuid4().hex[:8].upper()}"
+            alert_title = f"🚨 {risk_level} Alert: {equipment_id}"
+            alert_message = f"{len(anomalies)} anomalies detected. Auto-report generated."
+            
+            cursor.execute("""
+                INSERT INTO alerts (
+                    alert_id, equipment_id, equipment_name, alert_type, 
+                    severity, title, message, report_id, incident_id, 
+                    is_read, created_at
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                alert_id,
+                equipment_id,
+                equipment_type,
+                'anomaly_detected',
+                risk_level,
+                alert_title,
+                alert_message,
+                report_id,
+                incident_id,
+                0,  # unread
+                datetime.now().isoformat()
+            ))
+            
             conn.commit()
             conn.close()
             
             logger.info(f"✅ Auto-generated report {report_id} for incident {incident_id}")
+            logger.info(f"📢 Created alert {alert_id} for frontend notification")
             
         except Exception as e:
             logger.error(f"Failed to create incident report: {e}", exc_info=True)

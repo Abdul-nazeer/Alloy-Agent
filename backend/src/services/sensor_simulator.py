@@ -163,6 +163,17 @@ class SensorSimulator:
     def get_all_equipment_ids(self) -> list:
         """Get list of all equipment IDs"""
         return list(self.equipment_configs.keys())
+    
+    def get_latest_reading_with_anomaly(self, equipment_id: str) -> Optional[Dict]:
+        """
+        Get latest sensor reading and check for anomalies
+        Used by autonomous monitoring loop
+        """
+        try:
+            reading = self.generate_reading(equipment_id)
+            return reading
+        except Exception as e:
+            return None
 
 
 # Singleton instance

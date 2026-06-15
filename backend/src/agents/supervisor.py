@@ -15,6 +15,7 @@ from backend.src.agents.anomaly_agent import anomaly_detection_node
 from backend.src.agents.diagnosis_agent import diagnosis_node
 from backend.src.agents.recommendation_agent import recommendation_node
 from backend.src.agents.report_agent import report_node
+from backend.src.agents.conversational_agent import conversational_node
 from backend.src.agents.prompts import SUPERVISOR_ROUTING_PROMPT, format_sensor_readings
 from backend.src.agents.llm_client import get_llm_client
 
@@ -63,11 +64,13 @@ def supervisor_node(state: AgentState) -> AgentState:
         # Get routing decision from LLM
         routing_output = llm.generate(prompt, max_tokens=50, temperature=0.0)
         
-        # Parse routing decision (should be: anomaly | diagnosis | recommendation | report)
+        # Parse routing decision (should be: conversational | anomaly | diagnosis | recommendation | report)
         routing_output = routing_output.strip().lower()
         
         # Extract first valid agent name
-        if "anomaly" in routing_output:
+        if "conversational" in routing_output:
+            next_agent = "conversational"
+        elif "anomaly" in routing_output:
             next_agent = "anomaly"
         elif "diagnosis" in routing_output:
             next_agent = "diagnosis_agent"
@@ -100,7 +103,19 @@ def _fallback_routing(state: AgentState) -> str:
     """
     Deterministic fallback routing when LLM routing fails.
     """
+    query_lower = state["query"].lower()
     completed = state.get("completed_agents", [])
+    
+    # Check for conversational queries
+    greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon"]
+    general_questions = ["what can you do", "capabilities", "help", "how do you work", "what are you"]
+    
+    if any(g in query_lower for g in greetings) or any(q in query_lower for q in general_questions):
+        return "conversational"
+    
+    # If query is very short and no sensor data → conversational
+    if len(query_lower.split()) <= 2 and not state.get("sensor_readings"):
+        return "conversational"
     
     # If we have sensor readings and haven't checked anomalies → anomaly
     if state.get("sensor_readings") and "anomaly" not in completed:
@@ -108,7 +123,7 @@ def _fallback_routing(state: AgentState) -> str:
     
     # If we have anomalies or query asks "why" → diagnosis
     if (state.get("anomalies_detected") or 
-        any(word in state["query"].lower() for word in ["why", "cause", "diagnose", "wrong"])):
+        any(word in query_lower for word in ["why", "cause", "diagnose", "wrong"])):
         if "diagnosis_agent" not in completed:
             return "diagnosis_agent"
     
@@ -124,18 +139,24 @@ def _fallback_routing(state: AgentState) -> str:
 # Routing Decision Function
 # ══════════════════════════════════════════════════════════════════════════════
 
-def route_decision(state: AgentState) -> Literal["anomaly", "diagnosis_agent", "recommendation", "report", "end"]:
+def route_decision(state: AgentState) -> Literal["conversational", "anomaly", "diagnosis_agent", "recommendation", "report", "end"]:
     """
     Conditional edge function that determines next node based on state.
     """
     next_agent = state.get("next_agent")
+    
+    # If conversational is complete, end (no need for full workflow)
+    if "conversational" in state.get("completed_agents", []):
+        return "end"
     
     # If report is complete, end
     if "report" in state.get("completed_agents", []):
         return "end"
     
     # Route to selected agent
-    if next_agent == "anomaly":
+    if next_agent == "conversational":
+        return "conversational"
+    elif next_agent == "anomaly":
         return "anomaly"
     elif next_agent == "diagnosis_agent":
         return "diagnosis_agent"
@@ -158,15 +179,18 @@ def build_agent_graph() -> StateGraph:
     
     Graph structure:
     
-    START → supervisor → [anomaly | diagnosis | recommendation] → supervisor → ... → report → END
+    START → supervisor → [conversational | anomaly | diagnosis | recommendation] → supervisor → ... → report → END
     
     The supervisor can route back to itself for multi-step reasoning,
     but is limited by MAX_ITERATIONS to prevent infinite loops.
+    
+    Conversational agent is terminal (no diagnostic workflow triggered).
     """
     workflow = StateGraph(AgentState)
     
     # Add all nodes
     workflow.add_node("supervisor", supervisor_node)
+    workflow.add_node("conversational", conversational_node)
     workflow.add_node("anomaly", anomaly_detection_node)
     workflow.add_node("diagnosis_agent", diagnosis_node)
     workflow.add_node("recommendation", recommendation_node)
@@ -180,6 +204,7 @@ def build_agent_graph() -> StateGraph:
         "supervisor",
         route_decision,
         {
+            "conversational": "conversational",
             "anomaly": "anomaly",
             "diagnosis_agent": "diagnosis_agent",
             "recommendation": "recommendation",
@@ -187,6 +212,9 @@ def build_agent_graph() -> StateGraph:
             "end": END,
         }
     )
+    
+    # Conversational agent is terminal (ends immediately)
+    workflow.add_edge("conversational", END)
     
     # All specialist agents loop back to supervisor for next decision
     # (Supervisor will route to report after all agents complete)
