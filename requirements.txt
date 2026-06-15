@@ -4,12 +4,10 @@ uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.6.0
 
-# Multi-Agent System
-langgraph==0.0.69
-langchain==0.2.16
-langchain-openai==0.1.25
-langchain-core==0.2.38
-langchain-community==0.2.16
+# Multi-Agent System (only langgraph + core dependencies)
+langgraph==0.2.45
+langchain-core==0.3.15
+langchain-openai==0.2.8
 
 # AI/ML (Inference only - no local model)
 sentence-transformers==2.3.1
