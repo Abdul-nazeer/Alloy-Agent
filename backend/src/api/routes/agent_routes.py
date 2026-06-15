@@ -156,9 +156,12 @@ async def agent_chat(request: ChatRequest):
             session_id=request.session_id or "default"
         )
         
+        # Extract the answer text from agent response
+        answer_text = result.get("answer", "No response generated")
+        
         return AgentResponse(
             status="success",
-            response=result.get("answer", "No response generated"),
+            response=answer_text,  # Main response field
             metadata={
                 "equipment_id": equipment_id,
                 "equipment_type": equipment_type,
@@ -166,7 +169,8 @@ async def agent_chat(request: ChatRequest):
                 "risk_level": result.get("risk_level"),
                 "sources_count": len(result.get("sources", [])),
                 "anomalies_count": len(result.get("anomalies", [])),
-                "recommendations_count": len(result.get("recommendations", []))
+                "recommendations_count": len(result.get("recommendations", [])),
+                "citations": result.get("sources", [])  # Include citations in metadata
             },
             session_id=request.session_id
         )

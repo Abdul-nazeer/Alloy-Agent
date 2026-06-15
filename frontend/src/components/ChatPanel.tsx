@@ -6,7 +6,13 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
-  citations?: Array<{ source: string; page?: number }>;
+  citations?: Array<{ 
+    document?: string;
+    source?: string;  // For backward compatibility
+    section?: string;
+    pages?: number[];
+    page?: number;  // For backward compatibility
+  }>;
 }
 
 interface ChatPanelProps {
@@ -53,11 +59,21 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
       // Use regular chat endpoint (streaming disabled for now - compatibility issues)
       const response = await agentAPI.chat(messageText);
       
+      // Extract response text and citations
+      const responseText = response.data.response || response.data.answer || 'No response';
+      const citations = response.data.citations || response.data.metadata?.citations || [];
+      
+      console.log('Chat response:', { 
+        text: responseText, 
+        citations, 
+        metadata: response.data.metadata 
+      });
+      
       const assistantMessage: Message = {
         role: 'assistant',
-        content: response.data.response || response.data.answer || 'No response',
+        content: responseText,
         timestamp: new Date(),
-        citations: response.data.citations || []
+        citations: citations
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -142,19 +158,33 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
                 {/* Citations */}
                 {message.citations && message.citations.length > 0 && (
                   <div className="mt-2 pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
-                    {message.citations.map((citation, i) => (
-                      <div key={i} className="flex items-center space-x-2 text-xs">
-                        <FileText className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
-                        <span className="font-mono" style={{ color: 'var(--accent-cyan)' }}>
-                          {citation.source}
-                        </span>
-                        {citation.page && (
-                          <span className="font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                            • Page {citation.page}
+                    {message.citations.map((citation, i) => {
+                      const docName = citation.document || citation.source || 'Unknown';
+                      const pageInfo = citation.pages && citation.pages.length > 0 
+                        ? `Pages ${citation.pages.join(', ')}` 
+                        : citation.page 
+                        ? `Page ${citation.page}`
+                        : '';
+                      
+                      return (
+                        <div key={i} className="flex items-center space-x-2 text-xs">
+                          <FileText className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
+                          <span className="font-mono" style={{ color: 'var(--accent-cyan)' }}>
+                            {docName}
                           </span>
-                        )}
-                      </div>
-                    ))}
+                          {citation.section && (
+                            <span className="font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                              • {citation.section}
+                            </span>
+                          )}
+                          {pageInfo && (
+                            <span className="font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                              • {pageInfo}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
