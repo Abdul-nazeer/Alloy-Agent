@@ -70,7 +70,7 @@ def supervisor_node(state: AgentState) -> AgentState:
         if "anomaly" in routing_output:
             next_agent = "anomaly"
         elif "diagnosis" in routing_output:
-            next_agent = "diagnosis"
+            next_agent = "diagnosis_agent"
         elif "recommendation" in routing_output:
             next_agent = "recommendation"
         elif "report" in routing_output:
@@ -108,8 +108,8 @@ def _fallback_routing(state: AgentState) -> str:
     # If we have anomalies or query asks "why" → diagnosis
     if (state.get("anomalies_detected") or 
         any(word in state["query"].lower() for word in ["why", "cause", "diagnose", "wrong"])):
-        if "diagnosis" not in completed:
-            return "diagnosis"
+        if "diagnosis_agent" not in completed:
+            return "diagnosis_agent"
     
     # If we have diagnosis → recommendation
     if state.get("diagnosis") and "recommendation" not in completed:
@@ -123,7 +123,7 @@ def _fallback_routing(state: AgentState) -> str:
 # Routing Decision Function
 # ══════════════════════════════════════════════════════════════════════════════
 
-def route_decision(state: AgentState) -> Literal["anomaly", "diagnosis", "recommendation", "report", "end"]:
+def route_decision(state: AgentState) -> Literal["anomaly", "diagnosis_agent", "recommendation", "report", "end"]:
     """
     Conditional edge function that determines next node based on state.
     """
@@ -136,8 +136,8 @@ def route_decision(state: AgentState) -> Literal["anomaly", "diagnosis", "recomm
     # Route to selected agent
     if next_agent == "anomaly":
         return "anomaly"
-    elif next_agent == "diagnosis":
-        return "diagnosis"
+    elif next_agent == "diagnosis_agent":
+        return "diagnosis_agent"
     elif next_agent == "recommendation":
         return "recommendation"
     elif next_agent == "report":
@@ -167,7 +167,7 @@ def build_agent_graph() -> StateGraph:
     # Add all nodes
     workflow.add_node("supervisor", supervisor_node)
     workflow.add_node("anomaly", anomaly_detection_node)
-    workflow.add_node("diagnosis", diagnosis_node)
+    workflow.add_node("diagnosis_agent", diagnosis_node)
     workflow.add_node("recommendation", recommendation_node)
     workflow.add_node("report", report_node)
     
@@ -180,7 +180,7 @@ def build_agent_graph() -> StateGraph:
         route_decision,
         {
             "anomaly": "anomaly",
-            "diagnosis": "diagnosis",
+            "diagnosis_agent": "diagnosis_agent",
             "recommendation": "recommendation",
             "report": "report",
             "end": END,
@@ -190,7 +190,7 @@ def build_agent_graph() -> StateGraph:
     # All specialist agents loop back to supervisor for next decision
     # (Supervisor will route to report after all agents complete)
     workflow.add_edge("anomaly", "supervisor")
-    workflow.add_edge("diagnosis", "supervisor")
+    workflow.add_edge("diagnosis_agent", "supervisor")
     workflow.add_edge("recommendation", "supervisor")
     
     # Report is terminal
