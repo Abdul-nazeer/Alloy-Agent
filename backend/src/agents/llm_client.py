@@ -452,6 +452,78 @@ class LLMClient:
             logger.error(f"Groq generation failed: {e}")
             raise Exception(f"Groq generation failed: {e}")
     
+    def generate_stream(self, prompt: str, temperature: Optional[float] = None, max_tokens: Optional[int] = None, **kwargs):
+        """
+        Generate text with streaming (yields tokens as they arrive)
+        
+        Yields:
+            str: Individual tokens/chunks of text as they're generated
+        """
+        if self.provider == "groq":
+            yield from self._generate_groq_stream(prompt, temperature, max_tokens, **kwargs)
+        else:
+            # Fallback: For non-streaming providers, yield the whole response
+            full_response = self.generate(prompt, temperature, max_tokens, **kwargs)
+            # Simulate streaming by yielding word by word
+            words = full_response.split()
+            for word in words:
+                yield word + " "
+                time.sleep(0.05)  # Small delay to simulate streaming
+    
+    def _generate_groq_stream(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs):
+        """Generate using Groq API with streaming."""
+        
+        groq_api_url = "https://api.groq.com/openai/v1/chat/completions"
+        groq_headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": GROQ_MODEL,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature or self.temperature,
+            "max_tokens": max_tokens or self.max_tokens,
+            "stream": True,  # Enable streaming
+            **kwargs
+        }
+        
+        try:
+            response = requests.post(
+                groq_api_url,
+                headers=groq_headers,
+                json=payload,
+                timeout=30,
+                stream=True  # Enable streaming response
+            )
+            response.raise_for_status()
+            
+            # Process streaming response
+            for line in response.iter_lines():
+                if line:
+                    line = line.decode('utf-8')
+                    if line.startswith('data: '):
+                        data_str = line[6:]  # Remove 'data: ' prefix
+                        if data_str == '[DONE]':
+                            break
+                        
+                        try:
+                            import json
+                            data = json.loads(data_str)
+                            if 'choices' in data and len(data['choices']) > 0:
+                                delta = data['choices'][0].get('delta', {})
+                                content = delta.get('content', '')
+                                if content:
+                                    yield content
+                        except json.JSONDecodeError:
+                            continue
+            
+            logger.info(f"✓ Groq streaming complete")
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Groq streaming failed: {e}")
+            raise Exception(f"Groq streaming failed: {e}")
+    
     def _generate_openai(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
         """Generate using OpenAI API."""
         try:

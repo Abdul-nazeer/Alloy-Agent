@@ -2,9 +2,11 @@
 Agent Routes - Expose multi-agent system via FastAPI
 """
 from fastapi import APIRouter, HTTPException, Body
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional, Any
 from datetime import datetime
+import json
 
 from backend.src.agents import chat, diagnose_equipment, check_anomalies
 
@@ -171,6 +173,100 @@ async def agent_chat(request: ChatRequest):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
+
+
+@router.post("/chat/stream")
+async def agent_chat_stream(request: ChatRequest):
+    """
+    Chat with streaming response (Server-Sent Events)
+    
+    Response arrives token-by-token for better UX.
+    Compatible with all agent types (conversational, diagnosis, etc.)
+    """
+    async def generate_stream():
+        try:
+            # Extract equipment context
+            equipment_id = request.equipment_id
+            equipment_type = None
+            sensor_data = request.sensor_data
+            
+            # Try to extract equipment ID from message if not provided
+            if not equipment_id:
+                import re
+                equipment_pattern = r'\b([A-Z]{2}-\d{3})\b'
+                match = re.search(equipment_pattern, request.message)
+                if match:
+                    equipment_id = match.group(1)
+            
+            # Get equipment context
+            if equipment_id:
+                try:
+                    from backend.src.services.sensor_data_service import get_sensor_service
+                    sensor_service = get_sensor_service()
+                    equipment_info = sensor_service.get_equipment_by_id(equipment_id)
+                    if equipment_info:
+                        equipment_type = equipment_info.get("equipment_type")
+                        if not sensor_data:
+                            latest = sensor_service.get_latest_reading(equipment_id)
+                            if latest:
+                                sensor_data = {
+                                    "temperature_c": latest.get("temperature_c"),
+                                    "pressure_bar": latest.get("pressure_bar"),
+                                    "vibration_mm_s": latest.get("vibration_mm_s"),
+                                    "current_a": latest.get("current_a"),
+                                    "rpm": latest.get("rpm")
+                                }
+                except Exception as e:
+                    pass
+            
+            # Call agent (this still returns full response, but we'll stream it)
+            result = chat(
+                query=request.message,
+                equipment_id=equipment_id,
+                equipment_type=equipment_type,
+                sensor_data=sensor_data,
+                session_id=request.session_id or "default"
+            )
+            
+            response_text = result.get("answer", "No response generated")
+            
+            # Stream the response word by word
+            words = response_text.split()
+            for i, word in enumerate(words):
+                chunk = {
+                    "token": word + (" " if i < len(words) - 1 else ""),
+                    "done": i == len(words) - 1
+                }
+                yield f"data: {json.dumps(chunk)}\n\n"
+            
+            # Send final metadata
+            metadata_chunk = {
+                "done": True,
+                "metadata": {
+                    "equipment_id": equipment_id,
+                    "equipment_type": equipment_type,
+                    "agents_involved": result.get("agents_used", []),
+                    "risk_level": result.get("risk_level"),
+                }
+            }
+            yield f"data: {json.dumps(metadata_chunk)}\n\n"
+            
+        except Exception as e:
+            error_chunk = {
+                "error": str(e),
+                "done": True
+            }
+            yield f"data: {json.dumps(error_chunk)}\n\n"
+    
+    return StreamingResponse(
+        generate_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
 
 
 @router.post("/diagnose", response_model=AgentResponse)
