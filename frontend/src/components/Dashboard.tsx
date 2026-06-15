@@ -3,7 +3,7 @@ import { equipmentAPI, type Equipment } from '../api/client';
 import { Activity, Zap } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app';
 
 interface DashboardProps {
   onEquipmentSelect: (equipmentId: string) => void;
