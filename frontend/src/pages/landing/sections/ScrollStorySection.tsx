@@ -14,11 +14,11 @@ export default function ScrollStorySection() {
     offset: ["start start", "end end"]
   });
 
-  const sceneProgress = useTransform(scrollYProgress, [0, 1], [0, 7]);
+  const sceneProgress = useTransform(scrollYProgress, [0, 1], [0, 8]);
 
   useEffect(() => {
     return sceneProgress.onChange(latest => {
-      setCurrentScene(Math.floor(latest));
+      setCurrentScene(Math.min(Math.floor(latest), 7));
     });
   }, [sceneProgress]);
 
@@ -78,7 +78,7 @@ export default function ScrollStorySection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[400vh] bg-gradient-to-b from-[#050505] via-[#0A0A0A] to-[#050505]"
+      className="relative h-[300vh] bg-gradient-to-b from-[#050505] via-[#0A0A0A] to-[#050505]"
     >
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">

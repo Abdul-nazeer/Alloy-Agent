@@ -246,7 +246,12 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
 
             {/* Right: 3D Holographic Plant */}
             <motion.div
-              style={{ rotateX, rotateY, transformPerspective: 1000 }}
+              style={{ 
+                rotateX, 
+                rotateY, 
+                transformPerspective: 1000,
+                transformStyle: 'preserve-3d'
+              }}
               className="relative h-[600px] hidden lg:block"
             >
               <HolographicPlant />
@@ -292,12 +297,13 @@ function StatCounter({ label, value, unit }: { label: string; value: number; uni
 // 3D Holographic Plant Component
 function HolographicPlant() {
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
       {/* Central Hub */}
       <motion.div
-        animate={{ rotate: 360 }}
+        animate={{ rotateZ: 360 }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
         className="relative"
+        style={{ transformStyle: 'preserve-3d' }}
       >
         {/* Plant Components in circular layout */}
         {[
