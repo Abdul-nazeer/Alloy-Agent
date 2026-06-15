@@ -1,0 +1,242 @@
+/* Landing Page Theme - Isolated from existing app */
+.landing-page {
+  --landing-bg-primary: #050505;
+  --landing-bg-steel-1: #121212;
+  --landing-bg-steel-2: #1B1B1B;
+  --landing-bg-steel-3: #252525;
+  
+  --landing-glow-cyan: #00E5FF;
+  --landing-glow-orange: #FF6A00;
+  --landing-success: #00FF85;
+  --landing-warning: #FFC107;
+  --landing-danger: #FF3D3D;
+  
+  --landing-text-primary: #FFFFFF;
+  --landing-text-secondary: #B8C1CC;
+  --landing-text-tertiary: #6B7280;
+  
+  --landing-glass: rgba(255, 255, 255, 0.05);
+  --landing-glass-hover: rgba(255, 255, 255, 0.08);
+  --landing-border: rgba(255, 255, 255, 0.08);
+  --landing-border-glow: rgba(0, 229, 255, 0.3);
+  
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Typography */
+.landing-heading {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.landing-mono {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Glass Morphism */
+.landing-glass {
+  background: var(--landing-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--landing-border);
+}
+
+.landing-glass-hover:hover {
+  background: var(--landing-glass-hover);
+  border-color: var(--landing-border-glow);
+}
+
+/* Glow Effects */
+.landing-glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3),
+              0 0 40px rgba(0, 229, 255, 0.1);
+}
+
+.landing-glow-orange {
+  box-shadow: 0 0 20px rgba(255, 106, 0, 0.3),
+              0 0 40px rgba(255, 106, 0, 0.1);
+}
+
+/* Text Gradients */
+.landing-text-gradient-cyan {
+  background: linear-gradient(135deg, #00E5FF 0%, #00A3CC 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-text-gradient-orange {
+  background: linear-gradient(135deg, #FF6A00 0%, #FF3D3D 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated Grid */
+.landing-grid {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-flow 20s linear infinite;
+}
+
+@keyframes grid-flow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 50px 50px;
+  }
+}
+
+/* Pulse Animation */
+.landing-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Smooth Scrolling */
+.landing-smooth-scroll {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+/* Button Styles */
+.landing-btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--landing-glow-cyan) 0%, #0099CC 100%);
+  color: #000;
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.landing-btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+}
+
+.landing-btn-secondary {
+  background: var(--landing-glass);
+  border: 1px solid var(--landing-border);
+  color: var(--landing-text-primary);
+  font-weight: 600;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.landing-btn-secondary:hover {
+  background: var(--landing-glass-hover);
+  border-color: var(--landing-border-glow);
+  transform: scale(1.05);
+}
+
+/* Metric Cards */
+.landing-metric-card {
+  position: relative;
+  background: var(--landing-glass);
+  border: 1px solid var(--landing-border);
+  border-radius: 1rem;
+  padding: 2rem;
+  backdrop-filter: blur(20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.landing-metric-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+  border-color: var(--landing-glow-cyan);
+  box-shadow: 0 20px 60px rgba(0, 229, 255, 0.2);
+}
+
+/* Holographic Effect */
+.landing-holographic {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 229, 255, 0.1) 0%,
+    rgba(255, 106, 0, 0.1) 100%
+  );
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.landing-holographic::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(0, 229, 255, 0.1) 50%,
+    transparent 70%
+  );
+  animation: holographic-shine 3s linear infinite;
+}
+
+@keyframes holographic-shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%);
+  }
+}
+
+/* Performance */
+.landing-gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .landing-btn-primary,
+  .landing-btn-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .landing-metric-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .landing-grid {
+    animation: none;
+  }
+  
+  .landing-pulse {
+    animation: none;
+  }
+}
