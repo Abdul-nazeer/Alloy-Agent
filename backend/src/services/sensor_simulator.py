@@ -14,35 +14,38 @@ class SensorSimulator:
         self.equipment_configs = {
             "AC-001": {
                 "type": "Air Compressor",
-                "status": "CRITICAL",
-                "base_values": {"temperature_c": 110, "pressure_bar": 2.0, "vibration_mm_s": 3.5, "current_a": 55, "rpm": 1450},
-                "anomaly_prob": 0.3,  # 30% chance of anomaly
+                "status": "NORMAL",  # Changed to NORMAL by default
+                "base_values": {"temperature_c": 75, "pressure_bar": 6.2, "vibration_mm_s": 1.8, "current_a": 42, "rpm": 1450},
+                "anomaly_prob": 0.0,  # No automatic anomalies
             },
             "AC-002": {
                 "type": "Air Compressor", 
-                "status": "HIGH",
-                "base_values": {"temperature_c": 85, "pressure_bar": 5.5, "vibration_mm_s": 2.3, "current_a": 44, "rpm": 1470},
-                "anomaly_prob": 0.15,
+                "status": "NORMAL",  # Changed to NORMAL
+                "base_values": {"temperature_c": 78, "pressure_bar": 6.5, "vibration_mm_s": 1.9, "current_a": 44, "rpm": 1470},
+                "anomaly_prob": 0.0,  # No automatic anomalies
             },
             "CF-003": {
                 "type": "Cooling Fan System",
-                "status": "MEDIUM",
-                "base_values": {"temperature_c": 58, "pressure_bar": 0, "vibration_mm_s": 1.6, "current_a": 13, "rpm": 1455},
-                "anomaly_prob": 0.08,
+                "status": "NORMAL",  # Changed to NORMAL
+                "base_values": {"temperature_c": 55, "pressure_bar": 0, "vibration_mm_s": 1.2, "current_a": 12, "rpm": 1455},
+                "anomaly_prob": 0.0,  # No automatic anomalies
             },
             "RM-005": {
                 "type": "Rolling Mill",
-                "status": "LOW",
-                "base_values": {"temperature_c": 92, "pressure_bar": 178, "vibration_mm_s": 3.6, "current_a": 202, "rpm": 0},
-                "anomaly_prob": 0.05,
+                "status": "NORMAL",  # Changed to NORMAL
+                "base_values": {"temperature_c": 88, "pressure_bar": 175, "vibration_mm_s": 3.2, "current_a": 195, "rpm": 0},
+                "anomaly_prob": 0.0,  # No automatic anomalies
             },
             "CM-007": {
                 "type": "Conveyor Motor",
-                "status": "NORMAL",
-                "base_values": {"temperature_c": 66, "pressure_bar": 0, "vibration_mm_s": 1.9, "current_a": 26, "rpm": 1462},
-                "anomaly_prob": 0.02,
+                "status": "NORMAL",  # All normal by default
+                "base_values": {"temperature_c": 65, "pressure_bar": 0, "vibration_mm_s": 1.5, "current_a": 25, "rpm": 1462},
+                "anomaly_prob": 0.0,  # No automatic anomalies
             },
         }
+        
+        # Track manual anomaly injection for demo
+        self.manual_anomaly_active = {}  # equipment_id -> bool
         
         self.thresholds = {
             "Air Compressor": {
@@ -68,14 +71,25 @@ class SensorSimulator:
             },
         }
     
-    def generate_reading(self, equipment_id: str) -> Dict:
-        """Generate a single sensor reading with optional anomaly"""
+    def generate_reading(self, equipment_id: str, force_anomaly: bool = False) -> Dict:
+        """
+        Generate a single sensor reading
+        
+        Args:
+            equipment_id: Equipment identifier
+            force_anomaly: If True, inject a critical anomaly (for DEMO ANOMALY button)
+        
+        Returns:
+            Sensor reading dict with anomaly detection
+        """
         config = self.equipment_configs.get(equipment_id)
         if not config:
             raise ValueError(f"Unknown equipment: {equipment_id}")
         
         base = config["base_values"]
-        inject_anomaly = random.random() < config["anomaly_prob"]
+        
+        # Check if anomaly should be injected
+        inject_anomaly = force_anomaly or (random.random() < config["anomaly_prob"])
         
         reading = {
             "equipment_id": equipment_id,
@@ -84,18 +98,28 @@ class SensorSimulator:
         }
         
         for sensor, base_value in base.items():
-            if inject_anomaly and random.random() < 0.5:  # 50% chance this sensor is anomalous
-                # Inject anomaly
-                if config["status"] == "CRITICAL":
-                    deviation = random.uniform(0.15, 0.30)  # 15-30% deviation
+            if inject_anomaly and (force_anomaly or random.random() < 0.5):
+                # Inject CRITICAL anomaly (for demo)
+                if force_anomaly:
+                    # Make it obviously critical
+                    if sensor == "temperature_c":
+                        reading[sensor] = round(base_value * 1.35, 2)  # 35% increase
+                    elif sensor == "pressure_bar" and base_value > 1:
+                        reading[sensor] = round(base_value * 0.50, 2)  # 50% decrease (critical low)
+                    elif sensor == "vibration_mm_s":
+                        reading[sensor] = round(base_value * 1.80, 2)  # 80% increase
+                    elif sensor == "current_a":
+                        reading[sensor] = round(base_value * 1.25, 2)  # 25% increase
+                    else:
+                        reading[sensor] = round(base_value, 2)
                 else:
-                    deviation = random.uniform(0.10, 0.20)
-                
-                anomaly_value = base_value * (1 + random.choice([-1, 1]) * deviation)
-                reading[sensor] = round(max(0, anomaly_value), 2)
+                    # Random anomaly (legacy code, not used by default)
+                    deviation = random.uniform(0.15, 0.30)
+                    anomaly_value = base_value * (1 + random.choice([-1, 1]) * deviation)
+                    reading[sensor] = round(max(0, anomaly_value), 2)
             else:
-                # Normal variation (±5%)
-                noise = random.uniform(-0.05, 0.05)
+                # Normal variation (±3% for realistic sensor noise)
+                noise = random.uniform(-0.03, 0.03)
                 reading[sensor] = round(max(0, base_value * (1 + noise)), 2)
         
         # Detect anomalies
@@ -153,8 +177,8 @@ class SensorSimulator:
         
         return anomalies
     
-    async def stream_readings(self, equipment_id: str, interval: float = 2.0):
-        """Async generator for streaming sensor readings"""
+    async def stream_readings(self, equipment_id: str, interval: float = 15.0):
+        """Async generator for streaming sensor readings (default: every 15 seconds)"""
         while True:
             reading = self.generate_reading(equipment_id)
             yield reading
@@ -174,6 +198,21 @@ class SensorSimulator:
             return reading
         except Exception as e:
             return None
+    
+    def trigger_demo_anomaly(self, equipment_id: str = "AC-001") -> Dict:
+        """
+        Manually trigger a CRITICAL anomaly for demonstration purposes
+        
+        This is called when user clicks "DEMO ANOMALY" button.
+        Generates a critical fault that will trigger AI analysis.
+        
+        Args:
+            equipment_id: Equipment to inject anomaly (default: AC-001)
+        
+        Returns:
+            Sensor reading with critical anomaly injected
+        """
+        return self.generate_reading(equipment_id, force_anomaly=True)
 
 
 # Singleton instance

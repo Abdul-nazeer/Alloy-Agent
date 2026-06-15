@@ -205,11 +205,92 @@ async def get_stream_status():
         "status": "available",
         "equipment": equipment_ids,
         "websocket_url": "ws://localhost:8000/ws/sensors/{equipment_id}",
-        "interval_seconds": 2,
+        "interval_seconds": 15,
         "features": [
-            "Real-time sensor readings",
+            "Real-time sensor readings every 15 seconds",
             "Automatic anomaly detection",
             "Threshold violation alerts",
-            "Live updates every 2 seconds"
+            "Normal/healthy data by default",
+            "Demo anomaly button for AI showcase"
         ]
     }
+
+
+@router.get("/api-usage")
+async def get_api_usage():
+    """Get current API usage statistics and configuration"""
+    from backend.src.services.api_config import get_api_usage_stats, get_api_config
+    
+    stats = get_api_usage_stats()
+    config = get_api_config()
+    
+    return {
+        "usage": stats,
+        "configuration": {
+            "mode": config.get("description", "Unknown"),
+            "cooldowns": config.get("cooldowns", {}),
+            "ai_enabled_for": config.get("use_ai_for", []),
+            "caching_enabled": config.get("enable_caching", False),
+        },
+        "tips": [
+            "Set API_USAGE_MODE=conservative to minimize API calls",
+            "Set API_USAGE_MODE=production for highest quality reports",
+            "Default 'balanced' mode is optimized for free tier Groq API"
+        ]
+    }
+
+
+@router.post("/demo-anomaly")
+async def trigger_demo_anomaly(equipment_id: str = "AC-001"):
+    """
+    Trigger a CRITICAL anomaly for demonstration purposes
+    
+    This endpoint is called when user clicks "DEMO ANOMALY" button.
+    It injects a critical fault and triggers AI analysis.
+    
+    Args:
+        equipment_id: Equipment to inject anomaly (default: AC-001 Air Compressor)
+    
+    Returns:
+        Sensor reading with anomaly and AI analysis report
+    """
+    from backend.src.services.sensor_simulator import get_sensor_simulator
+    from backend.src.services.auto_report_generator import get_report_generator
+    from backend.src.agents.agent_api import chat
+    
+    try:
+        # Generate critical anomaly
+        simulator = get_sensor_simulator()
+        reading = simulator.trigger_demo_anomaly(equipment_id)
+        
+        # Trigger AI analysis immediately (bypass cooldown for demo)
+        report_gen = get_report_generator()
+        await report_gen.process_sensor_reading(reading)
+        
+        # Generate chat-style AI response
+        anomaly_description = "; ".join([a['message'] for a in reading.get('anomalies', [])])
+        
+        ai_response = chat(
+            query=f"Analyze this CRITICAL issue: {anomaly_description}",
+            equipment_id=equipment_id,
+            equipment_type=reading['equipment_type'],
+            sensor_data={
+                'temperature_c': reading.get('temperature_c'),
+                'pressure_bar': reading.get('pressure_bar'),
+                'vibration_mm_s': reading.get('vibration_mm_s'),
+                'current_a': reading.get('current_a'),
+            },
+            user_role="supervisor"
+        )
+        
+        return {
+            "success": True,
+            "sensor_reading": reading,
+            "ai_analysis": ai_response,
+            "message": f"Demo anomaly triggered on {equipment_id}. AI analysis complete.",
+            "severity": "CRITICAL",
+            "report_generated": True
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to trigger demo anomaly: {str(e)}")

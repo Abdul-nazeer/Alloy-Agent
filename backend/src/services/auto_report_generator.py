@@ -5,6 +5,10 @@ Monitors sensor anomalies and automatically generates:
 1. Analysis Reports when critical issues detected
 2. Logbook entries for all maintenance events
 3. Timestamps for full audit trail
+
+API Usage Control:
+- Set API_USAGE_MODE environment variable: "production" | "balanced" | "conservative"
+- Default: "balanced" (optimized for free tier Groq API)
 """
 import logging
 import json
@@ -13,45 +17,66 @@ from datetime import datetime
 from typing import Dict, Any, List
 from backend.src.database.schema import get_connection
 from backend.src.agents.agent_api import chat
+from backend.src.services.api_config import (
+    get_cooldown_seconds, 
+    should_use_ai_for_severity,
+    is_caching_enabled,
+    track_api_call,
+    get_api_config
+)
 
 logger = logging.getLogger(__name__)
+
+# Log API configuration on startup
+_config = get_api_config()
+logger.info(f"🔧 Auto-report generator initialized with mode: {_config['description']}")
 
 
 class AutoReportGenerator:
     """
     Monitors equipment and generates reports automatically
     
-    Severity-Based Alert Debouncing:
-    - CRITICAL: 0 seconds (immediate report, no cooldown)
-    - HIGH: 600 seconds (10 minutes cooldown)
-    - MEDIUM: 1800 seconds (30 minutes cooldown)
-    - LOW: No reports generated
+    API Usage Modes (configured via API_USAGE_MODE env var):
     
-    This ensures critical issues are always reported immediately while preventing
-    spam from non-critical anomalies.
+    BALANCED (Default - Free Tier Optimized):
+    - CRITICAL: 0s cooldown → AI report (immediate)
+    - HIGH: 30min cooldown → AI report (with caching)
+    - MEDIUM: 60min cooldown → Template report (no API)
+    - LOW: No reports
+    - Max: ~6 reports/hour
+    
+    PRODUCTION (High Quality):
+    - CRITICAL: 0s → AI | HIGH: 10min → AI | MEDIUM: 30min → AI
+    - Max: ~20 reports/hour
+    
+    CONSERVATIVE (Minimal API):
+    - CRITICAL: 5min → AI | HIGH: 60min → Template | MEDIUM: 120min → Template
+    - Max: ~3 reports/hour
+    
+    Set mode: export API_USAGE_MODE=balanced|production|conservative
     """
     
     def __init__(self):
         self.last_check = {}
         self.last_alert_time = {}  # Track when last alert was sent per equipment
         
-        # Differential cooldown based on severity
-        self.cooldown_by_severity = {
-            'CRITICAL': 0,        # No cooldown - immediate report
-            'HIGH': 600,          # 10 minutes
-            'MEDIUM': 1800,       # 30 minutes
-            'LOW': 3600           # 1 hour (but LOW doesn't generate reports anyway)
-        }
+        # Report cache to avoid duplicate AI calls for similar issues
+        self.report_cache = {}  # equipment_id -> {anomaly_signature: cached_response}
         
     async def process_sensor_reading(self, sensor_data: Dict[str, Any]):
         """
         Process incoming sensor reading and auto-generate reports if needed
         
-        Implements severity-based alert debouncing:
-        - CRITICAL: No cooldown - generates report immediately every time
-        - HIGH: 10-minute cooldown between reports
-        - MEDIUM: 30-minute cooldown between reports
+        Implements severity-based alert debouncing (optimized for free tier):
+        - CRITICAL: No cooldown - generates AI report immediately every time
+        - HIGH: 30-minute cooldown - AI report with response caching
+        - MEDIUM: 1-hour cooldown - template-based report (no API calls)
         - LOW: No reports generated
+        
+        API Optimization:
+        - Caches AI responses to avoid duplicate API calls for similar issues
+        - Uses template generation for MEDIUM severity (saves ~3-5 API calls per report)
+        - Only invokes multi-agent system for CRITICAL/HIGH severity
         
         Args:
             sensor_data: {
@@ -88,13 +113,13 @@ class AutoReportGenerator:
             logger.info(f"⏭️ Skipping report generation for {equipment_id} - severity too low (LOW)")
             return
         
-        # Check cooldown based on severity (CRITICAL = no cooldown, immediate report)
+        # Check cooldown based on severity (uses configuration)
         current_time = datetime.now()
         last_alert = self.last_alert_time.get(equipment_id)
-        cooldown_seconds = self.cooldown_by_severity[highest_severity]
+        cooldown_seconds = get_cooldown_seconds(highest_severity)
         
-        if highest_severity == 'CRITICAL':
-            logger.info(f"🚨 CRITICAL anomaly detected on {equipment_id} - bypassing cooldown for immediate report")
+        if cooldown_seconds == 0:
+            logger.info(f"🚨 {highest_severity} anomaly detected on {equipment_id} - bypassing cooldown for immediate AI report")
         elif last_alert:
             time_since_last_alert = (current_time - last_alert).total_seconds()
             if time_since_last_alert < cooldown_seconds:
@@ -108,17 +133,27 @@ class AutoReportGenerator:
         # Update last alert time
         self.last_alert_time[equipment_id] = current_time
         
+        # Check if AI should be used for this severity (based on configuration)
+        use_ai_generation = should_use_ai_for_severity(highest_severity)
+        
         logger.info(
             f"✅ Generating {highest_severity} report for {equipment_id} "
-            f"(cooldown: {cooldown_seconds/60:.0f} min)"
+            f"(cooldown: {cooldown_seconds/60:.0f} min, AI: {use_ai_generation})"
         )
         
         # Generate incident if critical or high severity
-        await self.create_incident_and_report(sensor_data, anomalies)
+        await self.create_incident_and_report(sensor_data, anomalies, use_ai_generation)
         await self.create_logbook_entry(sensor_data, anomalies)
     
-    async def create_incident_and_report(self, sensor_data: Dict, anomalies: List[Dict]):
-        """Create incident record and analysis report"""
+    async def create_incident_and_report(self, sensor_data: Dict, anomalies: List[Dict], use_ai: bool = True):
+        """
+        Create incident record and analysis report
+        
+        Args:
+            sensor_data: Sensor reading data
+            anomalies: List of detected anomalies
+            use_ai: If True, use AI generation (costs API calls). If False, use template (free)
+        """
         try:
             equipment_id = sensor_data['equipment_id']
             equipment_type = sensor_data['equipment_type']
@@ -144,25 +179,69 @@ class AutoReportGenerator:
             
             # Generate AI analysis report
             anomaly_description = "; ".join([a['message'] for a in anomalies[:3]])
-            query = f"Analyze {equipment_type} {equipment_id} showing: {anomaly_description}"
             
-            logger.info(f"🤖 Generating AI report for {incident_id}...")
+            # Determine severity for AI usage decision
+            critical_count = sum(1 for a in anomalies if a.get('severity') == 'CRITICAL')
+            high_count = sum(1 for a in anomalies if a.get('severity') == 'HIGH')
             
-            ai_response = chat(
-                query=query,
-                equipment_id=equipment_id,
-                equipment_type=equipment_type,
-                sensor_data={
-                    'temperature_c': sensor_data.get('temperature_c'),
-                    'pressure_bar': sensor_data.get('pressure_bar'),
-                    'vibration_mm_s': sensor_data.get('vibration_mm_s'),
-                    'current_a': sensor_data.get('current_a'),
-                },
-                user_role="supervisor"
-            )
+            if critical_count > 0:
+                risk_level = 'CRITICAL'
+            elif high_count > 0:
+                risk_level = 'HIGH'
+            else:
+                risk_level = 'MEDIUM'
             
-            # Determine report status based on risk level
-            risk_level = ai_response.get('risk_level', 'MEDIUM')
+            # Use AI only for CRITICAL/HIGH to save API quota
+            if use_ai and risk_level in ['CRITICAL', 'HIGH']:
+                # Check cache first to avoid duplicate AI calls (if caching enabled)
+                use_cache = is_caching_enabled()
+                anomaly_signature = f"{equipment_id}_{anomaly_description}"
+                cached_response = None
+                
+                if use_cache:
+                    cached_response = self.report_cache.get(equipment_id, {}).get(anomaly_signature)
+                
+                if cached_response and use_cache:
+                    logger.info(f"📦 Using cached AI response for {equipment_id} (saving API call)")
+                    ai_response = cached_response
+                else:
+                    query = f"Analyze {equipment_type} {equipment_id} showing: {anomaly_description}"
+                    
+                    # Track API call for monitoring
+                    call_count = track_api_call()
+                    logger.info(f"🤖 Generating AI report for {incident_id} (API call #{call_count} this hour)")
+                    
+                    ai_response = chat(
+                        query=query,
+                        equipment_id=equipment_id,
+                        equipment_type=equipment_type,
+                        sensor_data={
+                            'temperature_c': sensor_data.get('temperature_c'),
+                            'pressure_bar': sensor_data.get('pressure_bar'),
+                            'vibration_mm_s': sensor_data.get('vibration_mm_s'),
+                            'current_a': sensor_data.get('current_a'),
+                        },
+                        user_role="supervisor"
+                    )
+                    
+                    # Cache the response if caching enabled
+                    if use_cache:
+                        if equipment_id not in self.report_cache:
+                            self.report_cache[equipment_id] = {}
+                        self.report_cache[equipment_id][anomaly_signature] = ai_response
+                        
+                        # Limit cache size (keep only last 5 responses per equipment)
+                        if len(self.report_cache[equipment_id]) > 5:
+                            oldest_key = list(self.report_cache[equipment_id].keys())[0]
+                            del self.report_cache[equipment_id][oldest_key]
+                
+                risk_level = ai_response.get('risk_level', risk_level)
+            else:
+                # Use template-based response (no API calls)
+                logger.info(f"📝 Generating template-based report for {incident_id} (no API call)")
+                ai_response = self._create_template_response(
+                    equipment_id, equipment_type, anomalies, sensor_data, risk_level
+                )
             if risk_level == 'CRITICAL':
                 status = 'critical'
             elif risk_level == 'HIGH':
@@ -580,3 +659,114 @@ def _extract_tools_from_recommendations(recommendations: List) -> List[str]:
                 tools.append(tool)
     
     return tools if tools else ["Standard maintenance toolkit"]
+
+
+def _create_template_response(
+    self, 
+    equipment_id: str, 
+    equipment_type: str, 
+    anomalies: List[Dict],
+    sensor_data: Dict,
+    risk_level: str
+) -> Dict[str, Any]:
+    """
+    Create template-based response without AI (saves API calls)
+    
+    Used for MEDIUM severity alerts where AI analysis is not critical
+    """
+    # Generate basic recommendations based on anomaly patterns
+    recommendations = []
+    root_causes = []
+    
+    for anomaly in anomalies:
+        sensor = anomaly.get('sensor', '').lower()
+        severity = anomaly.get('severity', 'MEDIUM')
+        
+        # Temperature anomalies
+        if 'temperature' in sensor:
+            root_causes.append({
+                'cause': 'Elevated operating temperature detected',
+                'confidence': 0.75,
+                'evidence': [anomaly.get('message', 'Temperature out of range')]
+            })
+            recommendations.append({
+                'action': 'Inspect cooling system and verify ambient conditions',
+                'priority': 'P2',
+                'estimated_time': '1-2 hours',
+                'required_parts': ['Coolant', 'Filters']
+            })
+        
+        # Pressure anomalies
+        elif 'pressure' in sensor:
+            root_causes.append({
+                'cause': 'Pressure deviation from normal operating range',
+                'confidence': 0.70,
+                'evidence': [anomaly.get('message', 'Pressure abnormal')]
+            })
+            recommendations.append({
+                'action': 'Check pressure relief valves and seals',
+                'priority': 'P2',
+                'estimated_time': '1-2 hours',
+                'required_parts': ['Seals', 'Gaskets']
+            })
+        
+        # Vibration anomalies
+        elif 'vibration' in sensor:
+            root_causes.append({
+                'cause': 'Mechanical imbalance or misalignment detected',
+                'confidence': 0.80,
+                'evidence': [anomaly.get('message', 'Vibration excessive')]
+            })
+            recommendations.append({
+                'action': 'Perform vibration analysis and check bearing condition',
+                'priority': 'P2',
+                'estimated_time': '2-3 hours',
+                'required_parts': ['Bearings']
+            })
+        
+        # Current anomalies
+        elif 'current' in sensor:
+            root_causes.append({
+                'cause': 'Electrical load variation or motor inefficiency',
+                'confidence': 0.70,
+                'evidence': [anomaly.get('message', 'Current abnormal')]
+            })
+            recommendations.append({
+                'action': 'Inspect motor windings and connections',
+                'priority': 'P2',
+                'estimated_time': '1-2 hours',
+                'required_parts': []
+            })
+    
+    # Default if no specific pattern matched
+    if not recommendations:
+        recommendations.append({
+            'action': 'Perform routine inspection and verify operating parameters',
+            'priority': 'P3',
+            'estimated_time': '1 hour',
+            'required_parts': []
+        })
+    
+    # Generate answer text
+    answer = f"""**{equipment_type} {equipment_id} Analysis**
+
+**Risk Level:** {risk_level}
+
+**Anomalies Detected:** {len(anomalies)} issue(s) identified requiring attention.
+
+**Assessment:**
+{chr(10).join([f"- {a['message']}" for a in anomalies[:3]])}
+
+**Recommended Actions:**
+{chr(10).join([f"{i}. {r['action']}" for i, r in enumerate(recommendations, 1)])}
+
+**Note:** This is a template-based analysis. For critical issues, contact maintenance supervisor for detailed assessment.
+"""
+    
+    return {
+        'answer': answer,
+        'risk_level': risk_level,
+        'recommendations': recommendations,
+        'root_causes': root_causes,
+        'agents_used': ['template_generator'],
+    }

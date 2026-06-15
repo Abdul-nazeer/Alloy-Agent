@@ -223,7 +223,7 @@ async def websocket_sensor_stream(websocket: WebSocket, equipment_id: str):
     report_generator = get_report_generator()
     
     try:
-        async for reading in simulator.stream_readings(equipment_id, interval=2.0):
+        async for reading in simulator.stream_readings(equipment_id, interval=15.0):
             # Send reading to client
             await websocket.send_json(reading)
             

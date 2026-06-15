@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { equipmentAPI, type Equipment } from '../api/client';
-import { Activity } from 'lucide-react';
+import { Activity, Zap } from 'lucide-react';
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 interface DashboardProps {
   onEquipmentSelect: (equipmentId: string) => void;
@@ -12,6 +15,7 @@ export default function Dashboard({ onEquipmentSelect, equipmentFilter }: Dashbo
   const [latestReadings, setLatestReadings] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<Record<string, boolean>>({});
+  const [triggeringAnomaly, setTriggeringAnomaly] = useState(false);
 
   useEffect(() => {
     loadEquipment();
@@ -97,6 +101,32 @@ export default function Dashboard({ onEquipmentSelect, equipmentFilter }: Dashbo
 
   const criticalCount = equipment.filter(e => e.status === 'CRITICAL').length;
 
+  // Trigger demo anomaly function
+  const triggerDemoAnomaly = async () => {
+    try {
+      setTriggeringAnomaly(true);
+      
+      // Trigger demo anomaly on AC-001
+      const response = await axios.post(`${API_BASE_URL}/api/sensors/demo-anomaly?equipment_id=AC-001`);
+      
+      console.log('✅ Demo anomaly triggered:', response.data);
+      
+      // Optionally show the AI analysis in chat
+      // You can emit an event or use a callback here to show the result
+      
+      // Automatically navigate to AC-001 to show the anomaly
+      setTimeout(() => {
+        onEquipmentSelect('AC-001');
+      }, 1000);
+      
+    } catch (error) {
+      console.error('❌ Failed to trigger demo anomaly:', error);
+      alert('Failed to trigger demo anomaly. Please check backend connection.');
+    } finally {
+      setTriggeringAnomaly(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -124,9 +154,36 @@ export default function Dashboard({ onEquipmentSelect, equipmentFilter }: Dashbo
           >
             Equipment Status → {filteredEquipment.length} Machines Monitored
           </p>
+          <p 
+            className="text-xs font-mono mt-1"
+            style={{ color: 'var(--text-tertiary)' }}
+          >
+            Real-time sensor data with automated fault detection and diagnostics.
+          </p>
+          <p 
+            className="text-xs font-mono mt-1"
+            style={{ color: 'var(--accent-yellow)' }}
+          >
+            Quick Start: Click "DEMO ANOMALY" to see AI analysis in action →
+          </p>
         </div>
         
         <div className="flex items-center space-x-3">
+          {/* Demo Anomaly Button */}
+          <button
+            onClick={triggerDemoAnomaly}
+            disabled={triggeringAnomaly}
+            className="px-4 py-2 rounded-sm text-xs font-mono cursor-pointer hover:opacity-80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            style={{
+              border: '1px solid rgba(236, 72, 153, 0.6)',
+              backgroundColor: 'rgba(236, 72, 153, 0.1)',
+              color: '#ec4899'
+            }}
+          >
+            <Zap className="w-3 h-3" />
+            <span>{triggeringAnomaly ? 'TRIGGERING...' : 'DEMO ANOMALY'}</span>
+          </button>
+          
           {criticalCount > 0 && (
             <button
               onClick={() => {
