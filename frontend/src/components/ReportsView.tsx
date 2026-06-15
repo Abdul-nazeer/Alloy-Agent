@@ -297,77 +297,220 @@ export default function ReportsView() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {/* Risk Level */}
-            <div>
-              <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                Risk Level:
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {/* Risk Level Banner */}
+            <div className="p-4 rounded-sm" style={{ 
+              backgroundColor: `${getRiskColor(selectedReport.status)}15`,
+              border: `2px solid ${getRiskColor(selectedReport.status)}40`
+            }}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-mono uppercase mb-1" style={{ color: 'var(--text-tertiary)' }}>
+                    Risk Level
+                  </div>
+                  <span
+                    className="text-lg font-mono uppercase font-bold"
+                    style={{ color: getRiskColor(selectedReport.status) }}
+                  >
+                    {selectedReport.status}
+                  </span>
+                </div>
+                {selectedReport.content?.risk_level && (
+                  <div className="text-right">
+                    <div className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                      Confidence
+                    </div>
+                    <div className="text-sm font-mono font-bold" style={{ color: 'var(--text-primary)' }}>
+                      HIGH
+                    </div>
+                  </div>
+                )}
               </div>
-              <span
-                className="inline-block px-3 py-1 rounded-sm text-xs font-mono uppercase"
-                style={{
-                  backgroundColor: `${getRiskColor(selectedReport.status)}20`,
-                  color: getRiskColor(selectedReport.status)
-                }}
-              >
-                {selectedReport.status}
-              </span>
             </div>
 
-            {/* Root Cause Analysis */}
+            {/* Summary */}
             <div>
-              <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                Root Cause Analysis
+              <div className="text-sm font-mono uppercase mb-2 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                <span className="mr-2">⚠️</span> Fault Description
               </div>
-              <div className="text-sm font-sans leading-relaxed" style={{ color: 'var(--text-primary)' }}>
-                {typeof selectedReport.content === 'string' ? selectedReport.content : selectedReport.findings}
+              <div className="p-3 rounded-sm text-sm font-sans leading-relaxed" style={{ 
+                backgroundColor: 'var(--bg-elevated)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-subtle)'
+              }}>
+                {selectedReport.findings || 'No description available'}
               </div>
-              {selectedReport.content?.root_causes && (
-                <div className="mt-2 space-y-2">
+            </div>
+
+            {/* Root Causes */}
+            {(selectedReport.content?.root_causes && selectedReport.content.root_causes.length > 0) ? (
+              <div>
+                <div className="text-sm font-mono uppercase mb-3 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                  <span className="mr-2">🔍</span> Root Cause Analysis
+                </div>
+                <div className="space-y-3">
                   {selectedReport.content.root_causes.map((cause: any, i: number) => (
-                    <div key={i} className="pl-3 border-l-2" style={{ borderColor: 'var(--accent-cyan)' }}>
-                      <div className="text-sm font-sans" style={{ color: 'var(--text-primary)' }}>{cause.cause}</div>
-                      <div className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                        Confidence: {Math.round((cause.confidence || 0) * 100)}%
+                    <div key={i} className="p-3 rounded-sm" style={{ 
+                      backgroundColor: 'var(--bg-elevated)',
+                      borderLeft: `3px solid ${getRiskColor(selectedReport.status)}`
+                    }}>
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="text-sm font-sans font-medium" style={{ color: 'var(--text-primary)' }}>
+                          {i + 1}. {cause.cause}
+                        </div>
+                        {cause.confidence && (
+                          <span className="text-xs font-mono px-2 py-0.5 rounded-sm" style={{
+                            backgroundColor: 'var(--bg-surface)',
+                            color: 'var(--accent-cyan)'
+                          }}>
+                            {Math.round((cause.confidence || 0) * 100)}% confident
+                          </span>
+                        )}
+                      </div>
+                      {cause.evidence && (
+                        <div className="text-xs font-sans mt-1" style={{ color: 'var(--text-secondary)' }}>
+                          Evidence: {cause.evidence}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="text-sm font-mono uppercase mb-3 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                  <span className="mr-2">🔍</span> Analysis
+                </div>
+                <div className="p-3 rounded-sm text-sm font-sans leading-relaxed" style={{ 
+                  backgroundColor: 'var(--bg-elevated)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--border-subtle)'
+                }}>
+                  {typeof selectedReport.content === 'string' 
+                    ? selectedReport.content 
+                    : selectedReport.content?.summary || 'Analysis in progress...'}
+                </div>
+              </div>
+            )}
+
+            {/* Recommendations */}
+            {selectedReport.content?.recommendations && selectedReport.content.recommendations.length > 0 && (
+              <div>
+                <div className="text-sm font-mono uppercase mb-3 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                  <span className="mr-2">🔧</span> Maintenance Actions Required
+                </div>
+                <div className="space-y-2">
+                  {selectedReport.content.recommendations.map((rec: any, i: number) => (
+                    <div key={i} className="p-3 rounded-sm flex items-start space-x-3" style={{ 
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)'
+                    }}>
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono font-bold" style={{
+                        backgroundColor: rec.priority === 'CRITICAL' || rec.priority === 'HIGH' ? `${getRiskColor('critical')}30` : 'var(--bg-surface)',
+                        color: rec.priority === 'CRITICAL' || rec.priority === 'HIGH' ? getRiskColor('critical') : 'var(--accent-cyan)'
+                      }}>
+                        {i + 1}
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-sm font-sans font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                          {rec.action}
+                        </div>
+                        <div className="flex items-center space-x-3 text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                          {rec.estimated_time && (
+                            <span>⏱️ {rec.estimated_time}</span>
+                          )}
+                          {rec.required_parts && rec.required_parts.length > 0 && (
+                            <span>🔩 {rec.required_parts.join(', ')}</span>
+                          )}
+                        </div>
+                        {rec.safety_notes && (
+                          <div className="mt-2 text-xs font-sans p-2 rounded-sm" style={{
+                            backgroundColor: '#fef3c7',
+                            color: '#92400e',
+                            border: '1px solid #fde68a'
+                          }}>
+                            ⚠️ Safety: {rec.safety_notes}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Immediate Actions */}
-            {selectedReport.content?.recommendations && selectedReport.content.recommendations.length > 0 && (
+            {/* Sensor Data */}
+            {selectedReport.content?.sensor_readings && (
               <div>
-                <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                  Immediate Actions
+                <div className="text-sm font-mono uppercase mb-3 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                  <span className="mr-2">📊</span> Sensor Readings at Time of Detection
                 </div>
-                <ol className="space-y-2 list-decimal list-inside">
-                  {selectedReport.content.recommendations.slice(0, 4).map((rec: any, i: number) => (
-                    <li key={i} className="text-sm font-sans" style={{ color: 'var(--text-primary)' }}>
-                      {rec.action}
-                      {rec.estimated_time && (
-                        <span className="text-xs font-mono ml-2" style={{ color: 'var(--text-tertiary)' }}>
-                          ({rec.estimated_time})
-                        </span>
-                      )}
-                    </li>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(selectedReport.content.sensor_readings).map(([key, value]: [string, any]) => (
+                    <div key={key} className="p-2 rounded-sm" style={{ 
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)'
+                    }}>
+                      <div className="text-xs font-mono uppercase" style={{ color: 'var(--text-tertiary)' }}>
+                        {key.replace('_', ' ')}
+                      </div>
+                      <div className="text-sm font-mono font-bold" style={{ color: 'var(--text-primary)' }}>
+                        {typeof value === 'number' ? value.toFixed(2) : value}
+                      </div>
+                    </div>
                   ))}
-                </ol>
+                </div>
               </div>
             )}
 
-            {/* Evidence from Knowledge Base */}
-            {selectedReport.content?.agents_used && selectedReport.content.agents_used.length > 0 && (
+            {/* Anomalies Detected */}
+            {selectedReport.content?.anomalies && selectedReport.content.anomalies.length > 0 && (
               <div>
-                <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                  Evidence from Knowledge Base
+                <div className="text-sm font-mono uppercase mb-3 flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                  <span className="mr-2">🚨</span> Anomalies Detected
                 </div>
-                <div className="text-xs font-mono" style={{ color: 'var(--accent-cyan)' }}>
-                  Analysis performed by: {selectedReport.content.agents_used.join(', ')}
+                <div className="space-y-2">
+                  {selectedReport.content.anomalies.map((anomaly: any, i: number) => (
+                    <div key={i} className="p-2 rounded-sm text-xs font-mono" style={{ 
+                      backgroundColor: 'var(--bg-elevated)',
+                      color: 'var(--text-secondary)',
+                      border: '1px solid var(--border-default)'
+                    }}>
+                      {anomaly.message || `${anomaly.sensor}: ${anomaly.value} (threshold: ${anomaly.threshold})`}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
+
+            {/* System Metadata */}
+            <div className="pt-4 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+              <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                System Information
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>
+                {selectedReport.content?.agents_used && (
+                  <div>
+                    <span style={{ color: 'var(--text-tertiary)' }}>Agents Used:</span>{' '}
+                    {selectedReport.content.agents_used.join(', ')}
+                  </div>
+                )}
+                {selectedReport.content?.incident_id && (
+                  <div>
+                    <span style={{ color: 'var(--text-tertiary)' }}>Incident ID:</span>{' '}
+                    {selectedReport.content.incident_id}
+                  </div>
+                )}
+                <div>
+                  <span style={{ color: 'var(--text-tertiary)' }}>Report ID:</span>{' '}
+                  {selectedReport.id}
+                </div>
+                <div>
+                  <span style={{ color: 'var(--text-tertiary)' }}>Equipment Type:</span>{' '}
+                  {selectedReport.content?.equipment_type || 'Unknown'}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
