@@ -203,7 +203,7 @@ export default function DocumentsView() {
                 <button
                   onClick={() => {
                     // Trigger download
-                    window.open(`http://localhost:8000/api/pdfs/${doc.filename}`, '_blank');
+                    window.open(`${import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app'}/api/pdfs/${doc.filename}`, '_blank');
                   }}
                   className="p-2 rounded-sm transition-all hover:border-opacity-80"
                   style={{

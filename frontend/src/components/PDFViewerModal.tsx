@@ -7,7 +7,7 @@ interface PDFViewerModalProps {
 
 export default function PDFViewerModal({ filename, onClose }: PDFViewerModalProps) {
   // PDF URL from backend
-  const pdfUrl = `http://localhost:8000/api/pdfs/${filename}`;
+  const pdfUrl = `${import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app'}/api/pdfs/${filename}`;
 
   const handleDownload = () => {
     window.open(pdfUrl, '_blank');
