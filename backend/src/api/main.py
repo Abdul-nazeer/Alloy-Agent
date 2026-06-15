@@ -41,8 +41,18 @@ async def autonomous_monitoring_loop():
     Background task that continuously monitors all equipment
     and auto-generates reports when anomalies detected.
     
-    Runs every 30 seconds to check all equipment health.
+    **DISABLED for demo mode** - Use "DEMO ANOMALY" button instead.
+    This prevents automatic API calls and gives users full control.
+    
+    To re-enable: Set ENABLE_AUTONOMOUS_MONITORING=true in environment
     """
+    import os
+    
+    # Check if autonomous monitoring is enabled
+    if os.getenv("ENABLE_AUTONOMOUS_MONITORING", "false").lower() != "true":
+        logger.info("⏸️ Autonomous monitoring DISABLED (demo mode - use DEMO ANOMALY button)")
+        return
+    
     simulator = get_sensor_simulator()
     report_generator = get_report_generator()
     

@@ -1,6 +1,8 @@
 import { useAuth } from '../contexts/AuthContext';
 import { usePermissions } from '../hooks/usePermissions';
 import { MessageSquare, Activity, FileText, BarChart2, FileCheck } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { equipmentAPI, type Equipment } from '../api/client';
 
 interface SidebarProps {
   currentView: string;
@@ -17,6 +19,21 @@ export default function Sidebar({
 }: SidebarProps) {
   const { user } = useAuth();
   const permissions = usePermissions();
+  const [equipment, setEquipment] = useState<Equipment[]>([]);
+
+  // Load equipment dynamically on mount
+  useEffect(() => {
+    loadEquipment();
+  }, []);
+
+  const loadEquipment = async () => {
+    try {
+      const response = await equipmentAPI.getAll();
+      setEquipment(response.data);
+    } catch (err) {
+      console.error('Failed to load equipment for filter:', err);
+    }
+  };
 
   const getRoleBadgeStyle = () => {
     const styles = {
@@ -41,13 +58,10 @@ export default function Sidebar({
     permissions[item.permission as keyof typeof permissions]
   );
 
+  // Build equipment filter list dynamically from API
   const equipmentTypes = [
     'All Equipment',
-    'AC-001 (Air Compressor)',
-    'AC-002 (Air Compressor)',
-    'CF-003 (Cooling Fan)',
-    'RM-005 (Rolling Mill)',
-    'CM-007 (Conveyor Motor)'
+    ...equipment.map(eq => `${eq.equipment_id} (${eq.equipment_type})`)
   ];
 
   const badgeStyle = getRoleBadgeStyle();
