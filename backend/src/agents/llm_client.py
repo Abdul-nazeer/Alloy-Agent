@@ -131,10 +131,10 @@ class LLMClient:
         self.temperature = temperature or GENERATION_TEMPERATURE
         self.max_tokens = max_tokens or GENERATION_MAX_TOKENS
         
-        # Security: Enforce token limits
-        if self.max_tokens > 2000:
-            logger.warning(f"Token limit {self.max_tokens} exceeds safe limit, capping at 2000")
-            self.max_tokens = 2000
+        # Security: Enforce token limits (Groq supports up to 8K, we use 5K for safety)
+        if self.max_tokens > 5000:
+            logger.warning(f"Token limit {self.max_tokens} exceeds safe limit, capping at 5000")
+            self.max_tokens = 5000
         
         # Initialize rate limiter for this provider
         if self.provider not in self._rate_limiters:
@@ -213,9 +213,9 @@ class LLMClient:
         
         # Security: Token limit validation
         effective_max_tokens = max_tokens or self.max_tokens
-        if effective_max_tokens > 2000:
-            logger.warning(f"Token limit {effective_max_tokens} exceeds safe limit, capping at 2000")
-            effective_max_tokens = 2000
+        if effective_max_tokens > 5000:
+            logger.warning(f"Token limit {effective_max_tokens} exceeds safe limit, capping at 5000")
+            effective_max_tokens = 5000
         
         # Try primary provider first
         primary_provider = self.provider
