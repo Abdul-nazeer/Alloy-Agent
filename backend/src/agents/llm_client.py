@@ -7,16 +7,20 @@ Security features:
 - Rate limiting
 - Token limit enforcement
 - Error handling with fallbacks
+- DNS resolution retry for Railway deployment
 """
 
 import logging
 import os
 import time
+import socket
 from typing import Dict, Any, Optional
 from collections import deque
 from threading import Lock
 
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 from backend.src.rag.config import (
     GENERATION_MAX_TOKENS,
@@ -34,6 +38,38 @@ from backend.src.rag.config import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Configure DNS resolution with longer timeout (fixes Railway DNS issues)
+socket.setdefaulttimeout(30)  # 30 seconds for DNS resolution
+
+# Pre-resolve HuggingFace domain to avoid DNS lookup failures on Railway
+def resolve_hf_ip():
+    """Pre-resolve HuggingFace API IP to cache DNS lookup"""
+    try:
+        ip = socket.gethostbyname("api-inference.huggingface.co")
+        logger.info(f"✓ Pre-resolved api-inference.huggingface.co → {ip}")
+        return ip
+    except Exception as e:
+        logger.warning(f"⚠️ DNS pre-resolution failed: {e}")
+        return None
+
+# Try to pre-resolve on module load
+HF_API_IP = resolve_hf_ip()
+
+
+def create_retry_session():
+    """Create requests session with retry logic and longer timeout"""
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        backoff_factor=1,
+        status_forcelist=[500, 502, 503, 504],
+        allowed_methods=["GET", "POST"]
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 
 class RateLimiter:

@@ -20,14 +20,23 @@ logger = logging.getLogger(__name__)
 class AutoReportGenerator:
     """
     Monitors equipment and generates reports automatically
+    
+    Alert Debouncing: Only generates one report per equipment per cooldown period
+    to prevent spam (e.g., if equipment is CRITICAL for 30 minutes, only 1 report is generated)
     """
     
     def __init__(self):
         self.last_check = {}
+        self.last_alert_time = {}  # Track when last alert was sent per equipment
+        self.alert_cooldown_seconds = 1800  # 30 minutes cooldown between reports
         
     async def process_sensor_reading(self, sensor_data: Dict[str, Any]):
         """
         Process incoming sensor reading and auto-generate reports if needed
+        
+        Implements alert debouncing: Only generates report if:
+        1. Anomaly is CRITICAL or HIGH severity
+        2. More than cooldown_period (30 min) since last report for this equipment
         
         Args:
             sensor_data: {
@@ -49,10 +58,30 @@ class AutoReportGenerator:
         critical_count = sum(1 for a in anomalies if a.get('severity') == 'CRITICAL')
         high_count = sum(1 for a in anomalies if a.get('severity') == 'HIGH')
         
+        # Only generate report for CRITICAL or HIGH severity
+        if critical_count == 0 and high_count == 0:
+            logger.info(f"⏭️ Skipping report generation for {equipment_id} - severity too low (MEDIUM/LOW)")
+            return
+        
+        # Check cooldown period (prevent alert spam)
+        current_time = datetime.now()
+        last_alert = self.last_alert_time.get(equipment_id)
+        
+        if last_alert:
+            time_since_last_alert = (current_time - last_alert).total_seconds()
+            if time_since_last_alert < self.alert_cooldown_seconds:
+                remaining = self.alert_cooldown_seconds - time_since_last_alert
+                logger.info(f"⏸️ Cooldown active for {equipment_id} - {int(remaining/60)} minutes remaining until next report")
+                return
+        
+        # Update last alert time
+        self.last_alert_time[equipment_id] = current_time
+        
+        logger.info(f"✅ Cooldown passed for {equipment_id} - generating report")
+        
         # Generate incident if critical or high severity
-        if critical_count > 0 or high_count > 0:
-            await self.create_incident_and_report(sensor_data, anomalies)
-            await self.create_logbook_entry(sensor_data, anomalies)
+        await self.create_incident_and_report(sensor_data, anomalies)
+        await self.create_logbook_entry(sensor_data, anomalies)
     
     async def create_incident_and_report(self, sensor_data: Dict, anomalies: List[Dict]):
         """Create incident record and analysis report"""
