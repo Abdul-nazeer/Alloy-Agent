@@ -5,9 +5,9 @@ pydantic==2.9.2
 pydantic-settings==2.6.0
 
 # Multi-Agent System
-langgraph==0.0.26
-langchain==0.1.6
-langchain-openai==0.0.5
+langgraph==0.0.69
+langchain==0.1.20
+langchain-openai==0.0.8
 langchain-core==0.1.52
 langchain-community==0.0.38
 
