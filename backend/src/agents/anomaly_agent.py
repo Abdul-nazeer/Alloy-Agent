@@ -148,8 +148,15 @@ def anomaly_detection_node(state: AgentState) -> AgentState:
         state["metadata"]["anomaly_analysis"] = llm_analysis
         
     except Exception as e:
-        logger.error(f"LLM analysis failed: {e}")
-        state["errors"].append(f"Anomaly LLM analysis failed: {str(e)}")
+        logger.warning(f"LLM analysis unavailable (using rule-based analysis): {e}")
+        # Create rule-based analysis as fallback
+        if anomalies:
+            analysis_parts = [f"{len(anomalies)} anomalies detected:"]
+            for a in anomalies[:3]:  # Top 3
+                analysis_parts.append(f"- {a.message}")
+            state["metadata"]["anomaly_analysis"] = "\n".join(analysis_parts)
+        else:
+            state["metadata"]["anomaly_analysis"] = "All sensors within normal operating ranges."
     
     # Step 5: Update state
     state["anomalies_detected"] = anomalies

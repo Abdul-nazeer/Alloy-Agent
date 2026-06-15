@@ -112,20 +112,60 @@ def recommendation_node(state: AgentState) -> AgentState:
         logger.info(f"✅ Recommendations complete: {len(recommendations)} actions prioritized")
         
     except Exception as e:
-        logger.error(f"Recommendation LLM failed: {e}", exc_info=True)
-        state["errors"].append(f"Recommendation failed: {str(e)}")
+        logger.warning(f"Recommendation LLM unavailable (using rule-based recommendations): {e}")
         
-        # Fallback: create basic recommendation
-        state["recommendations"] = [
-            Recommendation(
+        # Fallback: create rule-based recommendations
+        recommendations = []
+        
+        # Priority 1: Immediate safety actions for CRITICAL/HIGH
+        if risk_level in ["CRITICAL", "HIGH"]:
+            recommendations.append(Recommendation(
                 priority=1,
-                action=f"Inspect {equipment_type} and verify sensor readings",
-                reason="Standard diagnostic procedure",
-                estimated_time="2 hours",
+                action=f"Immediately inspect {equipment_type} {equipment_id} - {risk_level} condition detected",
+                reason="Safety critical - requires urgent attention",
+                estimated_time="1 hour",
                 required_parts=[],
-                safety_notes=["Follow LOTO procedures", "Wear appropriate PPE"],
-            )
-        ]
+                safety_notes=["Follow LOTO procedures", "Notify supervisor", "Wear appropriate PPE"],
+            ))
+        
+        # Priority 2: Address root causes
+        for i, rc in enumerate(root_causes[:2], start=2):  # Top 2 root causes
+            action_text = _create_action_from_cause(rc.cause, equipment_type)
+            recommendations.append(Recommendation(
+                priority=i,
+                action=action_text,
+                reason=rc.cause,
+                estimated_time="2-4 hours",
+                required_parts=_identify_parts([rc], rc.cause),
+                safety_notes=["Follow LOTO procedures"],
+            ))
+        
+        # Priority 3: Spare parts procurement
+        if spare_parts_info:
+            parts_list = [f"{p['part_number']} ({p['description']})" for p in spare_parts_info[:3]]
+            recommendations.append(Recommendation(
+                priority=len(recommendations) + 1,
+                action=f"Procure required spare parts: {', '.join(parts_list)}",
+                reason="Parts availability for repair",
+                estimated_time="",
+                required_parts=[p['part_number'] for p in spare_parts_info[:3]],
+                safety_notes=[],
+            ))
+        
+        # Priority 4: Post-repair monitoring
+        recommendations.append(Recommendation(
+            priority=len(recommendations) + 1,
+            action=f"Monitor sensor readings for 24 hours after repair",
+            reason="Verify repair effectiveness",
+            estimated_time="24 hours",
+            required_parts=[],
+            safety_notes=[],
+        ))
+        
+        state["recommendations"] = recommendations
+        state["retrieved_chunks"].extend(rag_result.chunks)
+        
+        logger.info(f"✅ Rule-based recommendations complete: {len(recommendations)} actions prioritized")
     
     return state
 
@@ -220,3 +260,25 @@ def _extract_citations_from_recommendations(text: str, sources: list[dict]) -> l
             })
     
     return citations
+
+
+def _create_action_from_cause(cause: str, equipment_type: str) -> str:
+    """Create actionable recommendation from root cause."""
+    cause_lower = cause.lower()
+    
+    if "bearing" in cause_lower:
+        return f"Inspect and replace worn bearings on {equipment_type}"
+    elif "lubrication" in cause_lower or "lubricant" in cause_lower:
+        return f"Check lubrication system and replenish lubricant on {equipment_type}"
+    elif "coolant" in cause_lower or "cooling" in cause_lower:
+        return f"Inspect cooling system for leaks and verify coolant levels on {equipment_type}"
+    elif "misalignment" in cause_lower or "alignment" in cause_lower:
+        return f"Perform alignment check and adjustment on {equipment_type}"
+    elif "sensor" in cause_lower:
+        return f"Calibrate or replace faulty sensor on {equipment_type}"
+    elif "leak" in cause_lower:
+        return f"Locate and repair system leak on {equipment_type}"
+    elif "overload" in cause_lower:
+        return f"Reduce operating load and check capacity limits on {equipment_type}"
+    else:
+        return f"Inspect {equipment_type} for: {cause}"

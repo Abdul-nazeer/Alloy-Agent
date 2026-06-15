@@ -19,12 +19,22 @@ class ChatRequest(BaseModel):
     """Chat with the multi-agent system"""
     message: str = Field(..., description="User message or question")
     session_id: Optional[str] = Field("default", description="Conversation session ID for memory")
+    equipment_id: Optional[str] = Field(None, description="Equipment ID (optional, will be extracted from message if not provided)")
+    sensor_data: Optional[Dict[str, float]] = Field(None, description="Current sensor readings (optional)")
     
     class Config:
         json_schema_extra = {
             "example": {
                 "message": "What's causing the temperature spike on AC-001?",
-                "session_id": "session_123"
+                "session_id": "session_123",
+                "equipment_id": "AC-001",
+                "sensor_data": {
+                    "temperature_c": 95.5,
+                    "pressure_bar": 5.2,
+                    "vibration_mm_s": 8.1,
+                    "current_a": 45.3,
+                    "rpm": 1450
+                }
             }
         }
 
@@ -91,10 +101,56 @@ async def agent_chat(request: ChatRequest):
     """
     Chat with the multi-agent system. Supervisor routes to appropriate specialist agents.
     Maintains conversation memory per session_id.
+    
+    Equipment context can be provided via:
+    1. Explicit equipment_id and sensor_data parameters
+    2. Automatic extraction from message (e.g., "AC-001", "Air Compressor")
     """
     try:
+        # Extract equipment context from message if not provided
+        equipment_id = request.equipment_id
+        equipment_type = None
+        sensor_data = request.sensor_data
+        
+        # Try to extract equipment ID from message if not provided
+        if not equipment_id:
+            import re
+            # Match patterns like AC-001, CF-003, RM-005, etc.
+            equipment_pattern = r'\b([A-Z]{2}-\d{3})\b'
+            match = re.search(equipment_pattern, request.message)
+            if match:
+                equipment_id = match.group(1)
+        
+        # Determine equipment type from ID or fetch from database
+        if equipment_id:
+            # Get equipment type from sensor service
+            try:
+                from backend.src.services.sensor_data_service import get_sensor_service
+                sensor_service = get_sensor_service()
+                equipment_info = sensor_service.get_equipment_by_id(equipment_id)
+                if equipment_info:
+                    equipment_type = equipment_info.get("equipment_type")
+                    
+                    # If no sensor data provided, fetch latest readings
+                    if not sensor_data:
+                        latest = sensor_service.get_latest_reading(equipment_id)
+                        if latest:
+                            sensor_data = {
+                                "temperature_c": latest.get("temperature_c"),
+                                "pressure_bar": latest.get("pressure_bar"),
+                                "vibration_mm_s": latest.get("vibration_mm_s"),
+                                "current_a": latest.get("current_a"),
+                                "rpm": latest.get("rpm")
+                            }
+            except Exception as e:
+                pass  # Continue without equipment context
+        
+        # Call agent with enriched context
         result = chat(
             query=request.message,
+            equipment_id=equipment_id,
+            equipment_type=equipment_type,
+            sensor_data=sensor_data,
             session_id=request.session_id or "default"
         )
         
@@ -102,9 +158,13 @@ async def agent_chat(request: ChatRequest):
             status="success",
             response=result.get("answer", "No response generated"),
             metadata={
+                "equipment_id": equipment_id,
+                "equipment_type": equipment_type,
                 "agents_involved": result.get("agents_used", []),
                 "risk_level": result.get("risk_level"),
-                "sources_count": len(result.get("sources", []))
+                "sources_count": len(result.get("sources", [])),
+                "anomalies_count": len(result.get("anomalies", [])),
+                "recommendations_count": len(result.get("recommendations", []))
             },
             session_id=request.session_id
         )
@@ -189,10 +249,43 @@ async def agent_health():
     try:
         # Quick test - just import the modules
         from backend.src.agents import supervisor
+        from backend.src.agents.llm_client import get_llm_client
+        from backend.src.rag.config import LLM_PROVIDER, HF_MODEL_ID
+        
+        # Get LLM client info
+        llm_client = get_llm_client()
+        
         return {
             "status": "healthy",
             "agents": ["supervisor", "anomaly", "diagnosis", "recommendation", "report"],
-            "graph_compiled": True
+            "graph_compiled": True,
+            "llm_provider": LLM_PROVIDER,
+            "llm_model": HF_MODEL_ID if LLM_PROVIDER == "huggingface" else "unknown"
         }
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Agent system unhealthy: {str(e)}")
+
+
+@router.get("/rag/status")
+async def rag_status():
+    """Check RAG system status and knowledge base"""
+    try:
+        from backend.src.rag.retriever import search_documents
+        from backend.src.rag.config import COLLECTION_CHUNKS, QDRANT_URL
+        
+        # Try a test query
+        test_results = search_documents("maintenance", top_k=3)
+        
+        return {
+            "status": "operational" if test_results else "no_data",
+            "qdrant_url": QDRANT_URL,
+            "collection": COLLECTION_CHUNKS,
+            "test_query_results": len(test_results),
+            "knowledge_base_populated": len(test_results) > 0
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "knowledge_base_populated": False
+        }

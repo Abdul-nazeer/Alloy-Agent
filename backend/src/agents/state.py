@@ -179,13 +179,37 @@ def create_initial_state(
 
 def parse_sensor_readings(raw_data: dict) -> list[SensorReading]:
     """Parse raw sensor dict to SensorReading objects."""
+    # Mapping from database column names to sensor types
+    SENSOR_TYPE_MAPPING = {
+        "temperature_c": "TEMP",
+        "pressure_bar": "PRES",
+        "vibration_mm_s": "VIB",
+        "current_a": "CURR",
+        "rpm": "RPM",
+        "torque_nm": "TORQUE",
+    }
+    
+    # Unit mapping
+    UNIT_MAPPING = {
+        "TEMP": "°C",
+        "PRES": "bar",
+        "VIB": "mm/s",
+        "CURR": "A",
+        "RPM": "RPM",
+        "TORQUE": "Nm",
+    }
+    
     readings = []
-    for sensor_type, data in raw_data.items():
+    for sensor_key, data in raw_data.items():
+        # Convert sensor key to standard type
+        sensor_type = SENSOR_TYPE_MAPPING.get(sensor_key, sensor_key.upper())
+        unit = UNIT_MAPPING.get(sensor_type, "")
+        
         if isinstance(data, dict):
             readings.append(SensorReading(
                 sensor_type=sensor_type,
                 value=data.get("value", 0.0),
-                unit=data.get("unit", ""),
+                unit=data.get("unit", unit),
                 timestamp=data.get("timestamp", ""),
             ))
         else:
@@ -193,7 +217,7 @@ def parse_sensor_readings(raw_data: dict) -> list[SensorReading]:
             readings.append(SensorReading(
                 sensor_type=sensor_type,
                 value=float(data),
-                unit="",
+                unit=unit,
                 timestamp="",
             ))
     return readings

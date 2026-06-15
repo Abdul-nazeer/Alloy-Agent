@@ -88,9 +88,10 @@ def supervisor_node(state: AgentState) -> AgentState:
         logger.info(f"✓ Routing to: {next_agent}")
         
     except Exception as e:
-        logger.error(f"Supervisor routing failed: {e}")
-        state["errors"].append(f"Routing failed: {str(e)}")
+        logger.warning(f"Supervisor LLM routing failed (using fallback): {e}")
+        # Use deterministic routing on LLM failure
         state["next_agent"] = _fallback_routing(state)
+        logger.info(f"✓ Fallback routing to: {state['next_agent']}")
     
     return state
 

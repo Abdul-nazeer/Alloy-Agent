@@ -4,16 +4,16 @@ uvicorn[standard]==0.32.0
 pydantic==2.9.2
 pydantic-settings==2.6.0
 
-# Multi-Agent System (only what's actually imported)
+# Multi-Agent System
 langgraph==0.2.45
 
-# AI/ML - Embeddings & Retrieval
+# AI/ML - Embeddings (needed for RAG)
 sentence-transformers==2.3.1
 
 # RAG & Vector Database
 qdrant-client==1.12.1
 
-# PDF Processing (for fitz/PyMuPDF)
+# PDF Processing
 pymupdf==1.24.14
 pdfplumber==0.10.4
 
