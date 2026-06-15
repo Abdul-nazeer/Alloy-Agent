@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion';
 import Particles from '@tsparticles/react';
 import { Play } from 'lucide-react';
 
@@ -294,51 +294,70 @@ function StatCounter({ label, value, unit }: { label: string; value: number; uni
   );
 }
 
-// 3D Holographic Plant Component - Layered Stack Visualization
+// 3D Holographic Plant Component - Scroll-Triggered Stack
 function HolographicPlant() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
   const equipment = [
-    { id: 'AC-001', name: 'Air Compressor', type: 'Compressor', health: 94, temp: 82, color: '#00E5FF', delay: 0 },
-    { id: 'AC-002', name: 'Air Compressor', type: 'Compressor', health: 89, temp: 78, color: '#00FF85', delay: 0.2 },
-    { id: 'CF-003', name: 'Cooling Fan', type: 'Fan Unit', health: 97, temp: 65, color: '#00E5FF', delay: 0.4 },
-    { id: 'RM-005', name: 'Rolling Mill', type: 'Mill', health: 91, temp: 88, color: '#FFC107', delay: 0.6 },
-    { id: 'CM-007', name: 'Conveyor Motor', type: 'Motor', health: 96, temp: 72, color: '#00E5FF', delay: 0.8 },
+    { id: 'AC-001', name: 'Air Compressor', type: 'Compressor', health: 94, temp: 82, color: '#00E5FF' },
+    { id: 'AC-002', name: 'Air Compressor', type: 'Compressor', health: 89, temp: 78, color: '#00FF85' },
+    { id: 'CF-003', name: 'Cooling Fan', type: 'Fan Unit', health: 97, temp: 65, color: '#00E5FF' },
+    { id: 'RM-005', name: 'Rolling Mill', type: 'Mill', health: 91, temp: 88, color: '#FFC107' },
+    { id: 'CM-007', name: 'Conveyor Motor', type: 'Motor', health: 96, temp: 72, color: '#00E5FF' },
   ];
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center perspective-1000">
-      <div className="relative w-full max-w-lg">
-        {/* Equipment Cards - Stacked with Depth */}
-        <div className="relative" style={{ transformStyle: 'preserve-3d' }}>
+    <div ref={containerRef} className="relative w-full h-full flex items-center justify-center">
+      <div className="relative w-full max-w-md h-[400px]">
+        {/* Equipment Cards - Scroll-triggered Stack */}
+        <div className="relative w-full h-full" style={{ perspective: '1000px' }}>
           {equipment.map((item, index) => {
-            const zOffset = -index * 40;
-            const yOffset = index * 15;
+            // Calculate scroll-based progress for each card
+            const cardStart = index * 0.15; // Each card starts appearing at different scroll progress
+            const cardEnd = cardStart + 0.2;
+            
+            const cardProgress = useTransform(
+              scrollYProgress,
+              [cardStart, cardEnd],
+              [0, 1]
+            );
+            
+            const y = useTransform(cardProgress, [0, 1], [100, 0]);
+            const opacity = useTransform(cardProgress, [0, 0.5, 1], [0, 0.5, 1]);
+            const rotateX = useTransform(cardProgress, [0, 1], [15, 0]);
+            const scale = useTransform(cardProgress, [0, 1], [0.85, 1]);
+            
+            // Slight tilt alternating left/right
+            const tiltDegree = index % 2 === 0 ? 2 : -2;
             
             return (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 50, rotateX: -20 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: yOffset,
-                  rotateX: 0,
-                  z: zOffset
-                }}
-                transition={{ 
-                  delay: item.delay,
-                  duration: 0.8,
-                  type: "spring",
-                  stiffness: 100
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  width: '100%',
+                  x: '-50%',
+                  y: useTransform(y, (val) => `calc(-50% + ${val}px)`),
+                  opacity,
+                  rotateX,
+                  rotateZ: tiltDegree,
+                  scale,
+                  zIndex: index,
+                  transformStyle: 'preserve-3d',
                 }}
                 whileHover={{ 
-                  scale: 1.05, 
-                  z: zOffset + 20,
+                  scale: 1.05,
+                  rotateZ: 0,
+                  zIndex: 10,
                   transition: { duration: 0.3 }
                 }}
-                className="relative mb-4"
-                style={{
-                  transformStyle: 'preserve-3d',
-                  transform: `translateZ(${zOffset}px) translateY(${yOffset}px)`
-                }}
+                className="cursor-pointer"
               >
                 {/* Equipment Card */}
                 <div 
@@ -370,7 +389,6 @@ function HolographicPlant() {
                       transition={{ 
                         duration: 2, 
                         repeat: Infinity,
-                        delay: item.delay 
                       }}
                       className="w-2 h-2 rounded-full"
                       style={{ backgroundColor: item.color }}
@@ -390,11 +408,11 @@ function HolographicPlant() {
                       {/* Health Bar */}
                       <div className="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
                         <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${item.health}%` }}
-                          transition={{ delay: item.delay + 0.5, duration: 1 }}
+                          style={{
+                            width: useTransform(cardProgress, [0, 1], [0, item.health]),
+                          }}
                           className="h-full rounded-full"
-                          style={{ backgroundColor: item.color }}
+                          animate={{ backgroundColor: item.color }}
                         />
                       </div>
                     </div>
@@ -459,46 +477,13 @@ function HolographicPlant() {
           })}
         </div>
 
-        {/* Connection Lines in Background */}
-        <svg 
-          className="absolute inset-0 pointer-events-none -z-10"
-          style={{ width: '100%', height: '100%' }}
-        >
-          {equipment.map((_, index) => {
-            if (index === equipment.length - 1) return null;
-            return (
-              <motion.line
-                key={`line-${index}`}
-                x1="50%"
-                y1={`${20 + index * 20}%`}
-                x2="50%"
-                y2={`${20 + (index + 1) * 20}%`}
-                stroke="#00E5FF"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-                opacity="0.2"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 1 + index * 0.2, duration: 0.5 }}
-              />
-            );
-          })}
-        </svg>
-
         {/* Ambient Glow */}
-        <div className="absolute inset-0 -z-20 blur-3xl opacity-30">
+        <div className="absolute inset-0 -z-20 blur-3xl opacity-20 pointer-events-none">
           <div 
-            className="absolute top-0 left-1/2 w-64 h-64 rounded-full"
+            className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full"
             style={{ 
               background: 'radial-gradient(circle, #00E5FF, transparent)',
               transform: 'translate(-50%, -50%)'
-            }}
-          />
-          <div 
-            className="absolute bottom-0 right-1/2 w-64 h-64 rounded-full"
-            style={{ 
-              background: 'radial-gradient(circle, #FF6A00, transparent)',
-              transform: 'translate(50%, 50%)'
             }}
           />
         </div>
