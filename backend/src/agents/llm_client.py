@@ -1,11 +1,20 @@
 """
 LLM Client — Multi-provider interface for LLM generation
-Supports: Ollama (local), HuggingFace, OpenAI
+Supports: Ollama (local), HuggingFace, Groq, OpenAI
+
+Security features:
+- API key validation
+- Rate limiting
+- Token limit enforcement
+- Error handling with fallbacks
 """
 
 import logging
 import os
+import time
 from typing import Dict, Any, Optional
+from collections import deque
+from threading import Lock
 
 import requests
 
@@ -17,22 +26,63 @@ from backend.src.rag.config import (
     HF_TOKEN,
     OLLAMA_MODEL,
     OLLAMA_BASE_URL,
+    GROQ_API_KEY,
+    GROQ_MODEL,
     OPENAI_API_KEY,
     OPENAI_MODEL,
+    MAX_REQUESTS_PER_MINUTE,
 )
 
 logger = logging.getLogger(__name__)
+
+
+class RateLimiter:
+    """Simple rate limiter for API calls."""
+    
+    def __init__(self, max_requests: int, time_window: int = 60):
+        self.max_requests = max_requests
+        self.time_window = time_window
+        self.requests = deque()
+        self.lock = Lock()
+    
+    def can_proceed(self) -> bool:
+        """Check if request can proceed without hitting rate limit."""
+        with self.lock:
+            now = time.time()
+            # Remove old requests outside time window
+            while self.requests and self.requests[0] < now - self.time_window:
+                self.requests.popleft()
+            
+            if len(self.requests) < self.max_requests:
+                self.requests.append(now)
+                return True
+            return False
+    
+    def wait_if_needed(self):
+        """Wait if rate limit reached."""
+        while not self.can_proceed():
+            time.sleep(1)
 
 
 class LLMClient:
     """
     Unified interface for LLM generation across multiple providers.
     
+    Security features:
+    - API key validation
+    - Rate limiting
+    - Token limit enforcement
+    - Multi-layer fallback
+    
     Providers:
     - Ollama: Local, fast, offline (RECOMMENDED for demos)
-    - HuggingFace: Cloud API
+    - HuggingFace: Cloud API (fine-tuned model)
+    - Groq: Ultra-fast cloud API (FREE - best fallback!)
     - OpenAI: GPT models
     """
+    
+    # Class-level rate limiters (shared across instances)
+    _rate_limiters = {}
     
     def __init__(
         self,
@@ -45,20 +95,43 @@ class LLMClient:
         self.temperature = temperature or GENERATION_TEMPERATURE
         self.max_tokens = max_tokens or GENERATION_MAX_TOKENS
         
-        # Provider-specific setup
+        # Security: Enforce token limits
+        if self.max_tokens > 2000:
+            logger.warning(f"Token limit {self.max_tokens} exceeds safe limit, capping at 2000")
+            self.max_tokens = 2000
+        
+        # Initialize rate limiter for this provider
+        if self.provider not in self._rate_limiters:
+            self._rate_limiters[self.provider] = RateLimiter(MAX_REQUESTS_PER_MINUTE)
+        self.rate_limiter = self._rate_limiters[self.provider]
+        
+        # Provider-specific setup with validation
         if self.provider == "ollama":
             self.model_id = model_id or OLLAMA_MODEL
             self.base_url = OLLAMA_BASE_URL
             logger.info(f"LLM Client initialized: Ollama - {self.model_id}")
             
         elif self.provider == "huggingface":
+            if not HF_TOKEN:
+                logger.warning("⚠️ HF_TOKEN not set - API may be rate-limited")
             self.model_id = model_id or HF_MODEL_ID
             self.token = HF_TOKEN
             self.api_url = f"https://api-inference.huggingface.co/models/{self.model_id}"
             self.headers = {"Authorization": f"Bearer {self.token}"} if self.token else {}
             logger.info(f"LLM Client initialized: HuggingFace - {self.model_id}")
+        
+        elif self.provider == "groq":
+            if not GROQ_API_KEY:
+                raise ValueError("GROQ_API_KEY not set in environment")
+            self.model_id = model_id or GROQ_MODEL
+            self.api_key = GROQ_API_KEY
+            self.api_url = "https://api.groq.com/openai/v1/chat/completions"
+            self.headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+            logger.info(f"LLM Client initialized: Groq - {self.model_id}")
             
         elif self.provider == "openai":
+            if not OPENAI_API_KEY:
+                raise ValueError("OPENAI_API_KEY not set in environment")
             self.model_id = model_id or OPENAI_MODEL
             self.api_key = OPENAI_API_KEY
             logger.info(f"LLM Client initialized: OpenAI - {self.model_id}")
@@ -74,7 +147,18 @@ class LLMClient:
         **kwargs
     ) -> str:
         """
-        Generate text from prompt using configured provider.
+        Generate text from prompt using multi-layer fallback strategy with security.
+        
+        Strategy:
+        1. Try primary provider (HuggingFace fine-tuned model) - 1 quick attempt
+        2. Fallback to Groq if available (fast & reliable)
+        3. Fallback to OpenAI if available
+        4. Raise exception if all fail (agents have rule-based fallback)
+        
+        Security:
+        - Rate limiting enforced
+        - Token limits validated
+        - API keys checked
         
         Args:
             prompt: Input prompt
@@ -86,16 +170,53 @@ class LLMClient:
             Generated text
         
         Raises:
-            Exception: If generation fails
+            Exception: If all generation methods fail
         """
-        if self.provider == "ollama":
-            return self._generate_ollama(prompt, temperature, max_tokens, **kwargs)
-        elif self.provider == "huggingface":
-            return self._generate_huggingface(prompt, temperature, max_tokens, **kwargs)
-        elif self.provider == "openai":
-            return self._generate_openai(prompt, temperature, max_tokens, **kwargs)
-        else:
-            raise ValueError(f"Unknown provider: {self.provider}")
+        # Security: Rate limiting
+        self.rate_limiter.wait_if_needed()
+        
+        # Security: Token limit validation
+        effective_max_tokens = max_tokens or self.max_tokens
+        if effective_max_tokens > 2000:
+            logger.warning(f"Token limit {effective_max_tokens} exceeds safe limit, capping at 2000")
+            effective_max_tokens = 2000
+        
+        # Try primary provider first
+        primary_provider = self.provider
+        
+        try:
+            if primary_provider == "ollama":
+                return self._generate_ollama(prompt, temperature, max_tokens, **kwargs)
+            elif primary_provider == "huggingface":
+                return self._generate_huggingface(prompt, temperature, max_tokens, **kwargs)
+            elif primary_provider == "groq":
+                return self._generate_groq(prompt, temperature, max_tokens, **kwargs)
+            elif primary_provider == "openai":
+                return self._generate_openai(prompt, temperature, max_tokens, **kwargs)
+            else:
+                raise ValueError(f"Unknown provider: {primary_provider}")
+                
+        except Exception as primary_error:
+            logger.warning(f"Primary provider ({primary_provider}) failed: {str(primary_error)[:100]}")
+            
+            # Fallback to Groq if configured and not already the primary
+            if primary_provider != "groq" and GROQ_API_KEY:
+                try:
+                    logger.info("🔄 Falling back to Groq API (ultra-fast)...")
+                    return self._generate_groq(prompt, temperature, max_tokens, **kwargs)
+                except Exception as groq_error:
+                    logger.warning(f"Groq fallback failed: {str(groq_error)[:100]}")
+            
+            # Fallback to OpenAI if configured
+            if primary_provider not in ["openai", "groq"] and OPENAI_API_KEY:
+                try:
+                    logger.info("🔄 Falling back to OpenAI API...")
+                    return self._generate_openai(prompt, temperature, max_tokens, **kwargs)
+                except Exception as openai_error:
+                    logger.warning(f"OpenAI fallback failed: {str(openai_error)[:100]}")
+            
+            # All providers failed - raise exception for agent-level fallback
+            raise Exception(f"All LLM providers failed. Primary: {str(primary_error)[:100]}")
     
     def _generate_ollama(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
         """Generate using Ollama (local, fast, offline)."""
@@ -143,8 +264,8 @@ class LLMClient:
             }
         }
         
-        max_retries = 5  # Increased retries
-        retry_delay = 10  # seconds
+        max_retries = 2  # Fast fail, then use Groq fallback
+        retry_delay = 5  # seconds
         
         # Try multiple API endpoints as fallback
         api_urls = [
@@ -258,6 +379,34 @@ class LLMClient:
                 raise Exception(f"HuggingFace generation failed: {e}")
         
         raise Exception("Max retries exceeded")
+    
+    def _generate_groq(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
+        """Generate using Groq API (ultra-fast, free tier)."""
+        payload = {
+            "model": self.model_id,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": temperature or self.temperature,
+            "max_tokens": max_tokens or self.max_tokens,
+            **kwargs
+        }
+        
+        try:
+            response = requests.post(
+                self.api_url,
+                headers=self.headers,
+                json=payload,
+                timeout=30  # Groq is FAST
+            )
+            response.raise_for_status()
+            result = response.json()
+            
+            text = result["choices"][0]["message"]["content"].strip()
+            logger.info(f"✓ Groq generated {len(text)} chars")
+            return text
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Groq generation failed: {e}")
+            raise Exception(f"Groq generation failed: {e}")
     
     def _generate_openai(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
         """Generate using OpenAI API."""

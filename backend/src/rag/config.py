@@ -68,6 +68,30 @@ HF_TOKEN = os.getenv("HF_TOKEN", "")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "phi3:mini")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
+# Groq settings (FAST & FREE - perfect fallback!)
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")  # Fast, smart, perfect for technical tasks
+
+# Rate limiting settings
+MAX_REQUESTS_PER_MINUTE = int(os.getenv("MAX_REQUESTS_PER_MINUTE", "60"))
+MAX_TOKENS_PER_REQUEST = int(os.getenv("MAX_TOKENS_PER_REQUEST", "1000"))
+
+# Security: Validate API keys are set
+def validate_api_keys():
+    """Validate that required API keys are configured."""
+    warnings = []
+    
+    if LLM_PROVIDER == "huggingface" and not HF_TOKEN:
+        warnings.append("HF_TOKEN not set - HuggingFace API may be rate-limited")
+    
+    if not GROQ_API_KEY:
+        warnings.append("GROQ_API_KEY not set - no fallback LLM available")
+    
+    if LLM_PROVIDER == "openai" and not OPENAI_API_KEY:
+        warnings.append("OPENAI_API_KEY not set but LLM_PROVIDER is 'openai'")
+    
+    return warnings
+
 # OpenAI settings (optional)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
@@ -105,6 +129,15 @@ def validate_config() -> bool:
         errors.append("QDRANT_URL is not set")
     if QDRANT_URL.startswith("https://") and not QDRANT_API_KEY:
         errors.append("QDRANT_API_KEY required for Qdrant Cloud")
+    
+    # Check LLM configuration
+    llm_warnings = validate_api_keys()
+    if llm_warnings:
+        import logging
+        logger = logging.getLogger(__name__)
+        for warning in llm_warnings:
+            logger.warning(f"⚠️ {warning}")
+    
     if errors:
         raise ValueError("Config errors:\n  • " + "\n  • ".join(errors))
     return True
