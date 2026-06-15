@@ -6,11 +6,11 @@ Processes engineer corrections and indexes them into RAG with boost.
 import logging
 import uuid
 from typing import Dict, Any
+from sentence_transformers import SentenceTransformer
 
 from backend.src.services.logbook import get_logbook_service
-from backend.src.rag.embedder import get_embedder
 from backend.src.rag.vector_store import get_vector_store
-from backend.src.rag.config import COLLECTION_CHUNKS
+from backend.src.rag.config import COLLECTION_CHUNKS, EMBEDDING_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ class FeedbackHandler:
     """Handle engineer feedback and improve RAG system."""
     
     def __init__(self):
-        self.embedder = get_embedder()
+        self.embedder = SentenceTransformer(EMBEDDING_MODEL)
         self.store = get_vector_store()
         self.logbook = get_logbook_service()
     
