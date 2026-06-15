@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Download, RefreshCw, X, Printer, FileDown } from 'lucide-react';
+import { Download, RefreshCw, X, Printer } from 'lucide-react';
 import { reportsAPI } from '../api/client';
 
 interface Report {
@@ -117,14 +117,6 @@ export default function ReportsView() {
       </html>
     `);
     printWindow.document.close();
-  };
-
-  const exportToPDF = async (report: Report) => {
-    // Simple approach: use browser's print to PDF
-    printReport(report);
-    setTimeout(() => {
-      alert('To save as PDF:\n1. Use Print dialog (Ctrl/Cmd+P)\n2. Select "Save as PDF"\n3. Click Save');
-    }, 500);
   };
 
   const markdownToHTML = (markdown: string): string => {
@@ -285,13 +277,23 @@ export default function ReportsView() {
                 })}
               </div>
             </div>
-            <button
-              onClick={() => setSelectedReport(null)}
-              className="p-1 rounded-sm"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => printReport(selectedReport)}
+                className="p-1.5 rounded-sm hover:bg-gray-100"
+                style={{ color: 'var(--text-secondary)' }}
+                title="Print Report"
+              >
+                <Printer className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setSelectedReport(null)}
+                className="p-1 rounded-sm"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Content */}
