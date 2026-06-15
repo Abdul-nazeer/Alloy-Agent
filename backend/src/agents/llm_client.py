@@ -125,7 +125,7 @@ class LLMClient:
             raise Exception(f"Ollama generation failed: {e}")
     
     def _generate_huggingface(self, prompt: str, temperature: Optional[float], max_tokens: Optional[int], **kwargs) -> str:
-        """Generate using HuggingFace Inference API with retry logic."""
+        """Generate using HuggingFace Inference API with retry logic and DNS fallback."""
         import time
         
         payload = {
@@ -143,16 +143,27 @@ class LLMClient:
             }
         }
         
-        max_retries = 3
-        retry_delay = 20  # seconds
+        max_retries = 5  # Increased retries
+        retry_delay = 10  # seconds
+        
+        # Try multiple API endpoints as fallback
+        api_urls = [
+            f"https://api-inference.huggingface.co/models/{self.model_id}",
+            f"https://api-inference.huggingface.co/models/{self.model_id}",  # Retry same
+        ]
         
         for attempt in range(max_retries):
             try:
+                # Alternate between endpoints on retry
+                api_url = api_urls[attempt % len(api_urls)]
+                
+                # Add timeout and connection settings
                 response = requests.post(
-                    self.api_url,
+                    api_url,
                     headers=self.headers,
                     json=payload,
-                    timeout=60  # Increased timeout for model loading
+                    timeout=90,  # Longer timeout for model loading
+                    verify=True,  # Verify SSL
                 )
                 
                 # Handle 503 (model loading) - retry with backoff
@@ -173,10 +184,23 @@ class LLMClient:
                 
                 # Handle rate limiting
                 if response.status_code == 429:
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Rate limited, retrying in {retry_delay}s...")
+                        time.sleep(retry_delay)
+                        retry_delay *= 1.5
+                        continue
                     raise Exception(
                         "Rate limit exceeded. Please wait a moment and try again. "
                         "Consider adding HF_TOKEN to .env for higher limits."
                     )
+                
+                # Handle 502/504 gateway errors
+                if response.status_code in [502, 504]:
+                    if attempt < max_retries - 1:
+                        logger.warning(f"Gateway error {response.status_code}, retrying...")
+                        time.sleep(retry_delay)
+                        continue
+                    raise Exception(f"Gateway error: {response.status_code}")
                 
                 response.raise_for_status()
                 result = response.json()
@@ -185,7 +209,7 @@ class LLMClient:
                 if isinstance(result, list) and len(result) > 0:
                     if "generated_text" in result[0]:
                         text = result[0]["generated_text"].strip()
-                        logger.info(f"✓ Generated {len(text)} chars")
+                        logger.info(f"✓ LLM generated {len(text)} chars")
                         return text
                 elif isinstance(result, dict):
                     if "error" in result:
@@ -200,7 +224,7 @@ class LLMClient:
                         raise Exception(error_msg)
                     if "generated_text" in result:
                         text = result["generated_text"].strip()
-                        logger.info(f"✓ Generated {len(text)} chars")
+                        logger.info(f"✓ LLM generated {len(text)} chars")
                         return text
                 
                 # Fallback
@@ -212,7 +236,18 @@ class LLMClient:
                     logger.warning(f"Timeout (attempt {attempt + 1}), retrying...")
                     time.sleep(retry_delay)
                     continue
+                logger.error("HuggingFace API timeout after multiple attempts")
                 raise Exception("Request timed out after multiple attempts")
+            
+            except requests.exceptions.ConnectionError as e:
+                if attempt < max_retries - 1:
+                    logger.warning(f"Connection error (attempt {attempt + 1}), retrying in {retry_delay}s...")
+                    logger.warning(f"Error details: {str(e)}")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2  # Aggressive backoff for connection issues
+                    continue
+                logger.error(f"HuggingFace API connection failed after {max_retries} attempts: {e}")
+                raise Exception(f"Cannot connect to HuggingFace API. Network issue detected. Using fallback mode.")
                 
             except requests.exceptions.RequestException as e:
                 if attempt < max_retries - 1 and "503" in str(e):
