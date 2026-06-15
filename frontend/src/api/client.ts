@@ -56,12 +56,19 @@ export interface MaintenanceLog {
 }
 
 export interface AgentResponse {
-  answer: string;
+  status: string;
+  response: string;  // Main response field from backend
+  answer?: string;   // Legacy field for backward compatibility
   citations?: Array<{ source: string; page?: number }>;
   metadata?: {
     risk_level?: string;
     anomalies_detected?: number;
     agents_used?: string[];
+    equipment_id?: string;
+    equipment_type?: string;
+    sources_count?: number;
+    anomalies_count?: number;
+    recommendations_count?: number;
     [key: string]: any;
   };
   session_id?: string;

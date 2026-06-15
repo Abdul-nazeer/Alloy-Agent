@@ -53,7 +53,7 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
       
       const assistantMessage: Message = {
         role: 'assistant',
-        content: response.data.answer,
+        content: response.data.response || response.data.answer || 'No response',
         timestamp: new Date(),
         citations: response.data.citations || []
       };
