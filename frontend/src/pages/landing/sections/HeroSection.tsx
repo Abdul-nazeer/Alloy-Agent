@@ -294,112 +294,215 @@ function StatCounter({ label, value, unit }: { label: string; value: number; uni
   );
 }
 
-// 3D Holographic Plant Component
+// 3D Holographic Plant Component - Layered Stack Visualization
 function HolographicPlant() {
+  const equipment = [
+    { id: 'AC-001', name: 'Air Compressor', type: 'Compressor', health: 94, temp: 82, color: '#00E5FF', delay: 0 },
+    { id: 'AC-002', name: 'Air Compressor', type: 'Compressor', health: 89, temp: 78, color: '#00FF85', delay: 0.2 },
+    { id: 'CF-003', name: 'Cooling Fan', type: 'Fan Unit', health: 97, temp: 65, color: '#00E5FF', delay: 0.4 },
+    { id: 'RM-005', name: 'Rolling Mill', type: 'Mill', health: 91, temp: 88, color: '#FFC107', delay: 0.6 },
+    { id: 'CM-007', name: 'Conveyor Motor', type: 'Motor', health: 96, temp: 72, color: '#00E5FF', delay: 0.8 },
+  ];
+
   return (
-    <div className="relative w-full h-full flex items-center justify-center" style={{ transformStyle: 'preserve-3d' }}>
-      {/* Central Hub */}
-      <motion.div
-        animate={{ rotateZ: 360 }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-        className="relative"
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        {/* Plant Components in circular layout */}
-        {[
-          { name: 'Blast Furnace', angle: 0, color: '#00E5FF' },
-          { name: 'Conveyor', angle: 72, color: '#FF6A00' },
-          { name: 'Cooling Tower', angle: 144, color: '#00E5FF' },
-          { name: 'Compressor', angle: 216, color: '#FF6A00' },
-          { name: 'Rolling Mill', angle: 288, color: '#00E5FF' },
-        ].map((component, i) => {
-          const radius = 200;
-          const x = Math.cos((component.angle * Math.PI) / 180) * radius;
-          const y = Math.sin((component.angle * Math.PI) / 180) * radius;
-
-          return (
-            <motion.div
-              key={component.name}
-              className="absolute"
-              style={{
-                left: `calc(50% + ${x}px)`,
-                top: `calc(50% + ${y}px)`,
-                transform: 'translate(-50%, -50%)',
-              }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.2 + 0.5 }}
-            >
-              <div className="relative">
-                {/* Holographic Node */}
-                <div
-                  className="w-20 h-20 rounded-lg landing-holographic flex items-center justify-center"
+    <div className="relative w-full h-full flex items-center justify-center perspective-1000">
+      <div className="relative w-full max-w-lg">
+        {/* Equipment Cards - Stacked with Depth */}
+        <div className="relative" style={{ transformStyle: 'preserve-3d' }}>
+          {equipment.map((item, index) => {
+            const zOffset = -index * 40;
+            const yOffset = index * 15;
+            
+            return (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 50, rotateX: -20 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: yOffset,
+                  rotateX: 0,
+                  z: zOffset
+                }}
+                transition={{ 
+                  delay: item.delay,
+                  duration: 0.8,
+                  type: "spring",
+                  stiffness: 100
+                }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  z: zOffset + 20,
+                  transition: { duration: 0.3 }
+                }}
+                className="relative mb-4"
+                style={{
+                  transformStyle: 'preserve-3d',
+                  transform: `translateZ(${zOffset}px) translateY(${yOffset}px)`
+                }}
+              >
+                {/* Equipment Card */}
+                <div 
+                  className="landing-glass rounded-lg p-4 border"
                   style={{
-                    borderColor: component.color,
-                    boxShadow: `0 0 20px ${component.color}40`,
+                    borderColor: item.color,
+                    boxShadow: `0 0 30px ${item.color}30, inset 0 0 20px ${item.color}10`,
+                    backdropFilter: 'blur(20px)',
+                    background: 'rgba(10, 10, 10, 0.8)'
                   }}
                 >
-                  <div className="w-12 h-12 rounded-lg border-2 landing-pulse"
-                    style={{ borderColor: component.color }}
-                  />
-                </div>
-
-                {/* Label */}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                  <span className="text-xs font-mono text-[#B8C1CC]">{component.name}</span>
-                </div>
-
-                {/* Connection Line to Center */}
-                <svg
-                  className="absolute top-1/2 left-1/2 pointer-events-none"
-                  style={{
-                    width: radius * 2,
-                    height: radius * 2,
-                    transform: 'translate(-50%, -50%)',
-                  }}
-                >
-                  <line
-                    x1={radius}
-                    y1={radius}
-                    x2={radius - x}
-                    y2={radius - y}
-                    stroke={component.color}
-                    strokeWidth="1"
-                    strokeDasharray="4 4"
-                    opacity="0.3"
-                  >
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      from="0"
-                      to="8"
-                      dur="1s"
-                      repeatCount="indefinite"
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <div className="text-sm font-mono font-bold" style={{ color: item.color }}>
+                        {item.id}
+                      </div>
+                      <div className="text-xs text-[#B8C1CC] mt-1">
+                        {item.type}
+                      </div>
+                    </div>
+                    
+                    {/* Status Indicator */}
+                    <motion.div
+                      animate={{ 
+                        opacity: [0.5, 1, 0.5],
+                        scale: [1, 1.2, 1]
+                      }}
+                      transition={{ 
+                        duration: 2, 
+                        repeat: Infinity,
+                        delay: item.delay 
+                      }}
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: item.color }}
                     />
-                  </line>
-                </svg>
-              </div>
-            </motion.div>
-          );
-        })}
+                  </div>
 
-        {/* Center Core */}
-        <div className="w-32 h-32 rounded-full landing-glass flex items-center justify-center relative"
-          style={{
-            border: '2px solid #00E5FF',
-            boxShadow: '0 0 40px rgba(0, 229, 255, 0.5), inset 0 0 40px rgba(0, 229, 255, 0.2)',
-          }}
+                  {/* Metrics Grid */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Health */}
+                    <div>
+                      <div className="text-xs text-[#6B7280] mb-1">Health</div>
+                      <div className="flex items-center gap-2">
+                        <div className="text-lg font-bold font-mono" style={{ color: item.color }}>
+                          {item.health}%
+                        </div>
+                      </div>
+                      {/* Health Bar */}
+                      <div className="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${item.health}%` }}
+                          transition={{ delay: item.delay + 0.5, duration: 1 }}
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Temperature */}
+                    <div>
+                      <div className="text-xs text-[#6B7280] mb-1">Temp</div>
+                      <div className="flex items-center gap-1">
+                        <div className="text-lg font-bold font-mono text-[#B8C1CC]">
+                          {item.temp}
+                        </div>
+                        <div className="text-xs text-[#6B7280]">°C</div>
+                      </div>
+                      {/* Temp Indicator */}
+                      <div className="flex gap-1 mt-1">
+                        {[...Array(5)].map((_, i) => (
+                          <div
+                            key={i}
+                            className="h-1 flex-1 rounded-full"
+                            style={{
+                              backgroundColor: i < Math.floor(item.temp / 20) 
+                                ? item.color 
+                                : 'rgba(255,255,255,0.1)'
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Live Data Indicator */}
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
+                    <motion.div
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="text-xs font-mono"
+                      style={{ color: item.color }}
+                    >
+                      ● LIVE
+                    </motion.div>
+                    <div className="text-xs text-[#6B7280] font-mono">
+                      Streaming
+                    </div>
+                  </div>
+                </div>
+
+                {/* Holographic Scan Lines */}
+                <motion.div
+                  animate={{ y: [0, 100] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg"
+                >
+                  <div 
+                    className="w-full h-0.5 opacity-30"
+                    style={{
+                      background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`
+                    }}
+                  />
+                </motion.div>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Connection Lines in Background */}
+        <svg 
+          className="absolute inset-0 pointer-events-none -z-10"
+          style={{ width: '100%', height: '100%' }}
         >
-          <motion.div
-            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-24 h-24 rounded-full"
-            style={{
-              background: 'radial-gradient(circle, #00E5FF40 0%, transparent 70%)',
+          {equipment.map((_, index) => {
+            if (index === equipment.length - 1) return null;
+            return (
+              <motion.line
+                key={`line-${index}`}
+                x1="50%"
+                y1={`${20 + index * 20}%`}
+                x2="50%"
+                y2={`${20 + (index + 1) * 20}%`}
+                stroke="#00E5FF"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+                opacity="0.2"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ delay: 1 + index * 0.2, duration: 0.5 }}
+              />
+            );
+          })}
+        </svg>
+
+        {/* Ambient Glow */}
+        <div className="absolute inset-0 -z-20 blur-3xl opacity-30">
+          <div 
+            className="absolute top-0 left-1/2 w-64 h-64 rounded-full"
+            style={{ 
+              background: 'radial-gradient(circle, #00E5FF, transparent)',
+              transform: 'translate(-50%, -50%)'
             }}
           />
-          <span className="absolute text-sm font-mono font-bold text-[#00E5FF]">CORE</span>
+          <div 
+            className="absolute bottom-0 right-1/2 w-64 h-64 rounded-full"
+            style={{ 
+              background: 'radial-gradient(circle, #FF6A00, transparent)',
+              transform: 'translate(50%, 50%)'
+            }}
+          />
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

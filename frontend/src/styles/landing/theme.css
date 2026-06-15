@@ -209,6 +209,11 @@
   will-change: transform;
 }
 
+/* 3D Perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .landing-btn-primary,
