@@ -21,22 +21,37 @@ class AutoReportGenerator:
     """
     Monitors equipment and generates reports automatically
     
-    Alert Debouncing: Only generates one report per equipment per cooldown period
-    to prevent spam (e.g., if equipment is CRITICAL for 30 minutes, only 1 report is generated)
+    Severity-Based Alert Debouncing:
+    - CRITICAL: 0 seconds (immediate report, no cooldown)
+    - HIGH: 600 seconds (10 minutes cooldown)
+    - MEDIUM: 1800 seconds (30 minutes cooldown)
+    - LOW: No reports generated
+    
+    This ensures critical issues are always reported immediately while preventing
+    spam from non-critical anomalies.
     """
     
     def __init__(self):
         self.last_check = {}
         self.last_alert_time = {}  # Track when last alert was sent per equipment
-        self.alert_cooldown_seconds = 1800  # 30 minutes cooldown between reports
+        
+        # Differential cooldown based on severity
+        self.cooldown_by_severity = {
+            'CRITICAL': 0,        # No cooldown - immediate report
+            'HIGH': 600,          # 10 minutes
+            'MEDIUM': 1800,       # 30 minutes
+            'LOW': 3600           # 1 hour (but LOW doesn't generate reports anyway)
+        }
         
     async def process_sensor_reading(self, sensor_data: Dict[str, Any]):
         """
         Process incoming sensor reading and auto-generate reports if needed
         
-        Implements alert debouncing: Only generates report if:
-        1. Anomaly is CRITICAL or HIGH severity
-        2. More than cooldown_period (30 min) since last report for this equipment
+        Implements severity-based alert debouncing:
+        - CRITICAL: No cooldown - generates report immediately every time
+        - HIGH: 10-minute cooldown between reports
+        - MEDIUM: 30-minute cooldown between reports
+        - LOW: No reports generated
         
         Args:
             sensor_data: {
@@ -54,30 +69,49 @@ class AutoReportGenerator:
         
         logger.info(f"🚨 Anomaly detected on {equipment_id}: {len(anomalies)} issues")
         
-        # Check severity
+        # Determine highest severity level
         critical_count = sum(1 for a in anomalies if a.get('severity') == 'CRITICAL')
         high_count = sum(1 for a in anomalies if a.get('severity') == 'HIGH')
+        medium_count = sum(1 for a in anomalies if a.get('severity') == 'MEDIUM')
         
-        # Only generate report for CRITICAL or HIGH severity
-        if critical_count == 0 and high_count == 0:
-            logger.info(f"⏭️ Skipping report generation for {equipment_id} - severity too low (MEDIUM/LOW)")
+        if critical_count > 0:
+            highest_severity = 'CRITICAL'
+        elif high_count > 0:
+            highest_severity = 'HIGH'
+        elif medium_count > 0:
+            highest_severity = 'MEDIUM'
+        else:
+            highest_severity = 'LOW'
+        
+        # Only generate reports for CRITICAL, HIGH, or MEDIUM severity
+        if highest_severity == 'LOW':
+            logger.info(f"⏭️ Skipping report generation for {equipment_id} - severity too low (LOW)")
             return
         
-        # Check cooldown period (prevent alert spam)
+        # Check cooldown based on severity (CRITICAL = no cooldown, immediate report)
         current_time = datetime.now()
         last_alert = self.last_alert_time.get(equipment_id)
+        cooldown_seconds = self.cooldown_by_severity[highest_severity]
         
-        if last_alert:
+        if highest_severity == 'CRITICAL':
+            logger.info(f"🚨 CRITICAL anomaly detected on {equipment_id} - bypassing cooldown for immediate report")
+        elif last_alert:
             time_since_last_alert = (current_time - last_alert).total_seconds()
-            if time_since_last_alert < self.alert_cooldown_seconds:
-                remaining = self.alert_cooldown_seconds - time_since_last_alert
-                logger.info(f"⏸️ Cooldown active for {equipment_id} - {int(remaining/60)} minutes remaining until next report")
+            if time_since_last_alert < cooldown_seconds:
+                remaining = cooldown_seconds - time_since_last_alert
+                logger.info(
+                    f"⏸️ Cooldown active for {equipment_id} ({highest_severity}) - "
+                    f"{int(remaining/60)} minutes {int(remaining%60)} seconds remaining until next report"
+                )
                 return
         
         # Update last alert time
         self.last_alert_time[equipment_id] = current_time
         
-        logger.info(f"✅ Cooldown passed for {equipment_id} - generating report")
+        logger.info(
+            f"✅ Generating {highest_severity} report for {equipment_id} "
+            f"(cooldown: {cooldown_seconds/60:.0f} min)"
+        )
         
         # Generate incident if critical or high severity
         await self.create_incident_and_report(sensor_data, anomalies)
@@ -138,15 +172,44 @@ class AutoReportGenerator:
             
             # Create report
             report_id = f"RPT-{uuid.uuid4().hex[:8].upper()}"
+            
+            # Extract structured information
+            recommendations = ai_response.get('recommendations', [])
+            root_causes = ai_response.get('root_causes', [])
+            
+            # Build maintenance decision summaries for different roles
+            supervisor_summary = _create_supervisor_summary(
+                equipment_id, equipment_type, risk_level, anomalies, 
+                root_causes, recommendations
+            )
+            
+            engineer_summary = _create_engineer_summary(
+                equipment_id, equipment_type, anomaly_description,
+                sensor_data, root_causes, recommendations
+            )
+            
             report_data = {
                 "title": f"Equipment Health Alert - {equipment_id}",
                 "risk_level": risk_level,
                 "summary": f"{len(anomalies)} anomalies detected: {anomaly_description}",
                 "content": ai_response.get('answer', ''),
-                "recommendations": ai_response.get('recommendations', []),
-                "root_causes": ai_response.get('root_causes', []),
+                "recommendations": recommendations,
+                "root_causes": root_causes,
                 "agents_used": ai_response.get('agents_used', []),
                 "anomalies": anomalies,
+                # Role-specific decision summaries
+                "supervisor_summary": supervisor_summary,
+                "engineer_summary": engineer_summary,
+                # Metadata for traceability
+                "incident_id": incident_id,
+                "equipment_type": equipment_type,
+                "timestamp": timestamp,
+                "sensor_readings": {
+                    'temperature_c': sensor_data.get('temperature_c'),
+                    'pressure_bar': sensor_data.get('pressure_bar'),
+                    'vibration_mm_s': sensor_data.get('vibration_mm_s'),
+                    'current_a': sensor_data.get('current_a'),
+                },
             }
             
             cursor.execute("""
@@ -253,3 +316,267 @@ def get_report_generator() -> AutoReportGenerator:
     if _generator_instance is None:
         _generator_instance = AutoReportGenerator()
     return _generator_instance
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# Role-Specific Decision Summary Builders
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _create_supervisor_summary(
+    equipment_id: str, 
+    equipment_type: str, 
+    risk_level: str,
+    anomalies: List[Dict],
+    root_causes: List,
+    recommendations: List
+) -> Dict[str, Any]:
+    """
+    Create executive summary for supervisors/managers
+    
+    Focus: Business impact, resource allocation, escalation decisions
+    """
+    # Calculate impact metrics
+    downtime_risk = "IMMEDIATE" if risk_level == "CRITICAL" else "MODERATE" if risk_level == "HIGH" else "LOW"
+    
+    # Parts needed
+    parts_needed = []
+    procurement_required = False
+    for rec in recommendations:
+        if hasattr(rec, 'required_parts') and rec.required_parts:
+            parts_needed.extend(rec.required_parts)
+            procurement_required = True
+    
+    # Time estimate
+    total_estimated_hours = 0
+    for rec in recommendations:
+        if hasattr(rec, 'estimated_time') and rec.estimated_time:
+            # Parse estimated time (e.g., "2-4 hours")
+            time_str = rec.estimated_time.lower()
+            if 'hour' in time_str:
+                nums = [int(s) for s in time_str.split() if s.isdigit()]
+                if nums:
+                    total_estimated_hours += nums[0]
+            elif 'day' in time_str:
+                nums = [int(s) for s in time_str.split() if s.isdigit()]
+                if nums:
+                    total_estimated_hours += nums[0] * 8  # 8 hours per day
+    
+    return {
+        "role": "supervisor",
+        "equipment": f"{equipment_type} - {equipment_id}",
+        "risk_level": risk_level,
+        "downtime_risk": downtime_risk,
+        "requires_immediate_action": risk_level in ["CRITICAL", "HIGH"],
+        "estimated_downtime_hours": total_estimated_hours if total_estimated_hours > 0 else "Unknown",
+        "resource_requirements": {
+            "parts_needed": list(set(parts_needed)),
+            "procurement_required": procurement_required,
+            "specialist_required": risk_level == "CRITICAL",
+        },
+        "business_impact": _assess_business_impact(risk_level, equipment_type),
+        "recommended_escalation": "URGENT - Notify plant manager" if risk_level == "CRITICAL" else 
+                                  "Prioritize for next shift" if risk_level == "HIGH" else 
+                                  "Schedule within 24 hours",
+        "summary_text": _format_supervisor_text(
+            equipment_id, risk_level, anomalies, root_causes, 
+            downtime_risk, procurement_required
+        )
+    }
+
+
+def _create_engineer_summary(
+    equipment_id: str,
+    equipment_type: str,
+    anomaly_description: str,
+    sensor_data: Dict,
+    root_causes: List,
+    recommendations: List
+) -> Dict[str, Any]:
+    """
+    Create technical summary for maintenance engineers
+    
+    Focus: Technical details, troubleshooting steps, safety considerations
+    """
+    # Extract sensor values
+    sensor_summary = []
+    for sensor_key, value in sensor_data.items():
+        if value is not None and sensor_key not in ['equipment_id', 'equipment_type', 'timestamp', 'has_anomaly', 'anomalies']:
+            sensor_summary.append({
+                "parameter": sensor_key.replace('_', ' ').title(),
+                "value": value,
+                "status": "ABNORMAL" if any(sensor_key in a.get('message', '').lower() for a in sensor_data.get('anomalies', [])) else "NORMAL"
+            })
+    
+    # Extract immediate actions
+    immediate_actions = []
+    followup_actions = []
+    for rec in recommendations:
+        if hasattr(rec, 'priority'):
+            if rec.priority in ['P1', 'CRITICAL', 'HIGH']:
+                immediate_actions.append({
+                    "action": rec.action if hasattr(rec, 'action') else str(rec),
+                    "estimated_time": getattr(rec, 'estimated_time', None),
+                    "parts": getattr(rec, 'required_parts', [])
+                })
+            else:
+                followup_actions.append({
+                    "action": rec.action if hasattr(rec, 'action') else str(rec),
+                    "estimated_time": getattr(rec, 'estimated_time', None),
+                })
+    
+    # Safety considerations
+    safety_notes = []
+    if "pressure" in anomaly_description.lower() and "high" in anomaly_description.lower():
+        safety_notes.append("⚠️ High pressure detected - Follow lockout/tagout procedures")
+    if "temperature" in anomaly_description.lower() and ("high" in anomaly_description.lower() or "critical" in anomaly_description.lower()):
+        safety_notes.append("⚠️ High temperature - Allow cooldown period before inspection")
+    if "vibration" in anomaly_description.lower():
+        safety_notes.append("⚠️ Excessive vibration - Check for loose components before operation")
+    
+    return {
+        "role": "engineer",
+        "equipment": f"{equipment_type} - {equipment_id}",
+        "fault_summary": anomaly_description,
+        "sensor_readings": sensor_summary,
+        "probable_root_causes": [
+            {
+                "cause": rc.cause if hasattr(rc, 'cause') else str(rc),
+                "confidence": f"{getattr(rc, 'confidence', 0)*100:.0f}%" if hasattr(rc, 'confidence') else "N/A",
+                "evidence": getattr(rc, 'evidence', [])
+            }
+            for rc in root_causes[:3]  # Top 3 causes
+        ],
+        "immediate_actions": immediate_actions,
+        "followup_actions": followup_actions,
+        "safety_considerations": safety_notes,
+        "tools_required": _extract_tools_from_recommendations(recommendations),
+        "summary_text": _format_engineer_text(
+            equipment_id, anomaly_description, sensor_summary,
+            root_causes, immediate_actions
+        )
+    }
+
+
+def _assess_business_impact(risk_level: str, equipment_type: str) -> str:
+    """Assess business impact based on risk level and equipment criticality"""
+    critical_equipment = ["Rolling Mill", "Blast Furnace", "Continuous Caster"]
+    
+    is_critical_equipment = any(equip.lower() in equipment_type.lower() for equip in critical_equipment)
+    
+    if risk_level == "CRITICAL":
+        if is_critical_equipment:
+            return "HIGH - Production line stoppage imminent. Potential losses >$100K/day"
+        else:
+            return "MEDIUM-HIGH - Support system failure may cause production delays"
+    elif risk_level == "HIGH":
+        if is_critical_equipment:
+            return "MEDIUM-HIGH - Reduced production capacity. Schedule immediate maintenance"
+        else:
+            return "MEDIUM - May impact auxiliary operations"
+    else:
+        return "LOW - Minimal production impact. Schedule routine maintenance"
+
+
+def _format_supervisor_text(
+    equipment_id: str,
+    risk_level: str,
+    anomalies: List[Dict],
+    root_causes: List,
+    downtime_risk: str,
+    procurement_required: bool
+) -> str:
+    """Format text summary for supervisors"""
+    lines = [
+        f"**MAINTENANCE DECISION SUMMARY (SUPERVISOR)**",
+        f"",
+        f"**Equipment:** {equipment_id}",
+        f"**Risk Level:** {risk_level}",
+        f"**Downtime Risk:** {downtime_risk}",
+        f"",
+        f"**Situation:**",
+        f"{len(anomalies)} anomal{'ies' if len(anomalies) != 1 else 'y'} detected requiring attention.",
+    ]
+    
+    if root_causes:
+        top_cause = root_causes[0]
+        cause_text = top_cause.cause if hasattr(top_cause, 'cause') else str(top_cause)
+        lines.append(f"Root cause identified: {cause_text}")
+    
+    lines.append("")
+    lines.append(f"**Decision Required:**")
+    if risk_level == "CRITICAL":
+        lines.append(f"✓ Authorize immediate maintenance (production halt may be required)")
+        lines.append(f"✓ Notify plant manager and safety team")
+    elif risk_level == "HIGH":
+        lines.append(f"✓ Prioritize for next available maintenance window")
+        lines.append(f"✓ Monitor equipment status continuously")
+    else:
+        lines.append(f"✓ Schedule maintenance within 24-48 hours")
+    
+    if procurement_required:
+        lines.append(f"✓ Expedite spare parts procurement")
+    
+    return "\n".join(lines)
+
+
+def _format_engineer_text(
+    equipment_id: str,
+    anomaly_description: str,
+    sensor_summary: List[Dict],
+    root_causes: List,
+    immediate_actions: List[Dict]
+) -> str:
+    """Format text summary for engineers"""
+    lines = [
+        f"**MAINTENANCE DECISION SUMMARY (ENGINEER)**",
+        f"",
+        f"**Equipment:** {equipment_id}",
+        f"**Fault:** {anomaly_description}",
+        f"",
+        f"**Sensor Status:**",
+    ]
+    
+    for sensor in sensor_summary[:4]:  # Top 4 sensors
+        status_icon = "🔴" if sensor["status"] == "ABNORMAL" else "🟢"
+        lines.append(f"  {status_icon} {sensor['parameter']}: {sensor['value']}")
+    
+    if root_causes:
+        lines.append("")
+        lines.append(f"**Probable Root Cause:**")
+        top_cause = root_causes[0]
+        cause_text = top_cause.cause if hasattr(top_cause, 'cause') else str(top_cause)
+        confidence = f"{getattr(top_cause, 'confidence', 0)*100:.0f}%" if hasattr(top_cause, 'confidence') else "N/A"
+        lines.append(f"  {cause_text} (Confidence: {confidence})")
+    
+    if immediate_actions:
+        lines.append("")
+        lines.append(f"**Immediate Actions Required:**")
+        for i, action in enumerate(immediate_actions[:3], 1):
+            lines.append(f"  {i}. {action['action']}")
+            if action.get('estimated_time'):
+                lines.append(f"     Time: {action['estimated_time']}")
+    
+    return "\n".join(lines)
+
+
+def _extract_tools_from_recommendations(recommendations: List) -> List[str]:
+    """Extract required tools from recommendations"""
+    tools = []
+    tool_keywords = {
+        "wrench": "Wrench set",
+        "torque": "Torque wrench",
+        "multimeter": "Multimeter",
+        "inspect": "Inspection tools",
+        "thermography": "Thermal camera",
+        "vibration": "Vibration analyzer",
+        "pressure": "Pressure gauge",
+        "oil": "Oil analysis kit",
+    }
+    
+    for rec in recommendations:
+        rec_text = rec.action.lower() if hasattr(rec, 'action') else str(rec).lower()
+        for keyword, tool in tool_keywords.items():
+            if keyword in rec_text and tool not in tools:
+                tools.append(tool)
+    
+    return tools if tools else ["Standard maintenance toolkit"]
