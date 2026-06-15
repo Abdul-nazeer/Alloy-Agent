@@ -6,7 +6,7 @@ pydantic-settings==2.6.0
 
 # Multi-Agent System (only langgraph + core dependencies)
 langgraph==0.2.45
-langchain-core==0.3.15
+langchain-core==0.3.17
 langchain-openai==0.2.8
 
 # AI/ML (Inference only - no local model)
