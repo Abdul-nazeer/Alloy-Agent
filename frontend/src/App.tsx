@@ -12,7 +12,7 @@ import AlertsPanel from './components/AlertsPanel';
 import SparePartsInventory from './components/SparePartsInventory';
 import HistoricalDataUpload from './components/HistoricalDataUpload';
 import IndustrialBackground from './components/IndustrialBackground';
-import { Activity, Clock, Bell } from 'lucide-react';
+import { Clock, Bell } from 'lucide-react';
 import { alertsAPI } from './api/client';
 
 function AppContent() {

@@ -198,11 +198,7 @@ export default function PDFViewerPanel({
         {!error && (
           <div className="flex justify-center">
             <Document
-              file={{
-                url: documentUrl,
-                httpHeaders: {},
-                withCredentials: false
-              }}
+              file={documentUrl}
               options={{
                 cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
                 cMapPacked: true,

@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function IndustrialBackground() {
   return (
     <div className="industrial-background">

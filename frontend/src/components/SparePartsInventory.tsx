@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { Package, AlertTriangle, TrendingUp, DollarSign, Clock, RefreshCw } from 'lucide-react';
 import { sparePartsAPI } from '../api/client';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 interface SparePart {
   part_id: string;
   part_name: string;

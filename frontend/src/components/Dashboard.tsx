@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { equipmentAPI, type Equipment } from '../api/client';
 import { Activity, Zap } from 'lucide-react';
-import axios from 'axios';
 import ProgressToast from './ProgressToast';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app';
@@ -21,7 +20,6 @@ export default function Dashboard({ onEquipmentSelect, equipmentFilter, onNaviga
   const [triggeringAnomaly, setTriggeringAnomaly] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [progressSteps, setProgressSteps] = useState<any[]>([]);
-  const [currentEquipmentId, setCurrentEquipmentId] = useState<string>('');
 
   useEffect(() => {
     loadEquipment();
@@ -111,7 +109,6 @@ export default function Dashboard({ onEquipmentSelect, equipmentFilter, onNaviga
   const triggerDemoAnomaly = async () => {
     try {
       setTriggeringAnomaly(true);
-      setCurrentEquipmentId('AC-001');
       
       // Initialize progress steps
       const initialSteps = [

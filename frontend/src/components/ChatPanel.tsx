@@ -10,10 +10,12 @@ interface Message {
   timestamp: Date;
   citations?: Array<{ 
     document?: string;
+    doc_name?: string;  // Alternative field name
     source?: string;  // For backward compatibility
     section?: string;
     pages?: number[];
     page?: number;  // For backward compatibility
+    bboxes?: any[];  // Bounding boxes for PDF highlights
   }>;
 }
 

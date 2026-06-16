@@ -277,7 +277,9 @@ export default function DocumentsView() {
       {/* PDF Viewer Modal */}
       {selectedPDF && (
         <PDFViewerModal
-          filename={selectedPDF}
+          isOpen={true}
+          documentName={selectedPDF}
+          documentUrl={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/rag/pdf/${selectedPDF}`}
           onClose={() => setSelectedPDF(null)}
         />
       )}
