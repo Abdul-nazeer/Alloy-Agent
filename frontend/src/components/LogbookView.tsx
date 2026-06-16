@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, RefreshCw, Download } from 'lucide-react';
+import { ChevronDown, ChevronRight, RefreshCw } from 'lucide-react';
 import { reportsAPI } from '../api/client';
 
 interface LogEntry {
@@ -20,11 +20,11 @@ interface LogEntry {
 }
 
 // Simple markdown parser for logbook text
-function parseMarkdown(text: string): JSX.Element {
+function parseMarkdown(text: string): React.ReactElement {
   if (!text) return <></>;
   
   const lines = text.split('\n');
-  const elements: JSX.Element[] = [];
+  const elements: React.ReactElement[] = [];
   
   lines.forEach((line, idx) => {
     // Headers (##)
@@ -86,7 +86,6 @@ export default function LogbookView() {
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [equipmentFilter, setEquipmentFilter] = useState<string>('All Equipment');
-  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadLogbook();

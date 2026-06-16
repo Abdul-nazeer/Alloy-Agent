@@ -98,12 +98,12 @@ export default function ReportsView() {
     `;
 
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: 10 as number,
       filename: `report-${report.equipment_id}-${new Date().toISOString().split('T')[0]}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+    } as any;
 
     html2pdf().set(opt).from(htmlContent).save();
   };
