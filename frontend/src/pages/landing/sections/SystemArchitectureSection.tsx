@@ -48,7 +48,7 @@ export default function SystemArchitectureSection() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 + 0.05 }}
                     className="w-0.5 h-8 origin-top"
-                    style={{ background: 'linear-gradient(180deg, #00E5FF 0%, #FF6A00 100%)' }}
+                    style={{ background: 'linear-gradient(180deg, #00E5FF 0%, #00E5FF 100%)' }}
                   />
                 </div>
               )}

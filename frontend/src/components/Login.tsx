@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useAuth, type UserRole } from '../contexts/AuthContext';
-import { Activity } from 'lucide-react';
+import { Activity, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [selectedRole, setSelectedRole] = useState<UserRole>('technician');
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,6 +114,21 @@ export default function Login() {
             }}
           >
             Enter System →
+          </button>
+
+          {/* Back to Home Button */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="w-full py-3 rounded-sm font-mono text-sm tracking-wide transition-all flex items-center justify-center gap-2"
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid var(--border-default)',
+              color: 'var(--text-secondary)'
+            }}
+          >
+            <Home className="w-4 h-4" />
+            <span>Back to Home</span>
           </button>
         </form>
 

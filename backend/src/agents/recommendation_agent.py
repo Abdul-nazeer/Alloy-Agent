@@ -115,7 +115,7 @@ def recommendation_node(state: AgentState) -> AgentState:
     )
     
     try:
-        recommendation_output = llm.generate(prompt, max_tokens=800, temperature=0.3)
+        recommendation_output = llm.generate(prompt, max_tokens=1200, temperature=0.3)
         
         # Step 4: Parse recommendations
         recommendations = _parse_recommendations(recommendation_output)

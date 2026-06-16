@@ -102,42 +102,43 @@ def supervisor_node(state: AgentState) -> AgentState:
 def _fallback_routing(state: AgentState) -> str:
     """
     Deterministic fallback routing when LLM routing fails.
+    
+    STRICT RULE: Chat queries go to conversational (RAG only).
+    Only route to diagnosis/anomaly if:
+    1. Explicit equipment ID provided (AC-001, CF-002, etc.)
+    2. User clicked equipment card (sensor_readings present)
+    3. User explicitly asked to "detect anomaly" or "diagnose"
     """
     query_lower = state["query"].lower()
     completed = state.get("completed_agents", [])
+    has_sensor_data = bool(state.get("sensor_readings"))
+    has_equipment_id = bool(state.get("equipment_id"))
     
-    # Check for conversational queries
-    greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon"]
-    general_questions = ["what can you do", "capabilities", "help", "how do you work", "what are you"]
-    status_checks = ["status", "check status", "how is", "tell me about", "what's happening"]
+    # Check for explicit diagnostic requests
+    explicit_diagnosis_keywords = [
+        "detect anomaly", "detect anomalies", "check for issues", 
+        "run diagnosis", "diagnose equipment", "analyze sensor",
+        "check sensor", "detect fault"
+    ]
+    is_explicit_diagnosis = any(kw in query_lower for kw in explicit_diagnosis_keywords)
     
-    # Route to conversational for greetings, general questions, or status checks
-    if (any(g in query_lower for g in greetings) or 
-        any(q in query_lower for q in general_questions) or
-        any(s in query_lower for s in status_checks)):
-        return "conversational"
+    # Route to anomaly/diagnosis ONLY if:
+    # - Has sensor data (clicked equipment card) OR
+    # - Has equipment ID AND explicit diagnosis request
+    should_diagnose = (
+        (has_sensor_data and has_equipment_id) or 
+        (has_equipment_id and is_explicit_diagnosis)
+    )
     
-    # If query is very short and no sensor data → conversational
-    if len(query_lower.split()) <= 2 and not state.get("sensor_readings"):
-        return "conversational"
-    
-    # Only route to anomaly if explicitly asking for anomaly detection
-    anomaly_keywords = ["detect anomalies", "check for issues", "analyze sensors", "any problems", "alert"]
-    if any(kw in query_lower for kw in anomaly_keywords):
-        if state.get("sensor_readings") and "anomaly" not in completed:
+    if should_diagnose:
+        if "anomaly" not in completed:
             return "anomaly"
-    
-    # If we have anomalies or query asks "why" → diagnosis
-    if (state.get("anomalies_detected") or 
-        any(word in query_lower for word in ["why", "cause", "diagnose", "wrong", "failure"])):
-        if "diagnosis_agent" not in completed:
+        elif "diagnosis_agent" not in completed:
             return "diagnosis_agent"
+        elif "recommendation" not in completed:
+            return "recommendation"
     
-    # If we have diagnosis → recommendation
-    if state.get("diagnosis") and "recommendation" not in completed:
-        return "recommendation"
-    
-    # Default → conversational (changed from report)
+    # Everything else goes to conversational (RAG knowledge base)
     return "conversational"
 
 
@@ -266,6 +267,18 @@ def run_agent_graph(state: AgentState, session_id: str = "default") -> AgentStat
     try:
         # Run graph with checkpointing
         config = {"configurable": {"thread_id": session_id}}
+        
+        # Retrieve previous conversation history from checkpointer
+        try:
+            previous_checkpoint = _memory.get(config)
+            if previous_checkpoint and "messages" in previous_checkpoint:
+                # Merge previous messages into current state
+                previous_messages = previous_checkpoint.get("messages", [])
+                if previous_messages:
+                    logger.info(f"📚 Retrieved {len(previous_messages)} previous messages from session {session_id}")
+                    state["messages"] = previous_messages + state.get("messages", [])
+        except Exception as e:
+            logger.warning(f"Could not retrieve previous messages: {e}")
         
         logger.info(f"Starting graph execution (session: {session_id})")
         

@@ -81,21 +81,21 @@ export default function FeaturesSection() {
             icon={<Database className="w-6 h-6" />}
             title="Operations Logbook"
             description="Auto-logs everything - incidents, diagnoses, repairs. Full timestamps and action history."
-            color="#00E5FF"
+            color="#FFFFFF"
           />
 
           <SecondaryFeature
             icon={<TrendingUp className="w-6 h-6" />}
             title="Historical Analysis"
             description="Trained on 845K records from NASA C-MAPSS. Spots patterns and predicts failures."
-            color="#FF6A00"
+            color="#FFFFFF"
           />
 
           <SecondaryFeature
             icon={<Package className="w-6 h-6" />}
             title="Parts Inventory"
             description="Track what's in stock, what's low, what you need. Integrated with repair workflows."
-            color="#00FF85"
+            color="#FFFFFF"
           />
         </motion.div>
 
@@ -109,7 +109,7 @@ export default function FeaturesSection() {
         >
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
-              <div className="inline-block px-4 py-2 rounded-full mb-4" style={{ backgroundColor: '#FF6A0020', border: '1px solid #FF6A00', color: '#FF6A00' }}>
+              <div className="inline-block px-4 py-2 rounded-full mb-4" style={{ backgroundColor: '#00E5FF20', border: '1px solid #00E5FF', color: '#00E5FF' }}>
                 <span className="text-xs font-mono font-bold">FLAGSHIP FEATURE</span>
               </div>
               <h3 className="text-3xl font-bold text-white mb-4">
@@ -130,7 +130,7 @@ export default function FeaturesSection() {
             <div className="landing-glass rounded-xl p-6 border border-[rgba(255,106,0,0.3)]">
               <div className="space-y-4 font-mono text-sm">
                 <div>
-                  <div className="text-[#FF6A00] font-bold mb-2">📋 INCIDENT DETAILS</div>
+                  <div className="text-[#00E5FF] font-bold mb-2">📋 INCIDENT DETAILS</div>
                   <div className="text-[#B8C1CC] text-xs">
                     Alert: 3 anomalies detected<br/>
                     Equipment: Air Compressor AC-001<br/>
@@ -248,8 +248,8 @@ function SecondaryFeature({
 function ReportFeature({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-2">
-      <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#FF6A0020' }}>
-        <span className="text-xs" style={{ color: '#FF6A00' }}>✓</span>
+      <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: '#00E5FF20' }}>
+        <span className="text-xs" style={{ color: '#00E5FF' }}>✓</span>
       </div>
       <span className="text-sm text-[#B8C1CC]">{text}</span>
     </div>

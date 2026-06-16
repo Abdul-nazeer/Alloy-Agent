@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Particles from '@tsparticles/react';
-import { Play, Factory, Settings, Thermometer, Wind, Wrench, BarChart3, Bot, Zap } from 'lucide-react';
+import { Factory, Settings, Thermometer, Wind, Wrench, BarChart3, Bot, Zap } from 'lucide-react';
 
 interface HeroSectionProps {
   onEnterDashboard: () => void;
@@ -175,7 +175,7 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
             fpsLimit: 60,
             particles: {
               color: {
-                value: ["#00E5FF", "#FF6A00"],
+                value: ["#00E5FF", "#00E5FF"],
               },
               links: {
                 color: "#00E5FF",
@@ -215,31 +215,6 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
         />
       </div>
 
-      {/* Orange Sparks */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 rounded-full"
-            style={{
-              background: '#FF6A00',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              boxShadow: '0 0 10px #FF6A00',
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1.5, 0],
-            }}
-            transition={{
-              duration: 2 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
-
       {/* Content Container */}
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6 lg:px-12">
@@ -252,16 +227,7 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               className="space-y-8"
             >
               {/* Title with Blinking Cursor */}
-              <div className="space-y-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  className="inline-block px-4 py-2 rounded-full landing-glass border border-[rgba(0,229,255,0.3)]"
-                >
-                  <span className="text-sm font-mono text-[#00E5FF]">● SYSTEM ONLINE</span>
-                </motion.div>
-
+              <div className="space-y-4" style={{ paddingTop: '52px' }}>
                 <h1 
                   className="text-6xl lg:text-8xl xl:text-9xl font-black landing-heading"
                   style={{ 
@@ -295,7 +261,7 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               </div>
 
               {/* Buttons */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="flex flex-wrap gap-4">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -308,15 +274,6 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                       <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                     </svg>
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="landing-btn-secondary flex items-center gap-2 text-lg"
-                  >
-                    <Play className="w-5 h-5" />
-                    <span>Watch Failure Simulation</span>
                   </motion.button>
                 </div>
 
@@ -343,7 +300,7 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
-                className="grid grid-cols-2 lg:grid-cols-5 gap-4 pt-8"
+                className="grid grid-cols-2 lg:grid-cols-5 gap-6 pt-12 pb-24 max-w-4xl"
               >
                 <StatCounter label="Equipment Online" value={counters.equipment} />
                 <StatCounter label="AI Agents" value={counters.agents} />
@@ -374,15 +331,15 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
-          className="flex flex-col items-center gap-2"
+          className="flex flex-col items-center gap-3"
         >
-          <span className="text-xs font-mono text-[#6B7280] uppercase tracking-wider">Scroll to Explore</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-[#00E5FF]">
+          <span className="text-sm font-mono text-[#B8C1CC] uppercase tracking-wider">Scroll to Explore</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#00E5FF]">
             <path d="M12 5v14m0 0l-7-7m7 7l7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </motion.div>
@@ -410,13 +367,13 @@ function HolographicPlant() {
 
   // Equipment/Technology icons positioned on radar - Using Lucide Icons
   const radarIcons = [
-    { id: 1, angle: 30, radius: 0.7, Icon: Factory, label: 'Blast Furnace', color: '#FF6A00' },
+    { id: 1, angle: 30, radius: 0.7, Icon: Factory, label: 'Blast Furnace', color: '#00E5FF' },
     { id: 2, angle: 80, radius: 0.5, Icon: Settings, label: 'Compressor', color: '#00E5FF' },
     { id: 3, angle: 135, radius: 0.8, Icon: Thermometer, label: 'Sensors', color: '#00FF85' },
     { id: 4, angle: 170, radius: 0.4, Icon: Wind, label: 'Cooling', color: '#00E5FF' },
     { id: 5, angle: 215, radius: 0.65, Icon: Wrench, label: 'Maintenance', color: '#FFC107' },
     { id: 6, angle: 260, radius: 0.55, Icon: BarChart3, label: 'Analytics', color: '#00E5FF' },
-    { id: 7, angle: 310, radius: 0.75, Icon: Bot, label: 'AI Agent', color: '#FF6A00' },
+    { id: 7, angle: 310, radius: 0.75, Icon: Bot, label: 'AI Agent', color: '#00E5FF' },
     { id: 8, angle: 350, radius: 0.45, Icon: Zap, label: 'Power', color: '#00FF85' },
   ];
 

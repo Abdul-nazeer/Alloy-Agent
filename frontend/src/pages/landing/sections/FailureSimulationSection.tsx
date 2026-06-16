@@ -7,7 +7,7 @@ export default function FailureSimulationSection() {
 
   const timeline = [
     { time: '08:42', event: 'Sensor Spike Detected', color: '#FFC107' },
-    { time: '08:43', event: 'Anomaly Confirmed', color: '#FF6A00' },
+    { time: '08:43', event: 'Anomaly Confirmed', color: '#00E5FF' },
     { time: '08:44', event: 'Root Cause Identified', color: '#FF3D3D' },
     { time: '08:45', event: 'Maintenance Plan Generated', color: '#00E5FF' },
     { time: '08:46', event: 'Engineer Notified', color: '#00FF85' },

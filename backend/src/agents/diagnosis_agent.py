@@ -81,7 +81,7 @@ def diagnosis_node(state: AgentState) -> AgentState:
     
     # Step 4: LLM diagnosis
     try:
-        diagnosis_output = llm.generate(prompt, max_tokens=600, temperature=0.2)
+        diagnosis_output = llm.generate(prompt, max_tokens=1200, temperature=0.2)
         
         # Step 5: Parse structured output
         parsed = _parse_diagnosis_output(diagnosis_output)

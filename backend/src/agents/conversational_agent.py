@@ -23,7 +23,8 @@ def conversational_node(state: AgentState) -> AgentState:
     Handle conversational queries (greetings, general questions, status checks).
     
     Does NOT trigger diagnostic workflow - just responds naturally.
-    Includes guardrails to stay within industrial maintenance domain.
+    This is for CHAT ONLY - uses RAG for knowledge-based answers.
+    Sensor data analysis should ONLY happen through anomaly/diagnosis agents.
     """
     logger.info("💬 Conversational Agent executing...")
     
@@ -32,23 +33,32 @@ def conversational_node(state: AgentState) -> AgentState:
         history = state.get("messages", [])
         query_lower = query.lower()
         
-        # Check if this is a status check with equipment data
-        is_status_check = any(kw in query_lower for kw in ["status", "check", "how is", "tell me about"])
-        equipment_id = state.get("equipment_id")
-        sensor_readings = state.get("sensor_readings", [])
+        # Guardrail: STRICT - Chat is for knowledge only, NOT for sensor analysis
+        # Block any queries that look like they want anomaly detection or diagnosis
+        diagnosis_keywords = ['sensor', 'reading', 'current', 'now', 'detect', 'anomaly', 'diagnose', 'analyze', 'check status']
+        is_diagnosis_query = any(kw in query_lower for kw in diagnosis_keywords)
         
-        # Guardrail: Check if query is completely off-topic
-        # Equipment-related keywords
+        if is_diagnosis_query:
+            diagnosis_redirect = (
+                "I can provide general maintenance knowledge, but for real-time sensor analysis and diagnostics, "
+                "please click on an equipment card or use the 'Detect Anomaly' button. "
+                "That will trigger the full diagnostic workflow with sensor data analysis."
+            )
+            state["final_answer"] = diagnosis_redirect
+            state["completed_agents"].append("conversational")
+            state["messages"].append({
+                "agent": "conversational",
+                "content": diagnosis_redirect
+            })
+            logger.info("✅ Diagnosis query blocked - redirecting to anomaly detection")
+            return state
+        
+        # Equipment-related keywords for RAG queries (general knowledge ONLY)
         equipment_keywords = [
             'equipment', 'machine', 'compressor', 'motor', 'fan', 'mill', 'conveyor',
-            'sensor', 'temperature', 'pressure', 'vibration', 'rpm', 'maintenance',
-            'repair', 'diagnose', 'fault', 'failure', 'anomaly', 'alert', 'breakdown',
+            'maintenance', 'repair', 'procedure', 'manual', 'how to', 'what is',
             'lubrication', 'bearing', 'valve', 'pump', 'turbine', 'hydraulic',
-            'monitor', 'predict', 'preventive', 'corrective', 'inspection',
-            'AC-', 'CF-', 'RM-', 'CM-',  # Equipment ID patterns
-            'status', 'check', 'how is',  # Status check keywords
-            'recommendation', 'action', 'repair', 'fix', 'diagnosis', 'analysis',  # Added for progress clicks
-            'show', 'tell', 'give'  # Action verbs for requesting information
+            'preventive', 'corrective', 'inspection', 'how', 'what', 'why', 'when'
         ]
         
         # Greeting keywords (allowed)
@@ -58,7 +68,7 @@ def conversational_node(state: AgentState) -> AgentState:
         capability_keywords = ['what can you', 'help', 'capabilities', 'what do you do', 'who are you']
         
         # Document-related keywords (asking about PDFs, manuals, uploaded files)
-        document_keywords = ['pdf', 'document', 'manual', 'file', 'uploaded', 'this document', 'paper', 'specification', 'datasheet']
+        document_keywords = ['pdf', 'document', 'manual', 'file', 'uploaded', 'this document', 'paper', 'specification', 'datasheet', 'in the', 'about the']
         
         # Check if it's a greeting or capability question
         is_greeting = any(g in query_lower for g in greeting_keywords)
@@ -70,57 +80,27 @@ def conversational_node(state: AgentState) -> AgentState:
         word_count = len(query.split())
         
         # Guardrail: Reject completely off-topic questions
-        # Allow: greetings, capability questions, equipment questions, document questions
-        if not (is_greeting or is_capability or is_equipment_related or is_document_query) and word_count > 2:
-            # This is likely an off-topic question
-            off_topic_response = (
-                "I'm specialized in industrial equipment maintenance and can only help with topics like "
-                "equipment diagnostics, sensor analysis, maintenance procedures, and operational issues. "
-                "Could you ask me something about your industrial equipment or maintenance needs?"
-            )
-            state["final_answer"] = off_topic_response
-            state["completed_agents"].append("conversational")
-            state["messages"].append({
-                "agent": "conversational",
-                "content": off_topic_response
-            })
-            logger.info("✅ Guardrail triggered - off-topic query rejected")
-            return state
+        if not (is_greeting or is_capability or is_equipment_related or is_document_query):
+            if word_count > 2 and word_count < 20:
+                technical_terms = ['system', 'data', 'information', 'details', 'explain', 'describe', 'show', 'tell']
+                has_technical_term = any(term in query_lower for term in technical_terms)
+                
+                if not has_technical_term:
+                    off_topic_response = (
+                        "I'm specialized in industrial equipment maintenance and can only help with topics like "
+                        "equipment diagnostics, sensor analysis, maintenance procedures, and operational issues. "
+                        "Could you ask me something about your industrial equipment or maintenance needs?"
+                    )
+                    state["final_answer"] = off_topic_response
+                    state["completed_agents"].append("conversational")
+                    state["messages"].append({
+                        "agent": "conversational",
+                        "content": off_topic_response
+                    })
+                    logger.info("✅ Guardrail triggered - off-topic query rejected")
+                    return state
         
-        # Special handling for status checks with sensor data
-        if is_status_check and equipment_id and sensor_readings:
-            logger.info(f"📊 Status check for {equipment_id} with sensor data")
-            
-            # Format sensor readings nicely
-            sensor_summary = []
-            for reading in sensor_readings[:5]:  # Limit to 5 sensors
-                sensor_summary.append(
-                    f"- {reading.sensor_type}: {reading.value:.2f} {reading.unit}"
-                )
-            
-            status_response = f"""Current status of {equipment_id}:
-
-{chr(10).join(sensor_summary)}
-
-The equipment is currently operating. For detailed anomaly analysis, ask me to "detect anomalies" or "check for issues"."""
-            
-            state["final_answer"] = status_response
-            state["completed_agents"].append("conversational")
-            state["messages"].append({
-                "agent": "conversational",
-                "content": status_response
-            })
-            logger.info("✅ Status summary provided")
-            return state
-        
-        # Determine if RAG should be used
-        # Always use RAG for document-related queries (pdf, document, manual, etc.)
-        document_keywords = ['pdf', 'document', 'manual', 'file', 'uploaded', 'this document', 'paper']
-        is_document_query = any(k in query_lower for k in document_keywords)
-        
-        # Fetch relevant knowledge from RAG if:
-        # 1. Equipment-related query, OR
-        # 2. Document-related query (user asking about PDFs/manuals)
+        # Fetch relevant knowledge from RAG if equipment/document related
         rag_context = ""
         should_use_rag = (is_equipment_related or is_document_query) and RAG_AVAILABLE
         
@@ -132,7 +112,6 @@ The equipment is currently operating. For detailed anomaly analysis, ask me to "
                 
                 if rag_results and rag_results.get("context"):
                     rag_context = rag_results["context"]
-                    # Add citations to state
                     if rag_results.get("sources"):
                         state["citations"] = rag_results["sources"]
                     logger.info(f"✅ Found {len(rag_results.get('sources', []))} relevant documents")
@@ -140,25 +119,23 @@ The equipment is currently operating. For detailed anomaly analysis, ask me to "
                     logger.info("No relevant documents found in knowledge base")
             except Exception as e:
                 logger.warning(f"RAG search failed: {e}")
-                # Continue without RAG context
         
         # Build prompt for in-scope queries
         if rag_context:
             # Enhanced prompt with RAG context AND conversation history for follow-ups
             history_text = ""
             if history and len(history) > 0:
-                # Format last 3 exchanges for context
-                recent_history = history[-6:]  # Last 3 Q&A pairs
+                recent_history = history[-6:]
                 history_lines = []
                 for msg in recent_history:
                     agent = msg.get("agent", "assistant")
                     content = msg.get("content", "")
                     if agent == "conversational":
-                        history_lines.append(f"Assistant: {content[:200]}")  # Truncate long responses
+                        history_lines.append(f"Assistant: {content[:200]}")
                 if history_lines:
-                    history_text = "\n\nPREVIOUS CONVERSATION:\n" + "\n".join(history_lines[-4:])  # Last 2 exchanges
+                    history_text = "\n\nPREVIOUS CONVERSATION:\n" + "\n".join(history_lines[-4:])
             
-            prompt = f"""You are Alloy Agent, an AI maintenance assistant.
+            prompt = f"""You are Alloy Agent, an AI maintenance assistant specializing in industrial equipment.
 
 USER QUERY: {query}
 
@@ -166,15 +143,17 @@ KNOWLEDGE BASE INFORMATION:
 {rag_context}{history_text}
 
 INSTRUCTIONS:
-- Answer the question DIRECTLY using the knowledge base
-- If this is a follow-up question (e.g., "tell me more", "what about X"), use conversation history for context
-- Be CONCISE - 2-4 sentences maximum
-- NO greetings or introductions (unless user said "Hi")
-- Jump straight to the answer
+- Answer using ONLY the knowledge base information provided
+- Be specific and technical - cite procedures, specifications, maintenance intervals
+- If this is a follow-up question, use conversation history for context
+- Keep answers focused: 3-5 sentences for general questions, more detail for procedures
+- DO NOT analyze sensor data or diagnose current faults (that's for diagnosis mode)
+- Focus on maintenance knowledge, procedures, and best practices
+- If asked about current equipment status, tell user to click equipment card or use "Detect Anomaly" button
 
 Answer:"""
         else:
-            # Standard prompt without RAG
+            # Standard conversational prompt without RAG
             prompt = CONVERSATIONAL_PROMPT.format(
                 query=query,
                 history=str(history[-5:]) if history else "None"
@@ -182,7 +161,7 @@ Answer:"""
         
         # Generate response
         llm = get_llm_client()
-        response = llm.generate(prompt, max_tokens=200, temperature=0.7)
+        response = llm.generate(prompt, max_tokens=800, temperature=0.7)
         
         # Update state
         state["final_answer"] = response.strip()

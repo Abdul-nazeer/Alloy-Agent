@@ -348,7 +348,8 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 flex justify-center">
+        <div className="w-full max-w-3xl space-y-4">
         {messages.map((message, idx) => (
           <div
             key={idx}
@@ -423,11 +424,6 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
                                 {pages && (
                                   <span>📄 Page{citation.pages && citation.pages.length > 1 ? 's' : ''} {pages}</span>
                                 )}
-                                {citation.bboxes && citation.bboxes.length > 0 && (
-                                  <span className="px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(0, 229, 255, 0.2)', color: 'var(--accent-cyan)' }}>
-                                    ✨ Highlighted
-                                  </span>
-                                )}
                               </div>
                             </div>
                           </div>
@@ -472,13 +468,15 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
         )}
 
         <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Input Area with Attachment */}
       <div 
-        className="glass-card p-4 border-t"
+        className="glass-card p-4 border-t flex justify-center"
         style={{ borderColor: 'var(--border-default)' }}
       >
+        <div className="w-full max-w-3xl">
         {/* Attached Files Preview */}
         {attachedFiles.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
@@ -503,13 +501,13 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="flex items-end space-x-2">
+        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           {/* Attach Button */}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="glass-card p-3 rounded-lg hover-scale transition-smooth"
-            style={{ color: 'var(--text-secondary)' }}
+            className="glass-card p-3 rounded-lg hover-scale transition-smooth flex-shrink-0"
+            style={{ color: 'var(--text-secondary)', height: '48px' }}
             title="Upload PDF to knowledge base and query it"
             disabled={uploadingPDF || loading}
           >
@@ -542,9 +540,9 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
             style={{
               border: '1px solid var(--border-default)',
               color: 'var(--text-primary)',
-              minHeight: '60px'
+              height: '48px',
+              maxHeight: '120px'
             }}
-            rows={2}
             disabled={loading}
             onFocus={(e) => {
               e.target.style.borderColor = 'var(--accent-cyan)';
@@ -556,18 +554,38 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
             }}
           />
           
-          {/* Send Button - Floating Gradient */}
+          {/* Send Button */}
           <button
             type="submit"
             disabled={loading || uploadingPDF || !input.trim()}
-            className="btn-primary p-4 rounded-lg hover-scale transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-shrink-0"
             style={{
-              background: 'linear-gradient(135deg, var(--accent-cyan), #0099CC)',
-              color: '#000',
-              boxShadow: '0 4px 12px rgba(0, 229, 255, 0.3)'
+              background: loading || uploadingPDF || !input.trim() 
+                ? '#666666' 
+                : 'linear-gradient(135deg, #00E5FF, #0099CC)',
+              color: '#FFFFFF',
+              boxShadow: '0 4px 12px rgba(0, 229, 255, 0.3)',
+              height: '48px',
+              width: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: loading || uploadingPDF || !input.trim() ? 'not-allowed' : 'pointer',
+              opacity: loading || uploadingPDF || !input.trim() ? 0.5 : 1
             }}
+            title="Send message"
           >
-            <Send className="w-5 h-5" />
+            <Send 
+              className="w-6 h-6" 
+              style={{ 
+                color: '#FFFFFF', 
+                fill: 'none', 
+                stroke: '#FFFFFF', 
+                strokeWidth: 2 
+              }} 
+            />
           </button>
         </form>
         
@@ -575,6 +593,7 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
         <div className="mt-2 flex items-center justify-between text-2xs text-mono" style={{ color: 'var(--text-tertiary)' }}>
           <span>Press Enter to send • Shift+Enter for new line</span>
           <span>📎 Attach PDFs - they'll be indexed automatically for Q&A</span>
+        </div>
         </div>
       </div>
       </div>

@@ -15,7 +15,7 @@ export default function DigitalTwinSection() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'critical': return '#FF3D3D';
-      case 'warning': return '#FF6A00';
+      case 'warning': return '#00E5FF';
       case 'normal': return '#00FF85';
       default: return '#00E5FF';
     }
@@ -90,7 +90,7 @@ export default function DigitalTwinSection() {
               <defs>
                 <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.3" />
-                  <stop offset="50%" stopColor="#FF6A00" stopOpacity="0.5" />
+                  <stop offset="50%" stopColor="#00E5FF" stopOpacity="0.5" />
                   <stop offset="100%" stopColor="#00E5FF" stopOpacity="0.3" />
                 </linearGradient>
               </defs>

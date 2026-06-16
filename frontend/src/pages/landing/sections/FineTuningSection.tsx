@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Brain, Database, Zap, TrendingUp, CheckCircle2, Code } from 'lucide-react';
+import { Brain, Database, Zap, TrendingUp, CheckCircle2, Code, Target, Bolt, DollarSign, Lock } from 'lucide-react';
 import MermaidDiagram from '../../../components/MermaidDiagram';
 
 export default function FineTuningSection() {
@@ -18,7 +18,7 @@ export default function FineTuningSection() {
           className="text-center mb-16"
         >
           <h2 className="text-5xl lg:text-7xl font-black landing-heading mb-6">
-            <span style={{ color: '#00FF85' }}>Fine-Tuned</span>
+            <span style={{ color: '#00E5FF' }}>Fine-Tuned</span>
             <span className="text-white"> Model</span>
           </h2>
           <p className="text-xl text-[#B8C1CC] max-w-3xl mx-auto">
@@ -39,8 +39,8 @@ export default function FineTuningSection() {
             {/* Left: Model Details */}
             <div className="space-y-6">
               <div className="flex items-center gap-4 mb-6">
-                <div className="p-4 rounded-xl bg-[#00FF8520]">
-                  <Brain className="w-10 h-10 text-[#00FF85]" />
+                <div className="p-4 rounded-xl bg-[#00E5FF20]">
+                  <Brain className="w-10 h-10 text-[#00E5FF]" />
                 </div>
                 <div>
                   <h3 className="text-3xl font-bold text-white">Microsoft Phi-3</h3>
@@ -52,38 +52,38 @@ export default function FineTuningSection() {
                 <InfoRow
                   label="Base Model"
                   value="microsoft/Phi-3-mini-4k-instruct"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
                 <InfoRow
                   label="Fine-tuned On"
                   value="NASA C-MAPSS Turbofan Engine Data"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
                 <InfoRow
                   label="Training Records"
                   value="845,730 sensor readings"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
                 <InfoRow
                   label="Context Length"
                   value="4,096 tokens"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
                 <InfoRow
                   label="Training Method"
                   value="LoRA (Low-Rank Adaptation)"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
                 <InfoRow
                   label="HuggingFace Model"
                   value="CodeMasterAbdul/alloy-phi3-steel-maintenance"
-                  color="#00FF85"
+                  color="#00E5FF"
                 />
               </div>
 
-              <div className="mt-6 p-4 rounded-xl bg-[#00FF8510] border border-[#00FF8540]">
+              <div className="mt-6 p-4 rounded-xl bg-[#00E5FF10] border border-[#00E5FF40]">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#00FF85] mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-[#00E5FF] mt-0.5" />
                   <div>
                     <h4 className="font-bold text-white mb-1">Live on HuggingFace</h4>
                     <p className="text-sm text-[#B8C1CC]">
@@ -109,29 +109,29 @@ graph TD
     F --> G[HuggingFace Hub<br/>CodeMasterAbdul/alloy-phi3]
     G --> H[Production Deployment]
     
-    style A fill:#00FF8520,stroke:#00FF85,stroke-width:2px
+    style A fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
     style D fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
-    style E fill:#FF6A0020,stroke:#FF6A00,stroke-width:2px
-    style G fill:#00FF8520,stroke:#00FF85,stroke-width:2px
+    style E fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
+    style G fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
                 `}
                 className="min-h-[400px]"
               />
               
               <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="p-4 rounded-lg bg-[#00FF8510] border border-[#00FF8540]">
-                  <div className="text-2xl font-bold text-[#00FF85] mb-1">50</div>
+                <div className="p-4 rounded-lg bg-[#00E5FF10] border border-[#00E5FF40]">
+                  <div className="text-2xl font-bold text-[#00E5FF] mb-1">50</div>
                   <div className="text-xs text-[#B8C1CC]">Training Epochs</div>
                 </div>
-                <div className="p-4 rounded-lg bg-[#00FF8510] border border-[#00FF8540]">
-                  <div className="text-2xl font-bold text-[#00FF85] mb-1">95%+</div>
+                <div className="p-4 rounded-lg bg-[#00E5FF10] border border-[#00E5FF40]">
+                  <div className="text-2xl font-bold text-[#00E5FF] mb-1">95%+</div>
                   <div className="text-xs text-[#B8C1CC]">Accuracy</div>
                 </div>
-                <div className="p-4 rounded-lg bg-[#00FF8510] border border-[#00FF8540]">
-                  <div className="text-2xl font-bold text-[#00FF85] mb-1">4-bit</div>
+                <div className="p-4 rounded-lg bg-[#00E5FF10] border border-[#00E5FF40]">
+                  <div className="text-2xl font-bold text-[#00E5FF] mb-1">4-bit</div>
                   <div className="text-xs text-[#B8C1CC]">Quantization</div>
                 </div>
-                <div className="p-4 rounded-lg bg-[#00FF8510] border border-[#00FF8540]">
-                  <div className="text-2xl font-bold text-[#00FF85] mb-1">&lt;100ms</div>
+                <div className="p-4 rounded-lg bg-[#00E5FF10] border border-[#00E5FF40]">
+                  <div className="text-2xl font-bold text-[#00E5FF] mb-1">&lt;100ms</div>
                   <div className="text-xs text-[#B8C1CC]">Inference Time</div>
                 </div>
               </div>
@@ -157,7 +157,7 @@ graph TD
               'Multiple operating conditions',
               'Real-world failure scenarios'
             ]}
-            color="#00FF85"
+            color="#00E5FF"
           />
 
           <DatasetCard
@@ -183,7 +183,7 @@ graph TD
               'Efficient token generation',
               'Production-optimized'
             ]}
-            color="#FF6A00"
+            color="#00E5FF"
           />
         </motion.div>
 
@@ -196,7 +196,7 @@ graph TD
           className="landing-glass rounded-2xl p-8 border border-[rgba(0,255,133,0.2)]"
         >
           <div className="flex items-center gap-3 mb-6">
-            <Code className="w-6 h-6 text-[#00FF85]" />
+            <Code className="w-6 h-6 text-[#00E5FF]" />
             <h3 className="text-2xl font-bold text-white">Model Usage Example</h3>
           </div>
 
@@ -233,12 +233,14 @@ response = tokenizer.decode(outputs[0], skip_special_tokens=True)
           </div>
 
           <div className="mt-6 flex flex-wrap gap-4">
-            <button className="px-6 py-3 rounded-lg bg-[#00FF8520] text-[#00FF85] border border-[#00FF8540] font-semibold hover:bg-[#00FF8530] transition-colors">
+            <a 
+              href="https://huggingface.co/CodeMasterAbdul/alloy-phi3-steel-maintenance" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-6 py-3 rounded-lg bg-[#00E5FF20] text-[#00E5FF] border border-[#00E5FF40] font-semibold hover:bg-[#00E5FF30] transition-colors inline-block"
+            >
               View on HuggingFace →
-            </button>
-            <button className="px-6 py-3 rounded-lg bg-[#00E5FF20] text-[#00E5FF] border border-[#00E5FF40] font-semibold hover:bg-[#00E5FF30] transition-colors">
-              Training Notebook →
-            </button>
+            </a>
           </div>
         </motion.div>
 
@@ -255,22 +257,22 @@ response = tokenizer.decode(outputs[0], skip_special_tokens=True)
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <BenefitCard
-              icon="🎯"
+              icon={<Target className="w-8 h-8" />}
               title="Domain Knowledge"
               description="Actually understands maintenance terms and failure patterns - not just generic AI responses"
             />
             <BenefitCard
-              icon="⚡"
+              icon={<Bolt className="w-8 h-8" />}
               title="Way Faster"
               description="3.8B parameters vs 70B+ means sub-100ms responses instead of waiting around"
             />
             <BenefitCard
-              icon="💰"
+              icon={<DollarSign className="w-8 h-8" />}
               title="Cheaper to Run"
               description="Self-host with 4-bit quantization - no expensive API calls eating your budget"
             />
             <BenefitCard
-              icon="🔒"
+              icon={<Lock className="w-8 h-8" />}
               title="Keep Data Private"
               description="Run it on-premise - your maintenance data never leaves your servers"
             />
@@ -340,13 +342,13 @@ function BenefitCard({
   title,
   description,
 }: {
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   description: string;
 }) {
   return (
     <div className="landing-glass rounded-xl p-6 border border-[rgba(255,255,255,0.1)]">
-      <div className="text-4xl mb-3">{icon}</div>
+      <div className="text-[#00E5FF] mb-3">{icon}</div>
       <h4 className="text-lg font-bold text-white mb-2">{title}</h4>
       <p className="text-sm text-[#B8C1CC]">{description}</p>
     </div>

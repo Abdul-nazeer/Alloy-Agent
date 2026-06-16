@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, RefreshCw } from 'lucide-react';
+import { ChevronDown, ChevronRight, RefreshCw, Download } from 'lucide-react';
 import { reportsAPI } from '../api/client';
 
 interface LogEntry {
@@ -19,11 +19,74 @@ interface LogEntry {
   long_term_recommendations?: string;
 }
 
+// Simple markdown parser for logbook text
+function parseMarkdown(text: string): JSX.Element {
+  if (!text) return <></>;
+  
+  const lines = text.split('\n');
+  const elements: JSX.Element[] = [];
+  
+  lines.forEach((line, idx) => {
+    // Headers (##)
+    if (line.startsWith('##')) {
+      const content = line.replace(/^##\s*/, '').replace(/\*\*/g, '');
+      elements.push(
+        <div key={idx} className="font-bold text-base mb-2 mt-3" style={{ color: 'var(--text-primary)' }}>
+          {content}
+        </div>
+      );
+    }
+    // Bold text (**text**)
+    else if (line.includes('**')) {
+      const parts = line.split('**');
+      elements.push(
+        <div key={idx} className="mb-1">
+          {parts.map((part, i) => 
+            i % 2 === 1 ? (
+              <strong key={i} style={{ color: 'var(--text-primary)' }}>{part}</strong>
+            ) : (
+              <span key={i} style={{ color: 'var(--text-secondary)' }}>{part}</span>
+            )
+          )}
+        </div>
+      );
+    }
+    // Bullet points (-)
+    else if (line.trim().startsWith('-')) {
+      const content = line.replace(/^-\s*/, '');
+      elements.push(
+        <div key={idx} className="ml-4 mb-1" style={{ color: 'var(--text-secondary)' }}>
+          • {content}
+        </div>
+      );
+    }
+    // Numbered lists
+    else if (/^\d+\./.test(line.trim())) {
+      elements.push(
+        <div key={idx} className="ml-4 mb-1" style={{ color: 'var(--text-secondary)' }}>
+          {line.trim()}
+        </div>
+      );
+    }
+    // Regular text
+    else if (line.trim()) {
+      elements.push(
+        <div key={idx} className="mb-1" style={{ color: 'var(--text-secondary)' }}>
+          {line}
+        </div>
+      );
+    }
+  });
+  
+  return <div>{elements}</div>;
+}
+
 export default function LogbookView() {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [equipmentFilter, setEquipmentFilter] = useState<string>('All Equipment');
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     loadLogbook();
@@ -240,22 +303,16 @@ export default function LogbookView() {
 
                         <div className="mb-3">
                           <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Fault:</div>
-                          <div 
-                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
-                            style={{ color: 'var(--text-primary)' }}
-                          >
-                            {entry.fault_description || entry.notes}
+                          <div className="text-sm font-sans leading-relaxed">
+                            {parseMarkdown(entry.fault_description || entry.notes)}
                           </div>
                         </div>
 
                         {entry.root_cause && entry.root_cause !== 'N/A' && (
                           <div className="mb-3">
                             <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Root Cause Analysis:</div>
-                            <div 
-                              className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
-                              style={{ color: 'var(--text-primary)' }}
-                            >
-                              {entry.root_cause}
+                            <div className="text-sm font-sans leading-relaxed">
+                              {parseMarkdown(entry.root_cause)}
                             </div>
                           </div>
                         )}
@@ -285,11 +342,8 @@ export default function LogbookView() {
                             style={{ color: 'var(--accent-cyan)', borderColor: 'var(--border-default)' }}>
                             🔧 REPAIR PROCEDURE
                           </div>
-                          <div 
-                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
-                            style={{ color: 'var(--text-secondary)' }}
-                          >
-                            {entry.repair_steps}
+                          <div className="text-sm font-sans leading-relaxed">
+                            {parseMarkdown(entry.repair_steps)}
                           </div>
                         </div>
                       )}
@@ -301,11 +355,8 @@ export default function LogbookView() {
                             style={{ color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' }}>
                             📊 LONG-TERM RECOMMENDATIONS
                           </div>
-                          <div 
-                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
-                            style={{ color: 'var(--text-secondary)' }}
-                          >
-                            {entry.long_term_recommendations}
+                          <div className="text-sm font-sans leading-relaxed">
+                            {parseMarkdown(entry.long_term_recommendations)}
                           </div>
                         </div>
                       )}

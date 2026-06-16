@@ -88,7 +88,7 @@ graph TB
     AG1 --> HF
     
     style Frontend fill:#00E5FF20,stroke:#00E5FF,stroke-width:3px
-    style Backend fill:#FF6A0020,stroke:#FF6A00,stroke-width:3px
+    style Backend fill:#00E5FF20,stroke:#00E5FF,stroke-width:3px
     style AgentLayer fill:#00FF8520,stroke:#00FF85,stroke-width:3px
     style External fill:#00E5FF20,stroke:#00E5FF,stroke-width:3px
             `}
@@ -136,7 +136,7 @@ graph TB
             {/* Backend Layer */}
             <ArchitectureLayer
               title="Backend Layer (FastAPI)"
-              color="#FF6A00"
+              color="#00E5FF"
               icon={<Cpu className="w-6 h-6" />}
               components={[
                 { name: 'RESTful API', detail: '15+ endpoints' },
@@ -152,7 +152,7 @@ graph TB
               <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, delay: 0.5 }}
-                className="text-[#FF6A00]"
+                className="text-[#00E5FF]"
               >
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
                   <path d="M12 5v14m0 0l-7-7m7 7l7-7" stroke="currentColor" strokeWidth="2" />
@@ -202,7 +202,7 @@ graph TB
                 title="Groq API"
                 subtitle="LLM Inference"
                 details={['Llama 3.1 8B', 'Ultra-fast inference', 'Rate-limited API']}
-                color="#FF6A00"
+                color="#00E5FF"
               />
               <ServiceBox
                 icon={<Database className="w-8 h-8" />}

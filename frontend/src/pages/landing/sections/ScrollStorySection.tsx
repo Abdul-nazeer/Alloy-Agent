@@ -24,7 +24,7 @@ export default function ScrollStorySection() {
       title: "Threshold Exceeded",
       subtitle: "AC-001 Bearing Temperature: CRITICAL",
       status: "alert",
-      color: "#FF6A00"
+      color: "#00E5FF"
     },
     {
       title: "ANOMALY DETECTED",
@@ -258,7 +258,7 @@ function MachineDiagram({ status, scene }: { status: string; scene: number }) {
     switch (status) {
       case 'healthy': return '#00FF85';
       case 'warning': return '#FFC107';
-      case 'alert': return '#FF6A00';
+      case 'alert': return '#00E5FF';
       case 'critical': return '#FF3D3D';
       case 'processing':
       case 'diagnosed': return '#00E5FF';

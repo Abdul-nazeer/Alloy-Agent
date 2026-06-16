@@ -2,11 +2,11 @@ import { motion } from 'framer-motion';
 
 const agents = [
   { name: 'Supervisor', role: 'Orchestration', color: '#00E5FF', angle: 0 },
-  { name: 'Anomaly', role: 'Detection', color: '#FF6A00', angle: 60 },
+  { name: 'Anomaly', role: 'Detection', color: '#00E5FF', angle: 60 },
   { name: 'Diagnosis', role: 'Analysis', color: '#00E5FF', angle: 120 },
-  { name: 'Recommendation', role: 'Planning', color: '#FF6A00', angle: 180 },
+  { name: 'Recommendation', role: 'Planning', color: '#00E5FF', angle: 180 },
   { name: 'Report', role: 'Documentation', color: '#00E5FF', angle: 240 },
-  { name: 'Conversational', role: 'Interface', color: '#FF6A00', angle: 300 },
+  { name: 'Conversational', role: 'Interface', color: '#00E5FF', angle: 300 },
 ];
 
 export default function MultiAgentSection() {

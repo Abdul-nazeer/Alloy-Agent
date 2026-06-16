@@ -177,10 +177,10 @@ graph LR
     D --> E[Dashboard Alert]
     
     style A fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
-    style B fill:#FF6A0020,stroke:#FF6A00,stroke-width:2px
-    style C fill:#00FF8520,stroke:#00FF85,stroke-width:2px
+    style B fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
+    style C fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
     style D fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
-    style E fill:#FF6A0020,stroke:#FF6A00,stroke-width:2px
+    style E fill:#00E5FF20,stroke:#00E5FF,stroke-width:2px
               `}
               className="min-h-[200px]"
             />
