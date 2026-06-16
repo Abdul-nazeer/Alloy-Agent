@@ -99,6 +99,21 @@ export const agentAPI = {
   chat: (message: string, sessionId?: string) =>
     api.post<AgentResponse>('/api/agents/chat', { message, session_id: sessionId }),
   
+  chatStream: (message: string, sessionId?: string) => {
+    const url = `${API_BASE_URL}/api/agents/chat/stream`;
+    console.log('🌊 Calling streaming endpoint:', url);
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ 
+        message, 
+        session_id: sessionId || 'default' 
+      }),
+    });
+  },
+  
   checkAnomalies: (equipmentId: string, equipmentType: string, sensorData: any) =>
     api.post<AgentResponse>('/api/agents/check-anomalies', {
       equipment_id: equipmentId,
@@ -146,6 +161,16 @@ export const alertsAPI = {
   markAsRead: (alertId: string) => api.post(`/api/alerts/${alertId}/mark-read`),
   markAllAsRead: () => api.post('/api/alerts/mark-all-read'),
   deleteAlert: (alertId: string) => api.delete(`/api/alerts/${alertId}`),
+};
+
+export const sparePartsAPI = {
+  list: (params?: { equipment_type?: string; status?: string; criticality?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.equipment_type) searchParams.append('equipment_type', params.equipment_type);
+    if (params?.status) searchParams.append('status', params.status);
+    if (params?.criticality) searchParams.append('criticality', params.criticality);
+    return api.get(`/spare-parts?${searchParams}`);
+  },
 };
 
 // Named exports for convenience

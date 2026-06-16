@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Upload, FileText, AlertCircle, CheckCircle, Clock, Database, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -155,155 +156,245 @@ const HistoricalDataUpload: React.FC = () => {
   const typeInfo = getUploadTypeInfo(uploadType);
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Historical Data Import</h2>
-        <p className="text-gray-600">Import historical records and documentation to enhance AI analysis</p>
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="mb-4">
+        <h2 className="text-xs font-mono tracking-widest mb-1" style={{ color: 'var(--accent-cyan)' }}>
+          📤 HISTORICAL DATA IMPORT
+        </h2>
+        <p className="text-2xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+          Import records and documentation to enhance AI analysis
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Upload Form */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload Data</h3>
-
-          {/* Upload Type Selection */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Data Type</label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setUploadType('delays')}
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  uploadType === 'delays'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Delay Logs
-              </button>
-              <button
-                onClick={() => setUploadType('failures')}
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  uploadType === 'failures'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Failure Reports
-              </button>
-              <button
-                onClick={() => setUploadType('maintenance')}
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  uploadType === 'maintenance'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Maintenance Logs
-              </button>
-              <button
-                onClick={() => setUploadType('manuals')}
-                className={`px-4 py-2 rounded-md text-sm font-medium ${
-                  uploadType === 'manuals'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Manuals/SOPs
-              </button>
-            </div>
-          </div>
-
-          {/* Type Info */}
-          <div className="mb-4 p-4 bg-blue-50 rounded-md">
-            <h4 className="text-sm font-semibold text-blue-900 mb-1">{typeInfo.title}</h4>
-            <p className="text-sm text-blue-800 mb-2">{typeInfo.description}</p>
-            <div className="text-xs text-blue-700">
-              <div className="font-semibold mb-1">Format:</div>
-              <div className="font-mono bg-white p-2 rounded">{typeInfo.format}</div>
-              <div className="font-semibold mt-2 mb-1">Example:</div>
-              <div className="font-mono bg-white p-2 rounded text-xs">{typeInfo.example}</div>
-            </div>
-          </div>
-
-          {/* File Upload */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select File {uploadType === 'manuals' ? '(PDF)' : '(CSV or JSON)'}
-            </label>
-            <input
-              id="file-upload"
-              type="file"
-              accept={uploadType === 'manuals' ? '.pdf' : '.csv,.json'}
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-md file:border-0
-                file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
-            />
-            {file && (
-              <p className="mt-2 text-sm text-gray-600">
-                Selected: <span className="font-semibold">{file.name}</span> ({(file.size / 1024).toFixed(1)} KB)
-              </p>
-            )}
-          </div>
-
-          {/* Upload Button */}
-          <button
-            onClick={handleUpload}
-            disabled={!file || uploading}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-              !file || uploading
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-blue-600 hover:bg-blue-700'
-            }`}
+      <div className="grid grid-cols-2 gap-4 flex-1">
+        {/* Left Column - Upload Form */}
+        <div className="flex flex-col">
+          <div 
+            className="rounded-sm p-4 border flex-1"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-default)'
+            }}
           >
-            {uploading ? `Uploading... ${uploadProgress}%` : 'Upload'}
-          </button>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-mono uppercase" style={{ color: 'var(--text-primary)' }}>
+                Upload Data
+              </h3>
+              <Database className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />
+            </div>
 
-          {/* Progress Bar */}
-          {uploading && uploadProgress > 0 && (
-            <div className="mt-2">
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
+            {/* Upload Type Selection */}
+            <div className="mb-4">
+              <label className="block text-2xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                Data Type
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { key: 'delays', label: 'Delay Logs' },
+                  { key: 'failures', label: 'Failure Reports' },
+                  { key: 'maintenance', label: 'Maintenance Logs' },
+                  { key: 'manuals', label: 'Manuals/SOPs' },
+                ].map((type) => (
+                  <button
+                    key={type.key}
+                    onClick={() => setUploadType(type.key as UploadType)}
+                    className="px-3 py-2 rounded-sm text-xs font-mono transition-all"
+                    style={{
+                      backgroundColor: uploadType === type.key ? 'var(--accent-cyan)' : 'var(--bg-elevated)',
+                      color: uploadType === type.key ? '#000' : 'var(--text-primary)',
+                      border: `1px solid ${uploadType === type.key ? 'var(--accent-cyan)' : 'var(--border-default)'}`,
+                    }}
+                  >
+                    {type.label}
+                  </button>
+                ))}
               </div>
             </div>
-          )}
 
-          {/* Message */}
-          {message && (
-            <div
-              className={`mt-4 p-3 rounded-md ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-green-800 border border-green-200'
-                  : 'bg-red-50 text-red-800 border border-red-200'
-              }`}
+            {/* Type Info */}
+            <div 
+              className="mb-4 p-3 rounded-sm border"
+              style={{
+                backgroundColor: 'var(--bg-base)',
+                borderColor: 'var(--accent-cyan)'
+              }}
             >
-              {message.text}
+              <h4 className="text-xs font-mono mb-1" style={{ color: 'var(--accent-cyan)' }}>
+                {typeInfo.title}
+              </h4>
+              <p className="text-2xs font-sans mb-2" style={{ color: 'var(--text-secondary)' }}>
+                {typeInfo.description}
+              </p>
+              <div className="text-2xs">
+                <div className="font-mono uppercase mb-1" style={{ color: 'var(--text-tertiary)' }}>Format:</div>
+                <div 
+                  className="font-mono p-2 rounded-sm mb-2"
+                  style={{ 
+                    backgroundColor: 'var(--bg-elevated)', 
+                    color: 'var(--text-primary)',
+                    fontSize: '10px'
+                  }}
+                >
+                  {typeInfo.format}
+                </div>
+                <div className="font-mono uppercase mb-1" style={{ color: 'var(--text-tertiary)' }}>Example:</div>
+                <div 
+                  className="font-mono p-2 rounded-sm"
+                  style={{ 
+                    backgroundColor: 'var(--bg-elevated)', 
+                    color: 'var(--text-secondary)',
+                    fontSize: '9px',
+                    lineHeight: '1.3'
+                  }}
+                >
+                  {typeInfo.example}
+                </div>
+              </div>
             </div>
-          )}
+
+            {/* File Upload */}
+            <div className="mb-4">
+              <label className="block text-2xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                Select File {uploadType === 'manuals' ? '(PDF)' : '(CSV or JSON)'}
+              </label>
+              <div className="relative">
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept={uploadType === 'manuals' ? '.pdf' : '.csv,.json'}
+                  onChange={handleFileChange}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                <div 
+                  className="px-3 py-2 rounded-sm border flex items-center justify-between"
+                  style={{
+                    backgroundColor: 'var(--bg-elevated)',
+                    borderColor: 'var(--border-default)',
+                    color: 'var(--text-secondary)'
+                  }}
+                >
+                  <span className="text-xs font-mono">
+                    {file ? file.name : 'Choose file...'}
+                  </span>
+                  <Upload className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+                </div>
+              </div>
+              {file && (
+                <p className="mt-2 text-2xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                  Size: <span style={{ color: 'var(--text-primary)' }}>{(file.size / 1024).toFixed(1)} KB</span>
+                </p>
+              )}
+            </div>
+
+            {/* Upload Button */}
+            <button
+              onClick={handleUpload}
+              disabled={!file || uploading}
+              className="w-full py-2.5 px-4 rounded-sm text-xs font-mono uppercase transition-all flex items-center justify-center space-x-2"
+              style={{
+                backgroundColor: !file || uploading ? '#4b5563' : 'var(--accent-cyan)',
+                color: !file || uploading ? '#9ca3af' : '#000',
+                cursor: !file || uploading ? 'not-allowed' : 'pointer',
+                opacity: !file || uploading ? 0.5 : 1,
+              }}
+            >
+              {uploading ? (
+                <>
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  <span>Uploading... {uploadProgress}%</span>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>Upload</span>
+                </>
+              )}
+            </button>
+
+            {/* Progress Bar */}
+            {uploading && uploadProgress > 0 && (
+              <div className="mt-3">
+                <div 
+                  className="w-full h-1.5 rounded-full overflow-hidden"
+                  style={{ backgroundColor: 'var(--bg-elevated)' }}
+                >
+                  <div
+                    className="h-full transition-all duration-300"
+                    style={{ 
+                      width: `${uploadProgress}%`,
+                      backgroundColor: 'var(--accent-cyan)'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            )}
+
+            {/* Message */}
+            {message && (
+              <div
+                className="mt-4 p-3 rounded-sm border flex items-start space-x-2"
+                style={{
+                  backgroundColor: message.type === 'success' ? '#15803d20' : '#7f1d1d20',
+                  borderColor: message.type === 'success' ? '#22c55e' : '#ef4444',
+                }}
+              >
+                {message.type === 'success' ? (
+                  <CheckCircle className="w-4 h-4 flex-shrink-0" style={{ color: '#22c55e' }} />
+                ) : (
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" style={{ color: '#ef4444' }} />
+                )}
+                <span 
+                  className="text-xs font-sans"
+                  style={{ color: message.type === 'success' ? '#22c55e' : '#ef4444' }}
+                >
+                  {message.text}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Upload History & Guidelines */}
-        <div className="space-y-6">
+        {/* Right Column - History & Guidelines */}
+        <div className="flex flex-col space-y-4">
           {/* Upload History */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Uploads</h3>
+          <div 
+            className="rounded-sm p-4 border"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-default)'
+            }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-mono uppercase" style={{ color: 'var(--text-primary)' }}>
+                Recent Uploads
+              </h3>
+              <Clock className="w-4 h-4" style={{ color: 'var(--accent-orange)' }} />
+            </div>
             {uploadHistory.length === 0 ? (
-              <p className="text-sm text-gray-500">No uploads yet</p>
+              <div className="text-center py-6">
+                <FileText className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: 'var(--text-tertiary)' }} />
+                <p className="text-xs font-mono" style={{ color: 'var(--text-secondary)' }}>No uploads yet</p>
+              </div>
             ) : (
               <div className="space-y-2">
                 {uploadHistory.map((item, index) => (
-                  <div key={index} className="flex items-center justify-between text-sm border-b pb-2">
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-between text-xs border-b pb-2"
+                    style={{ borderColor: 'var(--border-subtle)' }}
+                  >
                     <div>
-                      <span className="font-medium text-gray-900 capitalize">{item.type}</span>
-                      <span className="text-gray-500 ml-2">({item.count} records)</span>
+                      <span className="font-mono capitalize" style={{ color: 'var(--text-primary)' }}>
+                        {item.type}
+                      </span>
+                      <span className="font-mono ml-2" style={{ color: 'var(--text-tertiary)' }}>
+                        ({item.count})
+                      </span>
                     </div>
-                    <span className="text-xs text-gray-400">{item.timestamp}</span>
+                    <span className="text-2xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                      {item.timestamp}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -311,32 +402,40 @@ const HistoricalDataUpload: React.FC = () => {
           </div>
 
           {/* Guidelines */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">📋 Upload Guidelines</h3>
-            <ul className="space-y-2 text-sm text-gray-700">
+          <div 
+            className="rounded-sm p-4 border flex-1"
+            style={{
+              backgroundColor: 'var(--bg-surface)',
+              borderColor: 'var(--border-default)'
+            }}
+          >
+            <h3 className="text-xs font-mono uppercase mb-3" style={{ color: 'var(--text-primary)' }}>
+              📋 Upload Guidelines
+            </h3>
+            <ul className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>CSV files must include headers matching the required format</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">CSV files must include headers matching the required format</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>Equipment IDs must match: AC-001, AC-002, CF-003, RM-005, CM-007</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">Equipment IDs must match: AC-001, AC-002, CF-003, RM-005, CM-007</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>Dates should be in YYYY-MM-DD format</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">Dates should be in YYYY-MM-DD format</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>Multiple parts should be separated by semicolons (;)</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">Multiple parts should be separated by semicolons (;)</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>PDF manuals will be processed and indexed for AI retrieval</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">PDF manuals will be processed and indexed for AI retrieval</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
-                <span>Larger files may take a few minutes to process</span>
+                <span style={{ color: 'var(--accent-cyan)' }} className="mr-2">•</span>
+                <span className="font-sans">Larger files may take a few minutes to process</span>
               </li>
             </ul>
           </div>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Particles from '@tsparticles/react';
-import { Play } from 'lucide-react';
+import { Play, Factory, Settings, Thermometer, Wind, Wrench, BarChart3, Bot, Zap } from 'lucide-react';
 
 interface HeroSectionProps {
   onEnterDashboard: () => void;
@@ -9,6 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [cursorVisible, setCursorVisible] = useState(true);
   
   // Mouse parallax
   const mouseX = useMotionValue(0);
@@ -20,6 +21,26 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
   
   const rotateX = useTransform(y, [-0.5, 0.5], ["5deg", "-5deg"]);
   const rotateY = useTransform(x, [-0.5, 0.5], ["-5deg", "5deg"]);
+
+  // Blinking cursor animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, 530); // Blink every 530ms
+    return () => clearInterval(interval);
+  }, []);
+
+  // Track mouse position for parallax
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!sectionRef.current) return;
+    
+    const rect = sectionRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    mouseX.set((e.clientX - centerX) / rect.width);
+    mouseY.set((e.clientY - centerY) / rect.height);
+  };
 
   // Animated counters
   const [counters, setCounters] = useState({
@@ -66,17 +87,6 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!sectionRef.current) return;
-    
-    const rect = sectionRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    mouseX.set((e.clientX - centerX) / rect.width);
-    mouseY.set((e.clientY - centerY) / rect.height);
-  };
-
   return (
     <section
       ref={sectionRef}
@@ -84,6 +94,71 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
       className="relative w-full h-screen overflow-hidden landing-gpu-accelerated"
       style={{ background: 'linear-gradient(135deg, #050505 0%, #0A0A0A 50%, #050505 100%)' }}
     >
+      {/* Fluid Background Wave Effect */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 20% 50%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(255, 106, 0, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 40% 20%, rgba(0, 229, 255, 0.05) 0%, transparent 40%)
+            `,
+            backgroundSize: '100% 100%',
+          }}
+          animate={{
+            backgroundPosition: [
+              '0% 0%, 100% 100%, 50% 0%',
+              '100% 50%, 0% 0%, 100% 100%',
+              '0% 100%, 50% 50%, 0% 0%',
+              '0% 0%, 100% 100%, 50% 0%',
+            ],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+
+      {/* Giant Background Text - Animated "Innovation That Matters" Style */}
+      <div className="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.06 }}
+          transition={{ duration: 2 }}
+          className="text-center whitespace-nowrap"
+          style={{
+            fontSize: 'clamp(120px, 18vw, 280px)',
+            fontWeight: 900,
+            lineHeight: 0.9,
+            color: '#B8C1CC',
+            textTransform: 'uppercase',
+            letterSpacing: '-0.05em',
+          }}
+        >
+          {/* PREDICTIVE - Moving Right to Left */}
+          <motion.div
+            animate={{ x: [0, -100, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            Predictive
+          </motion.div>
+          
+          {/* MAINTENANCE - Moving Left to Right */}
+          <motion.div
+            animate={{ x: [0, 100, 0] }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          >
+            Maintenance
+          </motion.div>
+          
+          {/* INTELLIGENCE - Static with Cyan Tint */}
+          <div style={{ color: '#00E5FF', opacity: 0.15 }}>Intelligence</div>
+        </motion.div>
+      </div>
+
       {/* Animated Grid Background */}
       <div className="absolute inset-0 landing-grid opacity-30" />
       
@@ -176,7 +251,7 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="space-y-8"
             >
-              {/* Title */}
+              {/* Title with Blinking Cursor */}
               <div className="space-y-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -187,9 +262,24 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
                   <span className="text-sm font-mono text-[#00E5FF]">● SYSTEM ONLINE</span>
                 </motion.div>
 
-                <h1 className="text-6xl lg:text-8xl font-bold landing-heading">
+                <h1 
+                  className="text-6xl lg:text-8xl xl:text-9xl font-black landing-heading"
+                  style={{ 
+                    fontWeight: 900,
+                    letterSpacing: '-0.04em',
+                  }}
+                >
                   <span className="block text-white">ALLOY</span>
-                  <span className="block landing-text-gradient-cyan">AGENT</span>
+                  <span className="block landing-text-gradient-cyan inline-flex items-center">
+                    AGENT
+                    <motion.span
+                      animate={{ opacity: cursorVisible ? 1 : 0 }}
+                      className="inline-block w-1 lg:w-2 h-16 lg:h-24 xl:h-32 bg-[#00E5FF] ml-2 lg:ml-4"
+                      style={{
+                        boxShadow: '0 0 20px rgba(0, 229, 255, 0.8)',
+                      }}
+                    />
+                  </span>
                 </h1>
 
                 <h2 className="text-xl lg:text-2xl font-semibold text-[#B8C1CC]">
@@ -294,196 +384,269 @@ function StatCounter({ label, value, unit }: { label: string; value: number; uni
   );
 }
 
-// 3D Holographic Plant Component - Scroll-Triggered Stack
+// Radar Visualization Component - Steel Manufacturing Theme
 function HolographicPlant() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
+  const [revealedIcons, setRevealedIcons] = useState<Set<number>>(new Set());
+  const [radarAngle, setRadarAngle] = useState(0);
 
-  const equipment = [
-    { id: 'AC-001', name: 'Air Compressor', type: 'Compressor', health: 94, temp: 82, color: '#00E5FF' },
-    { id: 'AC-002', name: 'Air Compressor', type: 'Compressor', health: 89, temp: 78, color: '#00FF85' },
-    { id: 'CF-003', name: 'Cooling Fan', type: 'Fan Unit', health: 97, temp: 65, color: '#00E5FF' },
-    { id: 'RM-005', name: 'Rolling Mill', type: 'Mill', health: 91, temp: 88, color: '#FFC107' },
-    { id: 'CM-007', name: 'Conveyor Motor', type: 'Motor', health: 96, temp: 72, color: '#00E5FF' },
+  // Equipment/Technology icons positioned on radar - Using Lucide Icons
+  const radarIcons = [
+    { id: 1, angle: 30, radius: 0.7, Icon: Factory, label: 'Blast Furnace', color: '#FF6A00' },
+    { id: 2, angle: 80, radius: 0.5, Icon: Settings, label: 'Compressor', color: '#00E5FF' },
+    { id: 3, angle: 135, radius: 0.8, Icon: Thermometer, label: 'Sensors', color: '#00FF85' },
+    { id: 4, angle: 170, radius: 0.4, Icon: Wind, label: 'Cooling', color: '#00E5FF' },
+    { id: 5, angle: 215, radius: 0.65, Icon: Wrench, label: 'Maintenance', color: '#FFC107' },
+    { id: 6, angle: 260, radius: 0.55, Icon: BarChart3, label: 'Analytics', color: '#00E5FF' },
+    { id: 7, angle: 310, radius: 0.75, Icon: Bot, label: 'AI Agent', color: '#FF6A00' },
+    { id: 8, angle: 350, radius: 0.45, Icon: Zap, label: 'Power', color: '#00FF85' },
   ];
 
+  // Radar sweep animation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRadarAngle((prev) => {
+        const newAngle = (prev + 2) % 360;
+        
+        // Check which icons should be revealed
+        radarIcons.forEach((icon) => {
+          // Calculate if radar line has passed this icon
+          const angleDiff = (newAngle - icon.angle + 360) % 360;
+          if (angleDiff < 2 || angleDiff > 358) {
+            setRevealedIcons((prevSet) => new Set(prevSet).add(icon.id));
+          }
+          
+          // Fade icons after radar passes (simulating radar decay)
+          if (angleDiff > 120) {
+            setRevealedIcons((prevSet) => {
+              const newSet = new Set(prevSet);
+              newSet.delete(icon.id);
+              return newSet;
+            });
+          }
+        });
+        
+        return newAngle;
+      });
+    }, 30); // Smooth 60 FPS animation
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const radarSize = 500;
+  const centerX = radarSize / 2;
+  const centerY = radarSize / 2;
+
   return (
-    <div ref={containerRef} className="relative w-full h-full flex items-center justify-center">
-      <div className="relative w-full max-w-md h-[400px]">
-        {/* Equipment Cards - Scroll-triggered Stack */}
-        <div className="relative w-full h-full" style={{ perspective: '1000px' }}>
-          {equipment.map((item, index) => {
-            // Calculate scroll-based progress for each card
-            const cardStart = index * 0.15; // Each card starts appearing at different scroll progress
-            const cardEnd = cardStart + 0.2;
-            
-            const cardProgress = useTransform(
-              scrollYProgress,
-              [cardStart, cardEnd],
-              [0, 1]
-            );
-            
-            const y = useTransform(cardProgress, [0, 1], [100, 0]);
-            const opacity = useTransform(cardProgress, [0, 0.5, 1], [0, 0.5, 1]);
-            const rotateX = useTransform(cardProgress, [0, 1], [15, 0]);
-            const scale = useTransform(cardProgress, [0, 1], [0.85, 1]);
-            
-            // Slight tilt alternating left/right
-            const tiltDegree = index % 2 === 0 ? 2 : -2;
-            
-            return (
-              <motion.div
-                key={item.id}
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: '100%',
-                  x: '-50%',
-                  y: useTransform(y, (val) => `calc(-50% + ${val}px)`),
-                  opacity,
-                  rotateX,
-                  rotateZ: tiltDegree,
-                  scale,
-                  zIndex: index,
-                  transformStyle: 'preserve-3d',
-                }}
-                whileHover={{ 
-                  scale: 1.05,
-                  rotateZ: 0,
-                  zIndex: 10,
-                  transition: { duration: 0.3 }
-                }}
-                className="cursor-pointer"
-              >
-                {/* Equipment Card */}
-                <div 
-                  className="landing-glass rounded-lg p-4 border"
-                  style={{
-                    borderColor: item.color,
-                    boxShadow: `0 0 30px ${item.color}30, inset 0 0 20px ${item.color}10`,
-                    backdropFilter: 'blur(20px)',
-                    background: 'rgba(10, 10, 10, 0.8)'
-                  }}
-                >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="text-sm font-mono font-bold" style={{ color: item.color }}>
-                        {item.id}
-                      </div>
-                      <div className="text-xs text-[#B8C1CC] mt-1">
-                        {item.type}
-                      </div>
-                    </div>
-                    
-                    {/* Status Indicator */}
-                    <motion.div
-                      animate={{ 
-                        opacity: [0.5, 1, 0.5],
-                        scale: [1, 1.2, 1]
-                      }}
-                      transition={{ 
-                        duration: 2, 
-                        repeat: Infinity,
-                      }}
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: item.color }}
-                    />
-                  </div>
+    <div className="relative w-full h-full flex items-center justify-center">
+      <div className="relative" style={{ width: radarSize, height: radarSize }}>
+        {/* Radar Circles */}
+        <svg className="absolute inset-0" width={radarSize} height={radarSize}>
+          {/* Background circles */}
+          {[0.25, 0.5, 0.75, 1].map((scale, i) => (
+            <circle
+              key={i}
+              cx={centerX}
+              cy={centerY}
+              r={(radarSize / 2 - 20) * scale}
+              fill="none"
+              stroke="rgba(0, 229, 255, 0.2)"
+              strokeWidth="1"
+            />
+          ))}
+          
+          {/* Cross lines */}
+          <line
+            x1={20}
+            y1={centerY}
+            x2={radarSize - 20}
+            y2={centerY}
+            stroke="rgba(0, 229, 255, 0.1)"
+            strokeWidth="1"
+          />
+          <line
+            x1={centerX}
+            y1={20}
+            x2={centerX}
+            y2={radarSize - 20}
+            stroke="rgba(0, 229, 255, 0.1)"
+            strokeWidth="1"
+          />
+          
+          {/* Radar Sweep Line */}
+          <motion.line
+            x1={centerX}
+            y1={centerY}
+            x2={
+              centerX +
+              Math.cos((radarAngle * Math.PI) / 180) * (radarSize / 2 - 20)
+            }
+            y2={
+              centerY +
+              Math.sin((radarAngle * Math.PI) / 180) * (radarSize / 2 - 20)
+            }
+            stroke="url(#radarGradient)"
+            strokeWidth="2"
+          />
+          
+          {/* Gradient for sweep line */}
+          <defs>
+            <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(0, 229, 255, 0)" />
+              <stop offset="100%" stopColor="rgba(0, 229, 255, 1)" />
+            </linearGradient>
+            <radialGradient id="sweepGradient">
+              <stop offset="0%" stopColor="rgba(0, 229, 255, 0.3)" />
+              <stop offset="100%" stopColor="rgba(0, 229, 255, 0)" />
+            </radialGradient>
+          </defs>
+          
+          {/* Radar Sweep Cone/Area */}
+          <motion.path
+            d={`
+              M ${centerX} ${centerY}
+              L ${centerX + Math.cos((radarAngle * Math.PI) / 180) * (radarSize / 2 - 20)} 
+                ${centerY + Math.sin((radarAngle * Math.PI) / 180) * (radarSize / 2 - 20)}
+              A ${radarSize / 2 - 20} ${radarSize / 2 - 20} 0 0 0
+                ${centerX + Math.cos(((radarAngle - 45) * Math.PI) / 180) * (radarSize / 2 - 20)}
+                ${centerY + Math.sin(((radarAngle - 45) * Math.PI) / 180) * (radarSize / 2 - 20)}
+              Z
+            `}
+            fill="url(#sweepGradient)"
+            opacity="0.5"
+          />
+        </svg>
 
-                  {/* Metrics Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Health */}
-                    <div>
-                      <div className="text-xs text-[#6B7280] mb-1">Health</div>
-                      <div className="flex items-center gap-2">
-                        <div className="text-lg font-bold font-mono" style={{ color: item.color }}>
-                          {item.health}%
-                        </div>
-                      </div>
-                      {/* Health Bar */}
-                      <div className="w-full h-1 bg-white/10 rounded-full mt-1 overflow-hidden">
-                        <motion.div
-                          style={{
-                            width: useTransform(cardProgress, [0, 1], [0, item.health]),
-                          }}
-                          className="h-full rounded-full"
-                          animate={{ backgroundColor: item.color }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Temperature */}
-                    <div>
-                      <div className="text-xs text-[#6B7280] mb-1">Temp</div>
-                      <div className="flex items-center gap-1">
-                        <div className="text-lg font-bold font-mono text-[#B8C1CC]">
-                          {item.temp}
-                        </div>
-                        <div className="text-xs text-[#6B7280]">°C</div>
-                      </div>
-                      {/* Temp Indicator */}
-                      <div className="flex gap-1 mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="h-1 flex-1 rounded-full"
-                            style={{
-                              backgroundColor: i < Math.floor(item.temp / 20) 
-                                ? item.color 
-                                : 'rgba(255,255,255,0.1)'
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Live Data Indicator */}
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
-                    <motion.div
-                      animate={{ opacity: [0.3, 1, 0.3] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="text-xs font-mono"
-                      style={{ color: item.color }}
-                    >
-                      ● LIVE
-                    </motion.div>
-                    <div className="text-xs text-[#6B7280] font-mono">
-                      Streaming
-                    </div>
-                  </div>
-                </div>
-
-                {/* Holographic Scan Lines */}
-                <motion.div
-                  animate={{ y: [0, 100] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg"
-                >
-                  <div 
-                    className="w-full h-0.5 opacity-30"
-                    style={{
-                      background: `linear-gradient(90deg, transparent, ${item.color}, transparent)`
-                    }}
-                  />
-                </motion.div>
-              </motion.div>
-            );
-          })}
+        {/* Center Core */}
+        <div
+          className="absolute"
+          style={{
+            top: centerY - 30,
+            left: centerX - 30,
+            width: 60,
+            height: 60,
+          }}
+        >
+          <motion.div
+            animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-full h-full rounded-full landing-glass border-2 border-[#00E5FF] flex items-center justify-center"
+            style={{
+              boxShadow: '0 0 40px rgba(0, 229, 255, 0.5)',
+            }}
+          >
+            <span className="text-xs font-mono font-bold text-[#00E5FF]">ALLOY</span>
+          </motion.div>
         </div>
 
+        {/* Equipment Icons */}
+        {radarIcons.map((item) => {
+          const x =
+            centerX +
+            Math.cos((item.angle * Math.PI) / 180) *
+              (radarSize / 2 - 50) *
+              item.radius;
+          const y =
+            centerY +
+            Math.sin((item.angle * Math.PI) / 180) *
+              (radarSize / 2 - 50) *
+              item.radius;
+          
+          const isRevealed = revealedIcons.has(item.id);
+          const IconComponent = item.Icon;
+
+          return (
+            <motion.div
+              key={item.id}
+              className="absolute"
+              style={{
+                left: x - 25,
+                top: y - 25,
+              }}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{
+                opacity: isRevealed ? 1 : 0.15,
+                scale: isRevealed ? 1 : 0.6,
+              }}
+              transition={{ 
+                duration: 0.4,
+                ease: "easeOut"
+              }}
+            >
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                className="relative w-12 h-12 rounded-lg landing-glass border flex items-center justify-center cursor-pointer"
+                style={{
+                  borderColor: isRevealed ? item.color : 'rgba(255,255,255,0.1)',
+                  boxShadow: isRevealed
+                    ? `0 0 20px ${item.color}40`
+                    : 'none',
+                  transition: 'all 0.4s ease-out',
+                }}
+              >
+                <IconComponent 
+                  size={24} 
+                  style={{ 
+                    color: isRevealed ? item.color : '#6B7280',
+                    transition: 'color 0.4s ease-out'
+                  }} 
+                />
+                
+                {/* Pulse effect when revealed */}
+                {isRevealed && (
+                  <motion.div
+                    className="absolute inset-0 rounded-lg border-2"
+                    style={{ borderColor: item.color }}
+                    initial={{ scale: 1, opacity: 0.8 }}
+                    animate={{ scale: 1.5, opacity: 0 }}
+                    transition={{ duration: 1, repeat: Infinity }}
+                  />
+                )}
+              </motion.div>
+              
+              {/* Label */}
+              <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                <motion.span
+                  className="text-xs font-mono"
+                  style={{ color: isRevealed ? item.color : '#6B7280' }}
+                  animate={{ opacity: isRevealed ? 1 : 0.4 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {item.label}
+                </motion.span>
+              </div>
+            </motion.div>
+          );
+        })}
+
+        {/* Grid Lines (subtle background) */}
+        <svg className="absolute inset-0 pointer-events-none opacity-10" width={radarSize} height={radarSize}>
+          {/* Radial lines */}
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+            <line
+              key={angle}
+              x1={centerX}
+              y1={centerY}
+              x2={
+                centerX +
+                Math.cos((angle * Math.PI) / 180) * (radarSize / 2 - 20)
+              }
+              y2={
+                centerY +
+                Math.sin((angle * Math.PI) / 180) * (radarSize / 2 - 20)
+              }
+              stroke="rgba(0, 229, 255, 0.3)"
+              strokeWidth="1"
+            />
+          ))}
+        </svg>
+
         {/* Ambient Glow */}
-        <div className="absolute inset-0 -z-20 blur-3xl opacity-20 pointer-events-none">
-          <div 
-            className="absolute top-1/2 left-1/2 w-64 h-64 rounded-full"
-            style={{ 
+        <div className="absolute inset-0 -z-10 blur-3xl opacity-30 pointer-events-none">
+          <div
+            className="absolute top-1/2 left-1/2 w-full h-full rounded-full"
+            style={{
               background: 'radial-gradient(circle, #00E5FF, transparent)',
-              transform: 'translate(-50%, -50%)'
+              transform: 'translate(-50%, -50%)',
             }}
           />
         </div>

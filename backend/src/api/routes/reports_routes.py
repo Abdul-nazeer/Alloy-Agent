@@ -46,6 +46,7 @@ async def get_reports(equipment_id: Optional[str] = None, days: int = 30):
                 "title": report_data.get('title', 'Analysis Report'),
                 "summary": report_data.get('summary', 'No summary available'),
                 "content": report_data.get('content', ''),
+                "report_content": report_data.get('report_content', ''),  # Full comprehensive markdown report
                 
                 # Structured data
                 "root_causes": report_data.get('root_causes', []),
@@ -88,14 +89,15 @@ async def get_logbook_entries(
     status: Optional[str] = None,
     days: int = 30
 ):
-    """Get logbook entries from database"""
+    """Get comprehensive logbook entries from database"""
     try:
         conn = get_connection()
         cursor = conn.cursor()
         
         query = """
             SELECT entry_id, equipment_name, fault_description, root_cause,
-                   risk_level, status, timestamp, created_at
+                   risk_level, urgency_hours, immediate_actions, repair_steps,
+                   long_term_recommendations, status, timestamp, created_at
             FROM logbook_entries
             WHERE created_at >= datetime('now', '-' || ? || ' days')
         """
@@ -117,15 +119,47 @@ async def get_logbook_entries(
         
         entries = []
         for row in rows:
+            # Parse the fault_description to extract alert info
+            fault_desc = row['fault_description'] or ""
+            alert_line = "N/A"
+            if "**Alert**:" in fault_desc:
+                lines = fault_desc.split('\n')
+                for line in lines:
+                    if "**Alert**:" in line:
+                        alert_line = line.replace("*", "").replace("Alert:", "").strip()
+                        break
+            
+            # Parse immediate actions into list
+            actions_text = row['immediate_actions'] or "N/A"
+            actions_list = []
+            if actions_text != "N/A" and actions_text.strip():
+                for line in actions_text.split('\n'):
+                    line = line.strip()
+                    if line and not line.startswith('#') and not line.startswith('⚠️'):
+                        # Remove numbering if present
+                        clean_line = line.lstrip('0123456789. ')
+                        if clean_line and len(clean_line) > 5:  # Skip very short lines
+                            actions_list.append(clean_line)
+            
             entries.append({
                 "id": row['entry_id'],
                 "equipment": row['equipment_name'],
-                "event": "Anomaly Detected" if "anomaly" in (row['fault_description'] or '').lower() else "Maintenance Activity",
+                "event": "Anomaly Detected" if "anomaly" in fault_desc.lower() else "Maintenance Activity",
                 "engineer": "AI System",
-                "notes": row['fault_description'] or row['root_cause'] or "No details",
                 "time": row['timestamp'] or row['created_at'],
                 "type": "alert" if row['risk_level'] in ['CRITICAL', 'HIGH'] else "maintenance",
-                "status": row['status'] or "OPEN"
+                "status": row['status'] or "OPEN",
+                # Comprehensive details
+                "fault_description": fault_desc,
+                "root_cause": row['root_cause'] or "N/A",
+                "risk_level": row['risk_level'] or "MEDIUM",
+                "urgency_hours": row['urgency_hours'] or 72,
+                "immediate_actions": actions_list if actions_list else [],
+                "repair_steps": row['repair_steps'] if row['repair_steps'] and row['repair_steps'] != "N/A" and len(row['repair_steps']) > 30 else None,
+                "long_term_recommendations": row['long_term_recommendations'] if row['long_term_recommendations'] and row['long_term_recommendations'] != "N/A" and len(row['long_term_recommendations']) > 30 else None,
+                "alert": alert_line,
+                # Legacy fields for compatibility
+                "notes": fault_desc[:200] + "..." if len(fault_desc) > 200 else fault_desc,
             })
         
         return {"entries": entries, "count": len(entries)}

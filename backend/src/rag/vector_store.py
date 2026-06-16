@@ -36,6 +36,17 @@ SPARSE_VECTOR_NAME = "sparse"
 EMBEDDING_DIM = VECTOR_SIZE  # From config (384)
 BATCH_SIZE = 64
 
+# Global instance
+_vector_store_instance = None
+
+
+def get_vector_store() -> "VectorStoreManager":
+    """Get or create the global vector store instance."""
+    global _vector_store_instance
+    if _vector_store_instance is None:
+        _vector_store_instance = VectorStoreManager()
+    return _vector_store_instance
+
 
 class VectorStoreManager:
     def __init__(

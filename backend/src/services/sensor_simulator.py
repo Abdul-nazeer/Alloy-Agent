@@ -50,7 +50,7 @@ class SensorSimulator:
         self.thresholds = {
             "Air Compressor": {
                 "temperature_c": {"min": 60, "max": 105, "critical": 115},
-                "pressure_bar": {"min": 4.0, "max": 8.0, "critical": 2.0},
+                "pressure_bar": {"min": 4.0, "max": 8.0, "critical_low": 2.0},  # Critical when below 2.0
                 "vibration_mm_s": {"min": 0.5, "max": 3.0, "critical": 4.0},
                 "current_a": {"min": 35, "max": 50, "critical": 60},
             },
@@ -61,7 +61,7 @@ class SensorSimulator:
             },
             "Rolling Mill": {
                 "temperature_c": {"min": 70, "max": 110, "critical": 130},
-                "pressure_bar": {"min": 150, "max": 200, "critical": 220},
+                "pressure_bar": {"min": 150, "max": 200, "critical": 220},  # Critical when above 220
                 "vibration_mm_s": {"min": 2.0, "max": 4.5, "critical": 6.0},
             },
             "Conveyor Motor": {
@@ -140,25 +140,28 @@ class SensorSimulator:
             if sensor in reading:
                 value = reading[sensor]
                 
-                if "critical" in limits:
-                    if sensor in ["pressure_bar"] and value < limits["critical"]:
-                        anomalies.append({
-                            "sensor": sensor,
-                            "value": value,
-                            "threshold": limits["critical"],
-                            "severity": "CRITICAL",
-                            "message": f"{sensor} critically low: {value} < {limits['critical']}"
-                        })
-                    elif value > limits.get("critical", float('inf')):
-                        anomalies.append({
-                            "sensor": sensor,
-                            "value": value,
-                            "threshold": limits["critical"],
-                            "severity": "CRITICAL",
-                            "message": f"{sensor} critically high: {value} > {limits['critical']}"
-                        })
+                # Check CRITICAL LOW thresholds (e.g., Air Compressor pressure drop)
+                if "critical_low" in limits and value < limits["critical_low"]:
+                    anomalies.append({
+                        "sensor": sensor,
+                        "value": value,
+                        "threshold": limits["critical_low"],
+                        "severity": "CRITICAL",
+                        "message": f"{sensor} critically low: {value} < {limits['critical_low']}"
+                    })
                 
-                if value > limits.get("max", float('inf')):
+                # Check CRITICAL HIGH thresholds (most sensors)
+                if "critical" in limits and value > limits["critical"]:
+                    anomalies.append({
+                        "sensor": sensor,
+                        "value": value,
+                        "threshold": limits["critical"],
+                        "severity": "CRITICAL",
+                        "message": f"{sensor} critically high: {value} > {limits['critical']}"
+                    })
+                
+                # Check HIGH thresholds (warning level - only if not already critical)
+                if "max" in limits and value > limits["max"] and value <= limits.get("critical", float('inf')):
                     anomalies.append({
                         "sensor": sensor,
                         "value": value,
@@ -166,7 +169,8 @@ class SensorSimulator:
                         "severity": "HIGH",
                         "message": f"{sensor} above max: {value} > {limits['max']}"
                     })
-                elif value < limits.get("min", 0):
+                
+                if "min" in limits and value < limits["min"] and value >= limits.get("critical_low", 0):
                     anomalies.append({
                         "sensor": sensor,
                         "value": value,

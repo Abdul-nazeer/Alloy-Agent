@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { agentAPI } from '../api/client';
-import { Send, Bot, User, FileText } from 'lucide-react';
+import { Send, User, FileText, Paperclip, X } from 'lucide-react';
+import AlloyAgentIcon from './AlloyAgentIcon';
+import PDFViewerPanel from './PDFViewerPanel';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -17,9 +19,10 @@ interface Message {
 
 interface ChatPanelProps {
   compact?: boolean;
+  initialMessage?: string;
 }
 
-export default function ChatPanel({ compact = false }: ChatPanelProps) {
+export default function ChatPanel({ compact = false, initialMessage }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -29,8 +32,48 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [selectedCitation, setSelectedCitation] = useState<{
+    docName: string;
+    docId: string;
+    pages: number[];
+    bboxes?: any[];
+  } | null>(null);
+  const [showPDFViewer, setShowPDFViewer] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-submit initial message if provided
+  useEffect(() => {
+    if (initialMessage && !loading) {
+      setInput(initialMessage);
+      // Auto-submit after a short delay to allow UI to render
+      setTimeout(() => {
+        const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+        handleSubmit(fakeEvent);
+      }, 500);
+    }
+  }, [initialMessage]);
+
+  const handleCitationClick = (citation: any) => {
+    console.log('📖 Citation clicked:', citation);
+    
+    const docName = citation.document || citation.doc_name || citation.source || 'Unknown';
+    const docId = citation.doc_id || docName.replace(/\s+/g, '_').toLowerCase();
+    const pages = citation.pages || (citation.page ? [citation.page] : [1]);
+    const bboxes = citation.bboxes || [];
+    
+    console.log('📄 Opening PDF viewer:', { docName, docId, pages, bboxesCount: bboxes.length });
+    
+    setSelectedCitation({
+      docName,
+      docId,
+      pages,
+      bboxes
+    });
+    setShowPDFViewer(true);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,51 +83,156 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
     scrollToBottom();
   }, [messages]);
 
+  const handleFileAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const pdfFiles = files.filter(file => file.type === 'application/pdf');
+    
+    if (pdfFiles.length < files.length) {
+      alert('Only PDF files are supported');
+    }
+    
+    setAttachedFiles(prev => [...prev, ...pdfFiles]);
+    
+    // Reset input
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const removeAttachedFile = (index: number) => {
+    setAttachedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
 
+    console.log('🚀 Chat submit handler called - using STREAMING endpoint');
+
     const userMessage: Message = {
       role: 'user',
-      content: input.trim(),
+      content: input.trim() + (attachedFiles.length > 0 ? `\n\n📎 Attached: ${attachedFiles.map(f => f.name).join(', ')}` : ''),
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
     const messageText = input.trim();
     setInput('');
+    
+    // Clear attached files
+    setAttachedFiles([]);
+    
     setLoading(true);
 
-    try {
-      // Use regular chat endpoint (streaming disabled for now - compatibility issues)
-      const response = await agentAPI.chat(messageText);
-      
-      // Extract response text and citations
-      const responseText = response.data.response || response.data.answer || 'No response';
-      const citations = response.data.citations || response.data.metadata?.citations || [];
-      
-      console.log('Chat response:', { 
-        text: responseText, 
-        citations, 
-        metadata: response.data.metadata 
-      });
-      
-      const assistantMessage: Message = {
-        role: 'assistant',
-        content: responseText,
-        timestamp: new Date(),
-        citations: citations
-      };
+    // Create placeholder assistant message
+    const assistantMessage: Message = {
+      role: 'assistant',
+      content: '',
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, assistantMessage]);
 
-      setMessages(prev => [...prev, assistantMessage]);
+    try {
+      console.log('📡 Calling chatStream endpoint...');
+      // Use streaming endpoint
+      const response = await agentAPI.chatStream(messageText);
+      
+      console.log('📡 Response received, status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No response body');
+      }
+
+      console.log('📖 Starting to read stream...');
+      const decoder = new TextDecoder();
+      let streamedContent = '';
+      let buffer = '';
+
+      // Read the stream
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) {
+          console.log('✅ Stream complete');
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        
+        // Keep the last incomplete line in the buffer
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.trim() || !line.startsWith('data: ')) continue;
+          
+          try {
+            const jsonStr = line.slice(6).trim();
+            if (!jsonStr) continue;
+            
+            const data = JSON.parse(jsonStr);
+            
+            if (data.error) {
+              console.error('❌ Stream error:', data.error);
+              throw new Error(data.error);
+            }
+            
+            if (data.token) {
+              streamedContent += data.token;
+              // Update the message content in real-time
+              setMessages(prev => {
+                const newMessages = [...prev];
+                const lastMsg = newMessages[newMessages.length - 1];
+                if (lastMsg && lastMsg.role === 'assistant') {
+                  lastMsg.content = streamedContent;
+                }
+                return newMessages;
+              });
+            }
+            
+            if (data.done && data.metadata) {
+              console.log('✅ Metadata received:', data.metadata);
+              // Add citations when stream completes
+              setMessages(prev => {
+                const newMessages = [...prev];
+                const lastMsg = newMessages[newMessages.length - 1];
+                if (lastMsg && lastMsg.role === 'assistant') {
+                  lastMsg.citations = data.metadata.citations || [];
+                }
+                return newMessages;
+              });
+            }
+          } catch (parseErr) {
+            console.error('⚠️ Error parsing SSE line:', line, parseErr);
+          }
+        }
+      }
+
+      // If no content was streamed, there was an error
+      if (!streamedContent.trim()) {
+        console.error('❌ No content received from stream');
+        throw new Error('No content received from stream');
+      }
+
+      console.log(`✅ Successfully streamed ${streamedContent.length} characters`);
+
     } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: 'Error processing request. Please try again.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      console.error('❌ Chat streaming error:', error);
+      
+      // Remove the empty assistant message and add error message
+      setMessages(prev => {
+        const newMessages = prev.slice(0, -1);
+        return [...newMessages, {
+          role: 'assistant',
+          content: 'Sorry, there was an error processing your request. Please try again.',
+          timestamp: new Date()
+        }];
+      });
     } finally {
       setLoading(false);
       inputRef.current?.focus();
@@ -92,38 +240,35 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
   };
 
   return (
-    <div 
-      className={`flex flex-col ${compact ? 'h-full' : 'h-full'} rounded-sm`}
-      style={{ 
-        backgroundColor: 'var(--bg-surface)',
-        border: compact ? 'none' : '1px solid var(--border-default)'
-      }}
-    >
-      {/* Header */}
+    <div className="flex h-full space-x-4">
+      {/* Chat Panel - Takes remaining space */}
       <div 
-        className="flex items-center justify-between px-4 py-3 border-b"
-        style={{ borderColor: 'var(--border-default)' }}
+        className={`flex flex-col rounded-sm transition-all ${showPDFViewer ? 'flex-1' : 'w-full'}`}
+        style={{ 
+          backgroundColor: 'var(--bg-surface)',
+          border: compact ? 'none' : '1px solid var(--border-default)'
+        }}
       >
-        <div className="flex items-center space-x-3">
-          <div 
-            className="p-2 rounded-sm"
-            style={{ backgroundColor: 'var(--bg-elevated)' }}
-          >
-            <Bot className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />
-          </div>
-          <div>
+      {/* Header - Minimal */}
+      <div 
+        className="glass-card-elevated px-4 py-2 border-b"
+        style={{ borderColor: 'var(--border-glow)' }}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <AlloyAgentIcon size={24} animated={true} />
             <h2 
-              className="text-xs font-mono tracking-widest"
-              style={{ color: 'var(--text-primary)' }}
+              className="heading-secondary text-xs text-uppercase-spaced"
+              style={{ color: 'var(--accent-cyan)' }}
             >
-              🤖 AI ASSISTANT
+              CHAT ASSISTANT
             </h2>
-            <p 
-              className="text-2xs font-mono"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Powered by RAG + Fine-tuned Phi-3
-            </p>
+          </div>
+          <div className="flex items-center space-x-2">
+            <span className="status-dot status-normal pulse-dot" style={{ width: '6px', height: '6px' }} />
+            <span className="text-2xs text-mono text-uppercase-spaced" style={{ color: 'var(--status-normal)' }}>
+              ONLINE
+            </span>
           </div>
         </div>
       </div>
@@ -136,11 +281,8 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
             className={`flex space-x-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.role === 'assistant' && (
-              <div 
-                className="flex-shrink-0 w-6 h-6 rounded-sm flex items-center justify-center"
-                style={{ backgroundColor: 'var(--bg-elevated)' }}
-              >
-                <Bot className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
+              <div className="flex-shrink-0">
+                <AlloyAgentIcon size={28} />
               </div>
             )}
 
@@ -157,31 +299,64 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
                 
                 {/* Citations */}
                 {message.citations && message.citations.length > 0 && (
-                  <div className="mt-2 pt-2 space-y-1" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                  <div className="mt-3 pt-3 space-y-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <FileText className="w-3.5 h-3.5" style={{ color: 'var(--accent-cyan)' }} />
+                      <span className="text-2xs text-mono text-uppercase-spaced" style={{ color: 'var(--accent-cyan)' }}>
+                        SOURCES ({message.citations.length})
+                      </span>
+                    </div>
                     {message.citations.map((citation, i) => {
-                      const docName = citation.document || citation.source || 'Unknown';
-                      const pageInfo = citation.pages && citation.pages.length > 0 
-                        ? `Pages ${citation.pages.join(', ')}` 
+                      const docName = citation.document || citation.doc_name || citation.source || 'Unknown Document';
+                      const section = citation.section;
+                      const pages = citation.pages && citation.pages.length > 0 
+                        ? citation.pages.join(', ') 
                         : citation.page 
-                        ? `Page ${citation.page}`
-                        : '';
+                        ? String(citation.page)
+                        : null;
                       
                       return (
-                        <div key={i} className="flex items-center space-x-2 text-xs">
-                          <FileText className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
-                          <span className="font-mono" style={{ color: 'var(--accent-cyan)' }}>
-                            {docName}
-                          </span>
-                          {citation.section && (
-                            <span className="font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                              • {citation.section}
-                            </span>
-                          )}
-                          {pageInfo && (
-                            <span className="font-mono" style={{ color: 'var(--text-tertiary)' }}>
-                              • {pageInfo}
-                            </span>
-                          )}
+                        <div 
+                          key={i} 
+                          onClick={() => handleCitationClick(citation)}
+                          className="glass-card px-3 py-2 rounded-sm hover-scale-sm transition-smooth cursor-pointer"
+                          style={{ 
+                            borderLeft: '2px solid var(--accent-cyan)',
+                            backgroundColor: 'rgba(0, 229, 255, 0.05)'
+                          }}
+                          title="Click to view document with highlighted sections"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2">
+                                <span 
+                                  className="text-xs font-mono font-medium"
+                                  style={{ color: 'var(--accent-cyan)' }}
+                                >
+                                  [{i + 1}]
+                                </span>
+                                <span 
+                                  className="text-xs font-mono"
+                                  style={{ color: 'var(--text-primary)' }}
+                                >
+                                  {docName}
+                                </span>
+                              </div>
+                              <div className="mt-1 flex flex-wrap items-center gap-2 text-2xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                                {section && (
+                                  <span>📑 {section}</span>
+                                )}
+                                {pages && (
+                                  <span>📄 Page{citation.pages && citation.pages.length > 1 ? 's' : ''} {pages}</span>
+                                )}
+                                {citation.bboxes && citation.bboxes.length > 0 && (
+                                  <span className="px-1.5 py-0.5 rounded" style={{ backgroundColor: 'rgba(0, 229, 255, 0.2)', color: 'var(--accent-cyan)' }}>
+                                    ✨ Highlighted
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       );
                     })}
@@ -210,20 +385,14 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
 
         {loading && (
           <div className="flex space-x-3">
-            <div 
-              className="flex-shrink-0 w-6 h-6 rounded-sm flex items-center justify-center"
-              style={{ backgroundColor: 'var(--bg-elevated)' }}
-            >
-              <Bot className="w-3 h-3" style={{ color: 'var(--accent-cyan)' }} />
+            <div className="flex-shrink-0">
+              <AlloyAgentIcon size={28} animated={true} />
             </div>
             <div 
-              className="px-3 py-2 rounded-sm text-sm font-mono"
-              style={{ 
-                backgroundColor: 'var(--bg-elevated)',
-                color: 'var(--text-secondary)'
-              }}
+              className="glass-card px-4 py-2 rounded-lg text-sm text-mono"
+              style={{ color: 'var(--text-secondary)' }}
             >
-              Thinking...
+              <span className="animate-pulse">Analyzing...</span>
             </div>
           </div>
         )}
@@ -231,12 +400,58 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input Area with Attachment */}
       <div 
-        className="p-4 border-t"
+        className="glass-card p-4 border-t"
         style={{ borderColor: 'var(--border-default)' }}
       >
-        <form onSubmit={handleSubmit} className="flex space-x-2">
+        {/* Attached Files Preview */}
+        {attachedFiles.length > 0 && (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {attachedFiles.map((file, index) => (
+              <div
+                key={index}
+                className="glass-card-elevated px-3 py-2 rounded-lg flex items-center space-x-2"
+              >
+                <FileText className="w-4 h-4" style={{ color: 'var(--accent-cyan)' }} />
+                <span className="text-xs text-mono" style={{ color: 'var(--text-primary)' }}>
+                  {file.name}
+                </span>
+                <button
+                  onClick={() => removeAttachedFile(index)}
+                  className="hover-scale transition-fast"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} className="flex items-end space-x-2">
+          {/* Attach Button */}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="glass-card p-3 rounded-lg hover-scale transition-smooth"
+            style={{ color: 'var(--text-secondary)' }}
+            title="Attach PDF documents"
+          >
+            <Paperclip className="w-5 h-5" />
+          </button>
+          
+          {/* Hidden File Input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf"
+            multiple
+            onChange={handleFileAttach}
+            className="hidden"
+          />
+          
+          {/* Text Input */}
           <textarea
             ref={inputRef}
             value={input}
@@ -247,29 +462,67 @@ export default function ChatPanel({ compact = false }: ChatPanelProps) {
                 handleSubmit(e);
               }
             }}
-            placeholder="Ask about machine faults, procedures..."
-            className="flex-1 px-3 py-2 rounded-sm text-sm font-sans resize-none focus:outline-none"
+            placeholder="Ask about equipment failures, procedures, anomalies, maintenance recommendations..."
+            className="flex-1 px-4 py-3 rounded-lg text-sm text-body resize-none focus:outline-none glass-card transition-smooth"
             style={{
-              backgroundColor: 'var(--bg-elevated)',
               border: '1px solid var(--border-default)',
-              color: 'var(--text-primary)'
+              color: 'var(--text-primary)',
+              minHeight: '60px'
             }}
             rows={2}
             disabled={loading}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--accent-cyan)';
+              e.target.style.boxShadow = '0 0 20px rgba(0, 229, 255, 0.3)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = 'var(--border-default)';
+              e.target.style.boxShadow = 'none';
+            }}
           />
+          
+          {/* Send Button - Floating Gradient */}
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="px-4 py-2 rounded-sm transition-all disabled:opacity-50"
+            className="btn-primary p-4 rounded-lg hover-scale transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              backgroundColor: 'var(--accent-cyan)',
-              color: 'var(--bg-base)'
+              background: 'linear-gradient(135deg, var(--accent-cyan), #0099CC)',
+              color: '#000',
+              boxShadow: '0 4px 12px rgba(0, 229, 255, 0.3)'
             }}
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-5 h-5" />
           </button>
         </form>
+        
+        {/* Help Text */}
+        <div className="mt-2 flex items-center justify-between text-2xs text-mono" style={{ color: 'var(--text-tertiary)' }}>
+          <span>Press Enter to send • Shift+Enter for new line</span>
+          <span>Attach PDFs for context-aware responses</span>
+        </div>
       </div>
+      </div>
+
+      {/* PDF Viewer Panel - Side by side */}
+      {showPDFViewer && selectedCitation && (
+        <div 
+          className="flex-1 rounded-sm overflow-hidden"
+          style={{ 
+            border: '1px solid var(--border-default)',
+            minWidth: '500px',
+            maxWidth: '50%'
+          }}
+        >
+          <PDFViewerPanel
+            documentName={selectedCitation.docName}
+            documentUrl={`http://localhost:8000/api/rag/pdf/${selectedCitation.docId}`}
+            initialPage={selectedCitation.pages[0] || 1}
+            bboxes={selectedCitation.bboxes}
+            onClose={() => setShowPDFViewer(false)}
+          />
+        </div>
+      )}
     </div>
   );
 }

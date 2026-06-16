@@ -1,0 +1,1121 @@
+equipment_id,maintenance_date,maintenance_type,technician,actions_taken,parts_used,duration_hours
+AC-001,2020-03-18,Preventive,David Kim,Air filter replacement,Air filter,0.4
+AC-001,2020-03-21,Preventive,Priya Patel,Bearing lubrication,Grease,1.9
+AC-001,2020-03-23,Preventive,John Martinez,Cooling system cleaning,Cleaning solution,2.1
+AC-001,2020-03-27,Preventive,Carlos Rodriguez,Air filter replacement,Air filter,0.6
+AC-001,2020-03-31,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,1.7
+AC-001,2020-04-19,Preventive,James Wilson,Compressor belt tensioning,None,1.2
+AC-001,2020-04-23,Preventive,John Martinez,Cooling system cleaning,Cleaning solution,2.6
+AC-001,2020-04-27,Preventive,David Kim,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2020-05-23,Preventive,Michael O'Brien,Cooling system cleaning,Cleaning solution,1.8
+AC-001,2020-05-27,Preventive,John Martinez,Bearing lubrication,Grease,1.2
+AC-001,2020-05-31,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,3.0
+AC-001,2020-06-02,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,1.1
+AC-001,2020-06-20,Preventive,Sarah Chen,Bearing lubrication,Grease,1.4
+AC-001,2020-06-27,Corrective,Sarah Chen,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2020-06-30,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2020-07-31,Predictive,Priya Patel,Oil change and filter replacement,Oil;Filter,3.1
+AC-001,2020-08-15,Preventive,Priya Patel,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2020-08-22,Preventive,Maria Garcia,Compressor belt tensioning,None,0.9
+AC-001,2020-09-12,Preventive,Maria Garcia,Air filter replacement,Air filter,0.6
+AC-001,2020-09-14,Preventive,Michael O'Brien,Oil change and filter replacement,Oil;Filter,2.5
+AC-001,2020-10-14,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2020-11-02,Preventive,Michael O'Brien,Cooling system cleaning,Cleaning solution,1.9
+AC-001,2020-11-07,Preventive,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,1.2
+AC-001,2020-11-07,Preventive,Carlos Rodriguez,Air filter replacement,Air filter,0.6
+AC-001,2020-11-11,Preventive,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2020-11-17,Corrective,David Kim,Oil change and filter replacement,Oil;Filter,3.1
+AC-001,2020-12-09,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2020-12-11,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2020-12-11,Scheduled,Emma Thompson,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2021-01-01,Preventive,Emma Thompson,Bearing lubrication,Grease,1.7
+AC-001,2021-01-15,Corrective,Priya Patel,Valve inspection and adjustment,Valve kit,3.1
+AC-001,2021-01-18,Preventive,David Kim,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2021-03-02,Corrective,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.7
+AC-001,2021-03-05,Preventive,James Wilson,Oil change and filter replacement,Oil;Filter,2.9
+AC-001,2021-03-07,Corrective,Sarah Chen,Cooling system cleaning,Cleaning solution,2.1
+AC-001,2021-03-11,Preventive,James Wilson,Oil change and filter replacement,Oil;Filter,2.9
+AC-001,2021-03-16,Corrective,David Kim,Bearing lubrication,Grease,1.6
+AC-001,2021-03-19,Corrective,John Martinez,Cooling system cleaning,Cleaning solution,2.3
+AC-001,2021-04-04,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2021-04-14,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,3.3
+AC-001,2021-04-27,Preventive,Priya Patel,Air filter replacement,Air filter,0.6
+AC-001,2021-04-30,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,2.4
+AC-001,2021-05-02,Corrective,James Wilson,Valve inspection and adjustment,Valve kit,2.8
+AC-001,2021-05-11,Preventive,Maria Garcia,Bearing lubrication,Grease,1.6
+AC-001,2021-05-17,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,2.9
+AC-001,2021-05-21,Preventive,Lisa Anderson,Bearing lubrication,Grease,1.7
+AC-001,2021-05-23,Preventive,Sarah Chen,Valve inspection and adjustment,Valve kit,2.9
+AC-001,2021-05-24,Preventive,Carlos Rodriguez,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2021-06-10,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,1.9
+AC-001,2021-06-11,Preventive,Maria Garcia,Valve inspection and adjustment,Valve kit,2.9
+AC-001,2021-06-11,Corrective,David Kim,Bearing lubrication,Grease,1.3
+AC-001,2021-06-11,Preventive,David Kim,Cooling system cleaning,Cleaning solution,2.4
+AC-001,2021-06-12,Preventive,Maria Garcia,Valve inspection and adjustment,Valve kit,2.8
+AC-001,2021-07-02,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,0.8
+AC-001,2021-07-12,Corrective,Lisa Anderson,Compressor belt tensioning,None,1.1
+AC-001,2021-08-09,Corrective,Maria Garcia,Oil change and filter replacement,Oil;Filter,3.0
+AC-001,2021-09-19,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.0
+AC-001,2021-09-28,Preventive,Lisa Anderson,Valve inspection and adjustment,Valve kit,2.7
+AC-001,2021-09-29,Preventive,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.1
+AC-001,2021-11-03,Preventive,Priya Patel,Air filter replacement,Air filter,0.4
+AC-001,2021-11-08,Corrective,Lisa Anderson,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2021-11-11,Preventive,James Wilson,Air filter replacement,Air filter,0.6
+AC-001,2021-11-16,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,1.9
+AC-001,2021-12-01,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.5
+AC-001,2021-12-07,Corrective,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.8
+AC-001,2021-12-22,Preventive,John Martinez,Cooling system cleaning,Cleaning solution,1.6
+AC-001,2021-12-28,Corrective,Emma Thompson,Compressor belt tensioning,None,0.9
+AC-001,2022-01-12,Preventive,Priya Patel,Oil change and filter replacement,Oil;Filter,2.2
+AC-001,2022-01-23,Scheduled,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.6
+AC-001,2022-02-09,Corrective,Emma Thompson,Bearing lubrication,Grease,1.6
+AC-001,2022-02-19,Preventive,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2022-02-24,Preventive,Priya Patel,Air filter replacement,Air filter,0.5
+AC-001,2022-03-08,Corrective,Sarah Chen,Bearing lubrication,Grease,1.6
+AC-001,2022-03-25,Preventive,John Martinez,Compressor belt tensioning,None,0.9
+AC-001,2022-04-08,Preventive,Priya Patel,Bearing lubrication,Grease,1.6
+AC-001,2022-04-11,Corrective,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2022-04-14,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.4
+AC-001,2022-04-15,Preventive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,3.2
+AC-001,2022-04-17,Preventive,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-001,2022-04-25,Preventive,Sarah Chen,Air filter replacement,Air filter,0.4
+AC-001,2022-04-26,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2022-05-17,Preventive,Emma Thompson,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2022-06-09,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2022-06-21,Corrective,James Wilson,Compressor belt tensioning,None,1.2
+AC-001,2022-07-19,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.7
+AC-001,2022-07-30,Preventive,David Kim,Bearing lubrication,Grease,1.7
+AC-001,2022-08-06,Preventive,Lisa Anderson,Air filter replacement,Air filter,0.6
+AC-001,2022-08-07,Preventive,John Martinez,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2022-08-14,Corrective,Priya Patel,Pressure sensor calibration,Calibration kit,1.1
+AC-001,2022-08-18,Preventive,James Wilson,Compressor belt tensioning,None,1.1
+AC-001,2022-09-06,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2022-09-09,Preventive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.6
+AC-001,2022-09-25,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2022-10-02,Corrective,James Wilson,Compressor belt tensioning,None,0.9
+AC-001,2022-10-09,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,3.8
+AC-001,2022-10-18,Preventive,Carlos Rodriguez,Cooling system cleaning,Cleaning solution,1.9
+AC-001,2022-11-17,Corrective,James Wilson,Cooling system cleaning,Cleaning solution,1.8
+AC-001,2022-11-20,Corrective,Emma Thompson,Oil change and filter replacement,Oil;Filter,2.3
+AC-001,2022-11-23,Corrective,Priya Patel,Bearing lubrication,Grease,1.6
+AC-001,2022-11-26,Preventive,James Wilson,Oil change and filter replacement,Oil;Filter,2.5
+AC-001,2023-01-21,Corrective,Michael O'Brien,Bearing lubrication,Grease,1.3
+AC-001,2023-01-25,Predictive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.2
+AC-001,2023-02-02,Preventive,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,2.4
+AC-001,2023-02-05,Preventive,Priya Patel,Compressor belt tensioning,None,0.8
+AC-001,2023-02-10,Preventive,Carlos Rodriguez,Air filter replacement,Air filter,0.5
+AC-001,2023-02-22,Preventive,John Martinez,Bearing lubrication,Grease,1.8
+AC-001,2023-03-20,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,3.6
+AC-001,2023-03-27,Preventive,John Martinez,Air filter replacement,Air filter,0.5
+AC-001,2023-04-07,Preventive,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.1
+AC-001,2023-05-01,Preventive,Emma Thompson,Air filter replacement,Air filter,0.6
+AC-001,2023-05-03,Preventive,Maria Garcia,Air filter replacement,Air filter,0.4
+AC-001,2023-05-18,Preventive,Sarah Chen,Valve inspection and adjustment,Valve kit,3.4
+AC-001,2023-05-28,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,2.6
+AC-001,2023-06-15,Preventive,Emma Thompson,Bearing lubrication,Grease,1.5
+AC-001,2023-07-20,Preventive,Sarah Chen,Cooling system cleaning,Cleaning solution,2.6
+AC-001,2023-08-01,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,3.9
+AC-001,2023-08-05,Preventive,John Martinez,Bearing lubrication,Grease,1.6
+AC-001,2023-08-09,Preventive,David Kim,Air filter replacement,Air filter,0.6
+AC-001,2023-08-10,Preventive,Michael O'Brien,Cooling system cleaning,Cleaning solution,2.0
+AC-001,2023-08-13,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,3.4
+AC-001,2023-08-22,Preventive,Maria Garcia,Oil change and filter replacement,Oil;Filter,3.0
+AC-001,2023-08-24,Corrective,Maria Garcia,Valve inspection and adjustment,Valve kit,3.8
+AC-001,2023-08-24,Preventive,Sarah Chen,Oil change and filter replacement,Oil;Filter,3.0
+AC-001,2023-08-25,Preventive,Priya Patel,Compressor belt tensioning,None,1.3
+AC-001,2023-09-03,Corrective,David Kim,Bearing lubrication,Grease,1.5
+AC-001,2023-09-15,Preventive,Lisa Anderson,Air filter replacement,Air filter,0.5
+AC-001,2023-09-16,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2023-10-06,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2023-10-19,Corrective,Priya Patel,Air filter replacement,Air filter,0.4
+AC-001,2023-10-20,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,1.3
+AC-001,2023-10-23,Corrective,David Kim,Compressor belt tensioning,None,1.0
+AC-001,2023-10-24,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.5
+AC-001,2023-11-09,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,0.8
+AC-001,2023-11-12,Preventive,David Kim,Valve inspection and adjustment,Valve kit,3.7
+AC-001,2023-11-16,Preventive,Emma Thompson,Bearing lubrication,Grease,1.4
+AC-001,2023-11-17,Scheduled,Emma Thompson,Oil change and filter replacement,Oil;Filter,2.5
+AC-001,2023-11-20,Preventive,James Wilson,Air filter replacement,Air filter,0.5
+AC-001,2023-12-16,Preventive,Priya Patel,Air filter replacement,Air filter,0.5
+AC-001,2023-12-22,Scheduled,Maria Garcia,Valve inspection and adjustment,Valve kit,3.3
+AC-001,2024-01-18,Corrective,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.7
+AC-001,2024-01-21,Corrective,Emma Thompson,Pressure sensor calibration,Calibration kit,1.2
+AC-001,2024-01-25,Corrective,Michael O'Brien,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2024-01-29,Preventive,Sarah Chen,Air filter replacement,Air filter,0.5
+AC-001,2024-02-12,Preventive,Lisa Anderson,Compressor belt tensioning,None,0.9
+AC-001,2024-05-28,Preventive,David Kim,Valve inspection and adjustment,Valve kit,3.1
+AC-001,2024-06-10,Preventive,Sarah Chen,Air filter replacement,Air filter,0.4
+AC-001,2024-06-17,Scheduled,Michael O'Brien,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2024-06-19,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,1.3
+AC-001,2024-06-20,Preventive,Michael O'Brien,Oil change and filter replacement,Oil;Filter,2.7
+AC-001,2024-07-07,Corrective,Priya Patel,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2024-07-08,Preventive,John Martinez,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2024-07-28,Preventive,Sarah Chen,Valve inspection and adjustment,Valve kit,3.2
+AC-001,2024-07-29,Preventive,Sarah Chen,Valve inspection and adjustment,Valve kit,3.6
+AC-001,2024-08-08,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,1.1
+AC-001,2024-08-15,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.6
+AC-001,2024-08-18,Emergency,Sarah Chen,Valve inspection and adjustment,Valve kit,3.7
+AC-001,2024-09-01,Emergency,Michael O'Brien,Cooling system cleaning,Cleaning solution,2.1
+AC-001,2024-09-12,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,1.3
+AC-001,2024-09-17,Corrective,Lisa Anderson,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2024-09-20,Corrective,Lisa Anderson,Bearing lubrication,Grease,1.6
+AC-001,2024-09-23,Preventive,Maria Garcia,Bearing lubrication,Grease,1.5
+AC-001,2024-10-02,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2024-10-02,Preventive,David Kim,Air filter replacement,Air filter,0.6
+AC-001,2024-10-17,Corrective,Lisa Anderson,Oil change and filter replacement,Oil;Filter,3.0
+AC-001,2024-10-23,Preventive,Sarah Chen,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2024-10-26,Corrective,James Wilson,Valve inspection and adjustment,Valve kit,3.1
+AC-001,2024-11-04,Preventive,David Kim,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2024-11-12,Preventive,Michael O'Brien,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2024-11-18,Preventive,Priya Patel,Compressor belt tensioning,None,0.8
+AC-001,2024-11-21,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,2.0
+AC-001,2024-12-15,Corrective,David Kim,Cooling system cleaning,Cleaning solution,2.5
+AC-001,2024-12-30,Preventive,David Kim,Bearing lubrication,Grease,1.4
+AC-001,2025-01-03,Corrective,Emma Thompson,Bearing lubrication,Grease,1.2
+AC-001,2025-01-04,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.8
+AC-001,2025-01-07,Scheduled,Maria Garcia,Cooling system cleaning,Cleaning solution,2.5
+AC-001,2025-01-09,Preventive,James Wilson,Compressor belt tensioning,None,1.0
+AC-001,2025-01-10,Preventive,James Wilson,Valve inspection and adjustment,Valve kit,2.9
+AC-001,2025-01-14,Corrective,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-001,2025-01-21,Corrective,John Martinez,Valve inspection and adjustment,Valve kit,2.6
+AC-001,2025-02-03,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,1.1
+AC-001,2025-02-05,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,0.9
+AC-001,2025-02-10,Predictive,James Wilson,Valve inspection and adjustment,Valve kit,3.3
+AC-001,2025-02-24,Preventive,John Martinez,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2025-02-26,Preventive,James Wilson,Bearing lubrication,Grease,1.9
+AC-001,2025-03-02,Corrective,James Wilson,Air filter replacement,Air filter,0.6
+AC-001,2025-03-07,Preventive,David Kim,Bearing lubrication,Grease,1.5
+AC-001,2025-03-25,Preventive,David Kim,Compressor belt tensioning,None,1.2
+AC-001,2025-03-25,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.2
+AC-001,2025-04-13,Corrective,Priya Patel,Oil change and filter replacement,Oil;Filter,2.9
+AC-001,2025-05-14,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.1
+AC-001,2025-05-19,Preventive,Priya Patel,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2025-05-20,Corrective,Emma Thompson,Valve inspection and adjustment,Valve kit,2.5
+AC-001,2025-05-25,Preventive,James Wilson,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2025-05-27,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,2.2
+AC-001,2025-05-29,Preventive,Maria Garcia,Compressor belt tensioning,None,0.9
+AC-001,2025-05-31,Preventive,David Kim,Compressor belt tensioning,None,1.2
+AC-001,2025-06-01,Corrective,James Wilson,Valve inspection and adjustment,Valve kit,2.8
+AC-001,2025-06-03,Preventive,James Wilson,Cooling system cleaning,Cleaning solution,1.8
+AC-001,2025-06-12,Corrective,Michael O'Brien,Oil change and filter replacement,Oil;Filter,2.4
+AC-001,2025-06-28,Corrective,David Kim,Bearing lubrication,Grease,1.2
+AC-001,2025-06-30,Emergency,Maria Garcia,Cooling system cleaning,Cleaning solution,2.6
+AC-001,2025-07-17,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,1.0
+AC-001,2025-07-27,Preventive,David Kim,Air filter replacement,Air filter,0.4
+AC-001,2025-07-28,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,3.2
+AC-001,2025-08-01,Corrective,Michael O'Brien,Cooling system cleaning,Cleaning solution,1.8
+AC-001,2025-08-05,Preventive,Lisa Anderson,Compressor belt tensioning,None,0.9
+AC-001,2025-08-10,Corrective,Maria Garcia,Bearing lubrication,Grease,1.2
+AC-001,2025-09-17,Preventive,Lisa Anderson,Cooling system cleaning,Cleaning solution,1.9
+AC-001,2025-09-18,Preventive,John Martinez,Compressor belt tensioning,None,1.2
+AC-001,2025-09-20,Corrective,Emma Thompson,Oil change and filter replacement,Oil;Filter,2.4
+AC-001,2025-09-21,Preventive,Maria Garcia,Pressure sensor calibration,Calibration kit,0.8
+AC-001,2025-10-04,Preventive,Priya Patel,Cooling system cleaning,Cleaning solution,2.4
+AC-001,2025-10-23,Preventive,John Martinez,Compressor belt tensioning,None,1.2
+AC-001,2025-10-24,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,1.1
+AC-001,2025-10-26,Preventive,James Wilson,Air filter replacement,Air filter,0.6
+AC-001,2025-10-30,Preventive,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,2.2
+AC-001,2025-11-12,Corrective,James Wilson,Air filter replacement,Air filter,0.5
+AC-001,2025-11-14,Preventive,Sarah Chen,Bearing lubrication,Grease,1.9
+AC-001,2025-11-18,Preventive,David Kim,Bearing lubrication,Grease,1.7
+AC-001,2025-12-08,Preventive,Maria Garcia,Pressure sensor calibration,Calibration kit,1.3
+AC-001,2025-12-09,Preventive,James Wilson,Valve inspection and adjustment,Valve kit,3.5
+AC-001,2025-12-11,Preventive,Maria Garcia,Air filter replacement,Air filter,0.6
+AC-001,2026-01-01,Preventive,Maria Garcia,Valve inspection and adjustment,Valve kit,3.3
+AC-001,2026-02-07,Preventive,Maria Garcia,Compressor belt tensioning,None,0.8
+AC-001,2026-02-13,Preventive,Priya Patel,Air filter replacement,Air filter,0.6
+AC-001,2026-02-25,Preventive,Sarah Chen,Air filter replacement,Air filter,0.6
+AC-001,2026-02-25,Corrective,Michael O'Brien,Cooling system cleaning,Cleaning solution,1.7
+AC-001,2026-03-02,Preventive,John Martinez,Air filter replacement,Air filter,0.6
+AC-001,2026-03-09,Scheduled,Sarah Chen,Air filter replacement,Air filter,0.5
+AC-001,2026-03-31,Preventive,Priya Patel,Oil change and filter replacement,Oil;Filter,2.7
+AC-001,2026-04-13,Corrective,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-001,2026-04-19,Predictive,Priya Patel,Cooling system cleaning,Cleaning solution,2.0
+AC-001,2026-04-28,Emergency,Michael O'Brien,Compressor belt tensioning,None,1.1
+AC-001,2026-05-03,Predictive,Lisa Anderson,Bearing lubrication,Grease,1.5
+AC-001,2026-05-07,Corrective,James Wilson,Air filter replacement,Air filter,0.4
+AC-001,2026-05-07,Corrective,James Wilson,Bearing lubrication,Grease,1.9
+AC-001,2026-05-11,Preventive,David Kim,Bearing lubrication,Grease,1.7
+AC-001,2026-05-29,Predictive,Emma Thompson,Compressor belt tensioning,None,0.9
+AC-001,2026-06-06,Preventive,James Wilson,Bearing lubrication,Grease,1.9
+AC-001,2026-06-08,Preventive,Michael O'Brien,Bearing lubrication,Grease,1.9
+AC-002,2020-03-29,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.3
+AC-002,2020-03-30,Corrective,Sarah Chen,Bearing lubrication,Grease,1.9
+AC-002,2020-04-04,Preventive,Lisa Anderson,Cooling system cleaning,Cleaning solution,2.5
+AC-002,2020-04-24,Preventive,David Kim,Pressure sensor calibration,Calibration kit,0.8
+AC-002,2020-05-18,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.5
+AC-002,2020-05-31,Preventive,Michael O'Brien,Bearing lubrication,Grease,1.4
+AC-002,2020-06-09,Scheduled,Sarah Chen,Pressure sensor calibration,Calibration kit,0.8
+AC-002,2020-06-09,Corrective,David Kim,Compressor belt tensioning,None,0.8
+AC-002,2020-06-13,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.4
+AC-002,2020-06-20,Preventive,Sarah Chen,Air filter replacement,Air filter,0.6
+AC-002,2020-06-21,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,1.9
+AC-002,2020-06-23,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,2.5
+AC-002,2020-06-25,Preventive,Priya Patel,Compressor belt tensioning,None,1.0
+AC-002,2020-06-30,Preventive,Sarah Chen,Bearing lubrication,Grease,1.2
+AC-002,2020-07-08,Emergency,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.0
+AC-002,2020-07-14,Preventive,James Wilson,Compressor belt tensioning,None,0.9
+AC-002,2020-07-20,Predictive,John Martinez,Air filter replacement,Air filter,0.5
+AC-002,2020-07-22,Preventive,Sarah Chen,Cooling system cleaning,Cleaning solution,1.8
+AC-002,2020-07-23,Emergency,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.5
+AC-002,2020-07-27,Preventive,Lisa Anderson,Compressor belt tensioning,None,1.2
+AC-002,2020-08-15,Preventive,Carlos Rodriguez,Compressor belt tensioning,None,1.0
+AC-002,2020-08-27,Preventive,David Kim,Compressor belt tensioning,None,0.9
+AC-002,2020-09-11,Preventive,Emma Thompson,Compressor belt tensioning,None,1.2
+AC-002,2020-09-20,Preventive,James Wilson,Air filter replacement,Air filter,0.6
+AC-002,2020-09-29,Preventive,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-002,2020-10-01,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2020-10-01,Preventive,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.8
+AC-002,2020-10-14,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2020-10-15,Preventive,Emma Thompson,Compressor belt tensioning,None,0.9
+AC-002,2020-10-19,Preventive,James Wilson,Compressor belt tensioning,None,1.1
+AC-002,2020-12-06,Preventive,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,2.1
+AC-002,2020-12-14,Preventive,John Martinez,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2020-12-19,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.4
+AC-002,2020-12-19,Corrective,Carlos Rodriguez,Air filter replacement,Air filter,0.5
+AC-002,2020-12-22,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,0.8
+AC-002,2021-01-12,Preventive,John Martinez,Bearing lubrication,Grease,1.3
+AC-002,2021-01-13,Corrective,Maria Garcia,Bearing lubrication,Grease,1.7
+AC-002,2021-02-03,Preventive,Emma Thompson,Compressor belt tensioning,None,1.3
+AC-002,2021-02-05,Preventive,James Wilson,Bearing lubrication,Grease,1.7
+AC-002,2021-02-19,Emergency,Sarah Chen,Air filter replacement,Air filter,0.4
+AC-002,2021-03-10,Corrective,David Kim,Compressor belt tensioning,None,0.9
+AC-002,2021-03-17,Preventive,Lisa Anderson,Cooling system cleaning,Cleaning solution,2.4
+AC-002,2021-03-19,Preventive,Emma Thompson,Pressure sensor calibration,Calibration kit,1.1
+AC-002,2021-03-21,Preventive,John Martinez,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2021-03-27,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,3.1
+AC-002,2021-03-29,Corrective,John Martinez,Bearing lubrication,Grease,1.4
+AC-002,2021-04-02,Corrective,Priya Patel,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2021-04-06,Preventive,Lisa Anderson,Compressor belt tensioning,None,0.9
+AC-002,2021-04-19,Emergency,Sarah Chen,Oil change and filter replacement,Oil;Filter,2.9
+AC-002,2021-04-20,Corrective,James Wilson,Oil change and filter replacement,Oil;Filter,2.2
+AC-002,2021-04-22,Emergency,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.6
+AC-002,2021-04-25,Preventive,David Kim,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2021-05-03,Corrective,Priya Patel,Pressure sensor calibration,Calibration kit,0.8
+AC-002,2021-05-16,Preventive,Emma Thompson,Bearing lubrication,Grease,1.5
+AC-002,2021-06-15,Corrective,Emma Thompson,Valve inspection and adjustment,Valve kit,3.7
+AC-002,2021-06-15,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2021-06-17,Preventive,Maria Garcia,Bearing lubrication,Grease,1.7
+AC-002,2021-07-28,Preventive,Sarah Chen,Oil change and filter replacement,Oil;Filter,3.1
+AC-002,2021-08-13,Preventive,Maria Garcia,Pressure sensor calibration,Calibration kit,1.3
+AC-002,2021-08-29,Corrective,David Kim,Cooling system cleaning,Cleaning solution,1.7
+AC-002,2021-08-30,Corrective,Priya Patel,Air filter replacement,Air filter,0.4
+AC-002,2021-09-10,Preventive,James Wilson,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2021-09-11,Preventive,James Wilson,Valve inspection and adjustment,Valve kit,3.0
+AC-002,2021-10-26,Preventive,Lisa Anderson,Valve inspection and adjustment,Valve kit,3.7
+AC-002,2021-11-04,Preventive,David Kim,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2021-11-10,Corrective,Emma Thompson,Air filter replacement,Air filter,0.4
+AC-002,2021-11-20,Preventive,John Martinez,Air filter replacement,Air filter,0.5
+AC-002,2021-11-20,Preventive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,3.1
+AC-002,2021-12-16,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.6
+AC-002,2021-12-23,Preventive,James Wilson,Valve inspection and adjustment,Valve kit,3.3
+AC-002,2021-12-25,Corrective,Maria Garcia,Compressor belt tensioning,None,1.2
+AC-002,2021-12-26,Preventive,Maria Garcia,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2021-12-29,Preventive,Michael O'Brien,Compressor belt tensioning,None,0.9
+AC-002,2022-01-16,Preventive,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2022-01-25,Preventive,Carlos Rodriguez,Air filter replacement,Air filter,0.6
+AC-002,2022-02-01,Scheduled,Sarah Chen,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2022-02-03,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2022-03-07,Preventive,Lisa Anderson,Compressor belt tensioning,None,1.1
+AC-002,2022-03-08,Preventive,Michael O'Brien,Bearing lubrication,Grease,1.2
+AC-002,2022-03-09,Corrective,David Kim,Bearing lubrication,Grease,1.3
+AC-002,2022-03-15,Corrective,Lisa Anderson,Oil change and filter replacement,Oil;Filter,3.1
+AC-002,2022-04-03,Predictive,Lisa Anderson,Compressor belt tensioning,None,0.9
+AC-002,2022-04-07,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,3.0
+AC-002,2022-04-14,Scheduled,John Martinez,Cooling system cleaning,Cleaning solution,2.4
+AC-002,2022-04-26,Corrective,Maria Garcia,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2022-04-28,Preventive,Emma Thompson,Compressor belt tensioning,None,0.8
+AC-002,2022-05-03,Preventive,Sarah Chen,Compressor belt tensioning,None,1.1
+AC-002,2022-05-05,Corrective,Sarah Chen,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2022-05-08,Preventive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.5
+AC-002,2022-05-19,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2022-05-30,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.1
+AC-002,2022-06-04,Preventive,John Martinez,Air filter replacement,Air filter,0.5
+AC-002,2022-06-07,Preventive,Lisa Anderson,Compressor belt tensioning,None,1.1
+AC-002,2022-06-20,Scheduled,Lisa Anderson,Valve inspection and adjustment,Valve kit,3.9
+AC-002,2022-06-30,Preventive,Carlos Rodriguez,Compressor belt tensioning,None,0.9
+AC-002,2022-07-07,Corrective,Sarah Chen,Valve inspection and adjustment,Valve kit,2.8
+AC-002,2022-07-08,Preventive,Lisa Anderson,Valve inspection and adjustment,Valve kit,3.1
+AC-002,2022-07-10,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.4
+AC-002,2022-08-01,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.6
+AC-002,2022-08-03,Preventive,Michael O'Brien,Bearing lubrication,Grease,1.3
+AC-002,2022-08-05,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.3
+AC-002,2022-08-12,Preventive,Priya Patel,Pressure sensor calibration,Calibration kit,1.3
+AC-002,2022-08-16,Preventive,Carlos Rodriguez,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2022-10-28,Corrective,David Kim,Oil change and filter replacement,Oil;Filter,3.2
+AC-002,2022-11-04,Preventive,Emma Thompson,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2022-11-18,Preventive,James Wilson,Compressor belt tensioning,None,0.9
+AC-002,2022-11-19,Preventive,David Kim,Pressure sensor calibration,Calibration kit,1.1
+AC-002,2022-11-28,Predictive,John Martinez,Compressor belt tensioning,None,1.1
+AC-002,2022-12-12,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,2.0
+AC-002,2022-12-15,Scheduled,John Martinez,Air filter replacement,Air filter,0.4
+AC-002,2022-12-25,Preventive,Emma Thompson,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2023-01-08,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.4
+AC-002,2023-01-20,Preventive,Sarah Chen,Bearing lubrication,Grease,1.2
+AC-002,2023-01-30,Corrective,Sarah Chen,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2023-03-16,Preventive,John Martinez,Cooling system cleaning,Cleaning solution,2.3
+AC-002,2023-03-20,Preventive,Lisa Anderson,Bearing lubrication,Grease,1.5
+AC-002,2023-04-01,Corrective,Sarah Chen,Cooling system cleaning,Cleaning solution,2.0
+AC-002,2023-04-22,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.8
+AC-002,2023-05-10,Preventive,John Martinez,Oil change and filter replacement,Oil;Filter,2.5
+AC-002,2023-05-26,Preventive,Sarah Chen,Bearing lubrication,Grease,1.7
+AC-002,2023-05-27,Preventive,James Wilson,Compressor belt tensioning,None,1.2
+AC-002,2023-05-27,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.5
+AC-002,2023-05-29,Preventive,James Wilson,Compressor belt tensioning,None,0.9
+AC-002,2023-06-11,Preventive,Priya Patel,Cooling system cleaning,Cleaning solution,2.1
+AC-002,2023-06-12,Corrective,David Kim,Compressor belt tensioning,None,1.2
+AC-002,2023-06-28,Corrective,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,2.8
+AC-002,2023-07-05,Corrective,Priya Patel,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2023-07-17,Corrective,Michael O'Brien,Cooling system cleaning,Cleaning solution,2.4
+AC-002,2023-07-19,Corrective,Lisa Anderson,Valve inspection and adjustment,Valve kit,2.5
+AC-002,2023-07-24,Preventive,James Wilson,Compressor belt tensioning,None,1.0
+AC-002,2023-07-31,Preventive,Sarah Chen,Bearing lubrication,Grease,1.3
+AC-002,2023-07-31,Preventive,David Kim,Valve inspection and adjustment,Valve kit,2.7
+AC-002,2023-09-02,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,1.1
+AC-002,2023-09-08,Preventive,Sarah Chen,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2023-09-12,Preventive,Sarah Chen,Cooling system cleaning,Cleaning solution,2.5
+AC-002,2023-09-16,Preventive,Priya Patel,Compressor belt tensioning,None,1.0
+AC-002,2023-10-03,Preventive,David Kim,Bearing lubrication,Grease,1.3
+AC-002,2023-10-06,Preventive,James Wilson,Valve inspection and adjustment,Valve kit,3.7
+AC-002,2023-10-07,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,1.8
+AC-002,2023-11-08,Preventive,Sarah Chen,Oil change and filter replacement,Oil;Filter,3.1
+AC-002,2023-11-29,Preventive,James Wilson,Pressure sensor calibration,Calibration kit,1.3
+AC-002,2023-12-06,Predictive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,3.4
+AC-002,2023-12-15,Corrective,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.5
+AC-002,2024-01-03,Preventive,Emma Thompson,Air filter replacement,Air filter,0.5
+AC-002,2024-01-19,Preventive,Lisa Anderson,Valve inspection and adjustment,Valve kit,2.7
+AC-002,2024-02-03,Preventive,Sarah Chen,Compressor belt tensioning,None,0.8
+AC-002,2024-02-06,Corrective,John Martinez,Compressor belt tensioning,None,1.1
+AC-002,2024-02-18,Preventive,Emma Thompson,Oil change and filter replacement,Oil;Filter,2.1
+AC-002,2024-02-28,Preventive,John Martinez,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2024-02-29,Preventive,Priya Patel,Compressor belt tensioning,None,0.9
+AC-002,2024-03-05,Preventive,David Kim,Compressor belt tensioning,None,1.1
+AC-002,2024-03-21,Preventive,Michael O'Brien,Cooling system cleaning,Cleaning solution,2.3
+AC-002,2024-03-23,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,1.1
+AC-002,2024-04-02,Preventive,David Kim,Valve inspection and adjustment,Valve kit,3.8
+AC-002,2024-04-05,Preventive,James Wilson,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2024-05-18,Preventive,Michael O'Brien,Valve inspection and adjustment,Valve kit,3.9
+AC-002,2024-06-03,Predictive,David Kim,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2024-06-03,Corrective,Michael O'Brien,Oil change and filter replacement,Oil;Filter,3.0
+AC-002,2024-06-07,Preventive,David Kim,Bearing lubrication,Grease,1.3
+AC-002,2024-06-10,Corrective,David Kim,Compressor belt tensioning,None,1.3
+AC-002,2024-07-11,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.6
+AC-002,2024-07-31,Preventive,Carlos Rodriguez,Valve inspection and adjustment,Valve kit,3.8
+AC-002,2024-08-15,Corrective,Lisa Anderson,Cooling system cleaning,Cleaning solution,2.3
+AC-002,2024-08-18,Preventive,David Kim,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2024-08-18,Preventive,James Wilson,Air filter replacement,Air filter,0.6
+AC-002,2024-08-24,Preventive,Emma Thompson,Air filter replacement,Air filter,0.6
+AC-002,2024-08-27,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2024-08-27,Preventive,Carlos Rodriguez,Compressor belt tensioning,None,1.1
+AC-002,2024-09-07,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,3.0
+AC-002,2024-09-22,Corrective,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2024-10-06,Preventive,Priya Patel,Compressor belt tensioning,None,1.2
+AC-002,2024-10-12,Corrective,Maria Garcia,Cooling system cleaning,Cleaning solution,2.5
+AC-002,2024-10-28,Corrective,David Kim,Cooling system cleaning,Cleaning solution,2.5
+AC-002,2024-11-06,Preventive,Emma Thompson,Air filter replacement,Air filter,0.5
+AC-002,2024-11-17,Preventive,David Kim,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2024-12-05,Preventive,David Kim,Pressure sensor calibration,Calibration kit,1.3
+AC-002,2024-12-18,Preventive,David Kim,Air filter replacement,Air filter,0.6
+AC-002,2024-12-26,Preventive,Maria Garcia,Oil change and filter replacement,Oil;Filter,2.7
+AC-002,2024-12-30,Preventive,Lisa Anderson,Oil change and filter replacement,Oil;Filter,2.9
+AC-002,2025-01-04,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.6
+AC-002,2025-01-11,Preventive,John Martinez,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2025-01-12,Preventive,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,2.5
+AC-002,2025-01-17,Corrective,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-002,2025-01-23,Preventive,Emma Thompson,Oil change and filter replacement,Oil;Filter,2.7
+AC-002,2025-02-03,Preventive,Maria Garcia,Air filter replacement,Air filter,0.6
+AC-002,2025-02-06,Corrective,John Martinez,Cooling system cleaning,Cleaning solution,1.8
+AC-002,2025-02-09,Preventive,Sarah Chen,Oil change and filter replacement,Oil;Filter,2.8
+AC-002,2025-02-22,Preventive,Maria Garcia,Compressor belt tensioning,None,1.0
+AC-002,2025-02-22,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2025-02-27,Corrective,Priya Patel,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2025-03-02,Preventive,James Wilson,Air filter replacement,Air filter,0.5
+AC-002,2025-03-03,Preventive,Sarah Chen,Pressure sensor calibration,Calibration kit,1.3
+AC-002,2025-03-08,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,2.5
+AC-002,2025-03-15,Preventive,Maria Garcia,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2025-03-16,Predictive,Lisa Anderson,Compressor belt tensioning,None,1.1
+AC-002,2025-03-24,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,3.6
+AC-002,2025-04-02,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.7
+AC-002,2025-04-18,Preventive,Michael O'Brien,Cooling system cleaning,Cleaning solution,1.7
+AC-002,2025-04-22,Corrective,Lisa Anderson,Bearing lubrication,Grease,1.9
+AC-002,2025-04-24,Preventive,Priya Patel,Bearing lubrication,Grease,1.6
+AC-002,2025-05-08,Preventive,Carlos Rodriguez,Oil change and filter replacement,Oil;Filter,2.1
+AC-002,2025-05-15,Preventive,Carlos Rodriguez,Bearing lubrication,Grease,1.5
+AC-002,2025-05-25,Corrective,James Wilson,Bearing lubrication,Grease,1.3
+AC-002,2025-06-20,Predictive,Priya Patel,Oil change and filter replacement,Oil;Filter,2.2
+AC-002,2025-06-24,Emergency,John Martinez,Cooling system cleaning,Cleaning solution,2.3
+AC-002,2025-06-25,Scheduled,David Kim,Cooling system cleaning,Cleaning solution,1.7
+AC-002,2025-07-07,Preventive,Michael O'Brien,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2025-07-27,Preventive,Maria Garcia,Air filter replacement,Air filter,0.5
+AC-002,2025-08-02,Preventive,Priya Patel,Cooling system cleaning,Cleaning solution,2.2
+AC-002,2025-09-01,Preventive,Sarah Chen,Air filter replacement,Air filter,0.6
+AC-002,2025-09-05,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.4
+AC-002,2025-09-07,Preventive,Sarah Chen,Cooling system cleaning,Cleaning solution,1.8
+AC-002,2025-09-12,Preventive,Lisa Anderson,Compressor belt tensioning,None,1.0
+AC-002,2025-09-13,Preventive,Carlos Rodriguez,Cooling system cleaning,Cleaning solution,1.9
+AC-002,2025-10-04,Preventive,Emma Thompson,Bearing lubrication,Grease,1.9
+AC-002,2025-11-01,Preventive,David Kim,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2025-11-02,Preventive,Sarah Chen,Bearing lubrication,Grease,1.6
+AC-002,2025-11-06,Preventive,Emma Thompson,Pressure sensor calibration,Calibration kit,1.0
+AC-002,2025-11-10,Preventive,Priya Patel,Oil change and filter replacement,Oil;Filter,3.0
+AC-002,2025-11-14,Corrective,Priya Patel,Cooling system cleaning,Cleaning solution,1.7
+AC-002,2025-11-22,Preventive,Lisa Anderson,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2025-12-02,Corrective,Emma Thompson,Pressure sensor calibration,Calibration kit,0.8
+AC-002,2025-12-11,Preventive,Emma Thompson,Valve inspection and adjustment,Valve kit,2.9
+AC-002,2025-12-14,Preventive,James Wilson,Bearing lubrication,Grease,1.4
+AC-002,2025-12-24,Preventive,John Martinez,Valve inspection and adjustment,Valve kit,3.2
+AC-002,2026-01-04,Preventive,Carlos Rodriguez,Pressure sensor calibration,Calibration kit,0.9
+AC-002,2026-01-10,Preventive,Carlos Rodriguez,Cooling system cleaning,Cleaning solution,2.0
+AC-002,2026-01-13,Preventive,Lisa Anderson,Cooling system cleaning,Cleaning solution,2.4
+AC-002,2026-01-18,Preventive,Priya Patel,Compressor belt tensioning,None,0.9
+AC-002,2026-01-21,Preventive,Priya Patel,Valve inspection and adjustment,Valve kit,2.9
+AC-002,2026-01-24,Corrective,Emma Thompson,Pressure sensor calibration,Calibration kit,1.2
+AC-002,2026-02-05,Preventive,Maria Garcia,Cooling system cleaning,Cleaning solution,1.7
+AC-002,2026-02-09,Preventive,Sarah Chen,Compressor belt tensioning,None,1.2
+AC-002,2026-02-12,Preventive,Michael O'Brien,Air filter replacement,Air filter,0.6
+AC-002,2026-03-14,Corrective,David Kim,Oil change and filter replacement,Oil;Filter,2.1
+AC-002,2026-03-19,Corrective,James Wilson,Compressor belt tensioning,None,1.0
+AC-002,2026-04-05,Corrective,Michael O'Brien,Bearing lubrication,Grease,1.2
+AC-002,2026-04-12,Preventive,John Martinez,Compressor belt tensioning,None,0.9
+AC-002,2026-04-22,Preventive,Emma Thompson,Bearing lubrication,Grease,1.3
+AC-002,2026-05-14,Corrective,John Martinez,Valve inspection and adjustment,Valve kit,3.7
+CF-003,2019-11-27,Corrective,Carlos Rodriguez,Control system check,None,0.8
+CF-003,2019-12-04,Emergency,Priya Patel,Belt replacement and tensioning,V-belt,1.7
+CF-003,2019-12-04,Corrective,Priya Patel,Vibration analysis,None,0.4
+CF-003,2019-12-12,Preventive,Priya Patel,Belt replacement and tensioning,V-belt,1.8
+CF-003,2019-12-18,Preventive,Lisa Anderson,Electrical connection inspection,None,0.9
+CF-003,2019-12-19,Scheduled,Lisa Anderson,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2019-12-26,Corrective,Carlos Rodriguez,Vibration analysis,None,0.4
+CF-003,2020-01-06,Corrective,Maria Garcia,Belt replacement and tensioning,V-belt,1.5
+CF-003,2020-01-18,Emergency,Emma Thompson,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2020-03-10,Corrective,Emma Thompson,Vibration analysis,None,0.4
+CF-003,2020-04-06,Corrective,Lisa Anderson,Motor bearing replacement,Bearings;Grease,3.4
+CF-003,2020-04-13,Preventive,James Wilson,Vibration analysis,None,0.6
+CF-003,2020-04-14,Preventive,Maria Garcia,Motor bearing replacement,Bearings;Grease,4.5
+CF-003,2020-04-15,Preventive,David Kim,Control system check,None,0.9
+CF-003,2020-04-23,Preventive,Sarah Chen,Fan housing cleaning,Cleaning solution,1.8
+CF-003,2020-05-20,Preventive,Priya Patel,Control system check,None,0.8
+CF-003,2020-05-22,Preventive,Sarah Chen,Belt replacement and tensioning,V-belt,1.2
+CF-003,2020-06-02,Corrective,Priya Patel,Belt replacement and tensioning,V-belt,1.7
+CF-003,2020-06-10,Corrective,Carlos Rodriguez,Control system check,None,1.0
+CF-003,2020-06-18,Preventive,Lisa Anderson,Belt replacement and tensioning,V-belt,1.2
+CF-003,2020-06-25,Emergency,Michael O'Brien,Belt replacement and tensioning,V-belt,1.6
+CF-003,2020-06-25,Preventive,Emma Thompson,Electrical connection inspection,None,1.3
+CF-003,2020-07-06,Preventive,John Martinez,Belt replacement and tensioning,V-belt,1.8
+CF-003,2020-07-07,Corrective,James Wilson,Belt replacement and tensioning,V-belt,1.5
+CF-003,2020-07-21,Preventive,James Wilson,Fan blade balancing,Balancing weights,2.5
+CF-003,2020-09-07,Preventive,Priya Patel,Belt replacement and tensioning,V-belt,1.7
+CF-003,2020-09-11,Preventive,Michael O'Brien,Electrical connection inspection,None,1.1
+CF-003,2020-10-10,Preventive,Priya Patel,Belt replacement and tensioning,V-belt,1.4
+CF-003,2020-11-25,Preventive,Sarah Chen,Vibration analysis,None,0.4
+CF-003,2021-01-23,Preventive,Michael O'Brien,Fan housing cleaning,Cleaning solution,1.7
+CF-003,2021-01-29,Preventive,Maria Garcia,Motor bearing replacement,Bearings;Grease,4.6
+CF-003,2021-02-06,Preventive,Maria Garcia,Control system check,None,1.0
+CF-003,2021-02-16,Preventive,John Martinez,Motor bearing replacement,Bearings;Grease,4.7
+CF-003,2021-02-27,Preventive,Emma Thompson,Belt replacement and tensioning,V-belt,1.9
+CF-003,2021-03-06,Preventive,Michael O'Brien,Control system check,None,1.2
+CF-003,2021-03-10,Corrective,Maria Garcia,Control system check,None,1.0
+CF-003,2021-03-10,Preventive,Lisa Anderson,Motor bearing replacement,Bearings;Grease,3.7
+CF-003,2021-03-17,Preventive,John Martinez,Fan housing cleaning,Cleaning solution,1.8
+CF-003,2021-03-20,Preventive,James Wilson,Electrical connection inspection,None,0.9
+CF-003,2021-04-07,Preventive,John Martinez,Belt replacement and tensioning,V-belt,1.2
+CF-003,2021-04-17,Corrective,Carlos Rodriguez,Control system check,None,1.1
+CF-003,2021-05-04,Corrective,David Kim,Fan blade balancing,Balancing weights,1.6
+CF-003,2021-05-08,Preventive,Priya Patel,Control system check,None,0.9
+CF-003,2021-05-15,Corrective,John Martinez,Control system check,None,1.2
+CF-003,2021-05-16,Corrective,Priya Patel,Fan housing cleaning,Cleaning solution,2.4
+CF-003,2021-05-18,Preventive,James Wilson,Vibration analysis,None,0.5
+CF-003,2021-05-28,Corrective,Emma Thompson,Fan housing cleaning,Cleaning solution,1.6
+CF-003,2021-05-30,Preventive,Michael O'Brien,Vibration analysis,None,0.5
+CF-003,2021-05-30,Corrective,Priya Patel,Motor bearing replacement,Bearings;Grease,4.5
+CF-003,2021-06-19,Preventive,John Martinez,Electrical connection inspection,None,1.1
+CF-003,2021-06-21,Corrective,Emma Thompson,Belt replacement and tensioning,V-belt,1.4
+CF-003,2021-07-17,Preventive,John Martinez,Vibration analysis,None,0.6
+CF-003,2021-08-04,Preventive,Sarah Chen,Control system check,None,1.2
+CF-003,2021-08-05,Preventive,Michael O'Brien,Control system check,None,1.1
+CF-003,2021-08-10,Corrective,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,4.0
+CF-003,2021-08-17,Preventive,Maria Garcia,Motor bearing replacement,Bearings;Grease,4.1
+CF-003,2021-09-21,Preventive,Emma Thompson,Belt replacement and tensioning,V-belt,1.3
+CF-003,2021-09-25,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,4.8
+CF-003,2021-09-25,Corrective,Michael O'Brien,Fan housing cleaning,Cleaning solution,2.1
+CF-003,2021-10-16,Predictive,Priya Patel,Belt replacement and tensioning,V-belt,1.5
+CF-003,2021-10-26,Preventive,Michael O'Brien,Motor bearing replacement,Bearings;Grease,4.7
+CF-003,2021-11-07,Preventive,John Martinez,Fan blade balancing,Balancing weights,1.7
+CF-003,2021-11-07,Preventive,James Wilson,Electrical connection inspection,None,0.8
+CF-003,2021-11-09,Preventive,David Kim,Control system check,None,1.0
+CF-003,2021-11-21,Preventive,Carlos Rodriguez,Electrical connection inspection,None,1.0
+CF-003,2021-12-08,Preventive,Priya Patel,Electrical connection inspection,None,0.8
+CF-003,2021-12-12,Corrective,Sarah Chen,Vibration analysis,None,0.5
+CF-003,2021-12-15,Preventive,David Kim,Fan blade balancing,Balancing weights,1.6
+CF-003,2022-01-16,Preventive,Carlos Rodriguez,Control system check,None,0.8
+CF-003,2022-01-28,Corrective,Priya Patel,Control system check,None,1.1
+CF-003,2022-02-03,Scheduled,Maria Garcia,Control system check,None,1.2
+CF-003,2022-02-04,Preventive,David Kim,Fan housing cleaning,Cleaning solution,2.6
+CF-003,2022-02-12,Preventive,Priya Patel,Fan blade balancing,Balancing weights,1.7
+CF-003,2022-02-13,Corrective,Lisa Anderson,Belt replacement and tensioning,V-belt,1.9
+CF-003,2022-02-24,Preventive,David Kim,Fan housing cleaning,Cleaning solution,2.0
+CF-003,2022-02-28,Corrective,Michael O'Brien,Fan blade balancing,Balancing weights,1.9
+CF-003,2022-03-13,Preventive,Lisa Anderson,Motor bearing replacement,Bearings;Grease,4.6
+CF-003,2022-03-16,Corrective,Sarah Chen,Electrical connection inspection,None,1.0
+CF-003,2022-04-14,Emergency,John Martinez,Fan housing cleaning,Cleaning solution,1.9
+CF-003,2022-04-23,Preventive,Carlos Rodriguez,Electrical connection inspection,None,0.9
+CF-003,2022-04-30,Emergency,Sarah Chen,Belt replacement and tensioning,V-belt,1.8
+CF-003,2022-05-15,Preventive,James Wilson,Fan blade balancing,Balancing weights,2.1
+CF-003,2022-05-18,Preventive,Michael O'Brien,Electrical connection inspection,None,1.2
+CF-003,2022-06-12,Corrective,Carlos Rodriguez,Control system check,None,0.9
+CF-003,2022-08-19,Preventive,James Wilson,Motor bearing replacement,Bearings;Grease,4.1
+CF-003,2022-08-19,Predictive,Sarah Chen,Belt replacement and tensioning,V-belt,1.3
+CF-003,2022-08-21,Preventive,Lisa Anderson,Electrical connection inspection,None,1.3
+CF-003,2022-09-10,Preventive,John Martinez,Control system check,None,0.9
+CF-003,2022-09-13,Preventive,John Martinez,Fan housing cleaning,Cleaning solution,1.9
+CF-003,2022-09-30,Preventive,John Martinez,Vibration analysis,None,0.6
+CF-003,2022-10-08,Preventive,David Kim,Electrical connection inspection,None,1.1
+CF-003,2022-10-17,Preventive,Priya Patel,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2022-10-20,Corrective,Emma Thompson,Fan housing cleaning,Cleaning solution,2.3
+CF-003,2022-11-03,Preventive,Lisa Anderson,Vibration analysis,None,0.5
+CF-003,2022-11-05,Corrective,James Wilson,Fan blade balancing,Balancing weights,1.9
+CF-003,2022-11-05,Preventive,Lisa Anderson,Control system check,None,1.3
+CF-003,2022-11-09,Preventive,Michael O'Brien,Fan housing cleaning,Cleaning solution,1.6
+CF-003,2022-11-15,Preventive,Michael O'Brien,Fan housing cleaning,Cleaning solution,2.0
+CF-003,2022-11-22,Preventive,Carlos Rodriguez,Control system check,None,1.2
+CF-003,2023-01-02,Preventive,Carlos Rodriguez,Belt replacement and tensioning,V-belt,1.6
+CF-003,2023-01-05,Corrective,Michael O'Brien,Belt replacement and tensioning,V-belt,1.6
+CF-003,2023-01-10,Preventive,Emma Thompson,Electrical connection inspection,None,0.9
+CF-003,2023-01-12,Preventive,John Martinez,Motor bearing replacement,Bearings;Grease,4.3
+CF-003,2023-02-01,Corrective,Maria Garcia,Fan blade balancing,Balancing weights,2.3
+CF-003,2023-02-11,Corrective,Maria Garcia,Fan blade balancing,Balancing weights,1.6
+CF-003,2023-02-23,Corrective,David Kim,Control system check,None,0.9
+CF-003,2023-03-05,Preventive,Emma Thompson,Motor bearing replacement,Bearings;Grease,4.9
+CF-003,2023-03-07,Preventive,David Kim,Fan blade balancing,Balancing weights,2.4
+CF-003,2023-03-13,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,3.4
+CF-003,2023-04-09,Preventive,Michael O'Brien,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2023-04-30,Preventive,Priya Patel,Fan housing cleaning,Cleaning solution,1.8
+CF-003,2023-05-06,Preventive,Carlos Rodriguez,Belt replacement and tensioning,V-belt,1.7
+CF-003,2023-05-07,Preventive,Priya Patel,Electrical connection inspection,None,1.2
+CF-003,2023-05-11,Preventive,Maria Garcia,Fan blade balancing,Balancing weights,2.1
+CF-003,2023-05-14,Corrective,Sarah Chen,Control system check,None,1.2
+CF-003,2023-05-17,Preventive,Michael O'Brien,Control system check,None,0.8
+CF-003,2023-05-25,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,3.5
+CF-003,2023-05-25,Predictive,Priya Patel,Fan housing cleaning,Cleaning solution,1.7
+CF-003,2023-06-02,Preventive,Emma Thompson,Fan blade balancing,Balancing weights,1.7
+CF-003,2023-06-15,Preventive,Maria Garcia,Fan blade balancing,Balancing weights,2.5
+CF-003,2023-06-23,Preventive,Priya Patel,Motor bearing replacement,Bearings;Grease,3.8
+CF-003,2023-07-01,Preventive,Sarah Chen,Control system check,None,1.1
+CF-003,2023-07-05,Corrective,Lisa Anderson,Vibration analysis,None,0.6
+CF-003,2023-07-07,Preventive,Emma Thompson,Electrical connection inspection,None,0.9
+CF-003,2023-07-09,Preventive,David Kim,Belt replacement and tensioning,V-belt,1.8
+CF-003,2023-07-12,Preventive,Carlos Rodriguez,Vibration analysis,None,0.4
+CF-003,2023-07-14,Preventive,John Martinez,Belt replacement and tensioning,V-belt,1.2
+CF-003,2023-07-20,Preventive,Emma Thompson,Vibration analysis,None,0.6
+CF-003,2023-07-28,Preventive,Lisa Anderson,Vibration analysis,None,0.5
+CF-003,2023-08-12,Preventive,Michael O'Brien,Motor bearing replacement,Bearings;Grease,4.9
+CF-003,2023-08-29,Preventive,John Martinez,Belt replacement and tensioning,V-belt,1.8
+CF-003,2023-09-18,Preventive,John Martinez,Motor bearing replacement,Bearings;Grease,4.9
+CF-003,2023-09-18,Preventive,Emma Thompson,Motor bearing replacement,Bearings;Grease,4.3
+CF-003,2023-09-20,Preventive,Priya Patel,Fan housing cleaning,Cleaning solution,1.9
+CF-003,2023-09-24,Preventive,James Wilson,Fan blade balancing,Balancing weights,2.2
+CF-003,2023-09-24,Preventive,Lisa Anderson,Fan housing cleaning,Cleaning solution,1.8
+CF-003,2023-10-01,Preventive,John Martinez,Fan housing cleaning,Cleaning solution,2.0
+CF-003,2023-10-04,Preventive,John Martinez,Motor bearing replacement,Bearings;Grease,3.2
+CF-003,2023-10-16,Preventive,James Wilson,Belt replacement and tensioning,V-belt,1.6
+CF-003,2023-10-29,Preventive,David Kim,Fan blade balancing,Balancing weights,2.2
+CF-003,2023-11-01,Preventive,David Kim,Control system check,None,1.1
+CF-003,2023-12-05,Corrective,Sarah Chen,Fan housing cleaning,Cleaning solution,2.1
+CF-003,2023-12-11,Preventive,James Wilson,Vibration analysis,None,0.6
+CF-003,2023-12-18,Corrective,Emma Thompson,Control system check,None,1.1
+CF-003,2024-03-12,Preventive,John Martinez,Control system check,None,0.9
+CF-003,2024-03-14,Preventive,Michael O'Brien,Motor bearing replacement,Bearings;Grease,3.3
+CF-003,2024-03-16,Scheduled,Priya Patel,Fan housing cleaning,Cleaning solution,1.6
+CF-003,2024-03-17,Preventive,Carlos Rodriguez,Fan blade balancing,Balancing weights,2.0
+CF-003,2024-03-18,Preventive,Emma Thompson,Control system check,None,1.3
+CF-003,2024-03-24,Preventive,David Kim,Electrical connection inspection,None,1.0
+CF-003,2024-04-22,Preventive,David Kim,Fan blade balancing,Balancing weights,2.6
+CF-003,2024-05-03,Corrective,Priya Patel,Motor bearing replacement,Bearings;Grease,3.9
+CF-003,2024-05-15,Preventive,David Kim,Control system check,None,1.1
+CF-003,2024-05-20,Corrective,Michael O'Brien,Control system check,None,1.0
+CF-003,2024-07-06,Preventive,Sarah Chen,Belt replacement and tensioning,V-belt,1.3
+CF-003,2024-07-11,Predictive,Priya Patel,Control system check,None,0.8
+CF-003,2024-07-12,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,3.2
+CF-003,2024-07-19,Preventive,James Wilson,Belt replacement and tensioning,V-belt,1.6
+CF-003,2024-07-24,Preventive,Carlos Rodriguez,Fan housing cleaning,Cleaning solution,2.1
+CF-003,2024-07-27,Corrective,Michael O'Brien,Fan housing cleaning,Cleaning solution,2.5
+CF-003,2024-08-02,Preventive,Emma Thompson,Vibration analysis,None,0.4
+CF-003,2024-08-17,Preventive,David Kim,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2024-08-20,Preventive,Priya Patel,Belt replacement and tensioning,V-belt,1.2
+CF-003,2024-09-03,Preventive,Sarah Chen,Control system check,None,1.3
+CF-003,2024-09-13,Preventive,James Wilson,Motor bearing replacement,Bearings;Grease,3.4
+CF-003,2024-09-23,Preventive,Michael O'Brien,Electrical connection inspection,None,0.9
+CF-003,2024-09-28,Preventive,Carlos Rodriguez,Belt replacement and tensioning,V-belt,1.7
+CF-003,2024-09-28,Corrective,James Wilson,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2024-10-02,Preventive,Michael O'Brien,Motor bearing replacement,Bearings;Grease,4.5
+CF-003,2024-10-14,Preventive,Priya Patel,Motor bearing replacement,Bearings;Grease,3.2
+CF-003,2024-10-17,Preventive,Michael O'Brien,Electrical connection inspection,None,1.1
+CF-003,2024-10-19,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,3.3
+CF-003,2024-10-30,Preventive,Emma Thompson,Electrical connection inspection,None,0.9
+CF-003,2024-11-07,Corrective,James Wilson,Vibration analysis,None,0.6
+CF-003,2024-11-16,Preventive,Sarah Chen,Fan blade balancing,Balancing weights,1.8
+CF-003,2024-11-23,Emergency,Sarah Chen,Fan blade balancing,Balancing weights,2.0
+CF-003,2024-12-25,Preventive,Sarah Chen,Belt replacement and tensioning,V-belt,1.4
+CF-003,2025-01-07,Preventive,Carlos Rodriguez,Belt replacement and tensioning,V-belt,1.3
+CF-003,2025-01-07,Corrective,Sarah Chen,Vibration analysis,None,0.6
+CF-003,2025-01-14,Preventive,Priya Patel,Electrical connection inspection,None,0.9
+CF-003,2025-01-18,Corrective,Sarah Chen,Fan housing cleaning,Cleaning solution,1.7
+CF-003,2025-01-22,Preventive,John Martinez,Fan housing cleaning,Cleaning solution,2.3
+CF-003,2025-01-23,Preventive,Maria Garcia,Motor bearing replacement,Bearings;Grease,3.6
+CF-003,2025-01-31,Predictive,Carlos Rodriguez,Control system check,None,1.1
+CF-003,2025-02-02,Preventive,Carlos Rodriguez,Control system check,None,0.8
+CF-003,2025-02-17,Preventive,Carlos Rodriguez,Fan blade balancing,Balancing weights,2.1
+CF-003,2025-02-21,Preventive,Emma Thompson,Vibration analysis,None,0.6
+CF-003,2025-02-24,Preventive,Lisa Anderson,Belt replacement and tensioning,V-belt,1.2
+CF-003,2025-03-05,Corrective,Carlos Rodriguez,Vibration analysis,None,0.5
+CF-003,2025-03-12,Preventive,Michael O'Brien,Electrical connection inspection,None,0.8
+CF-003,2025-03-15,Preventive,Lisa Anderson,Fan blade balancing,Balancing weights,1.8
+CF-003,2025-03-23,Preventive,David Kim,Belt replacement and tensioning,V-belt,1.2
+CF-003,2025-04-13,Corrective,Sarah Chen,Electrical connection inspection,None,1.1
+CF-003,2025-04-15,Preventive,Maria Garcia,Motor bearing replacement,Bearings;Grease,3.7
+CF-003,2025-04-25,Preventive,Priya Patel,Electrical connection inspection,None,1.2
+CF-003,2025-05-05,Preventive,Carlos Rodriguez,Electrical connection inspection,None,1.1
+CF-003,2025-05-09,Preventive,Emma Thompson,Control system check,None,0.9
+CF-003,2025-05-21,Corrective,David Kim,Electrical connection inspection,None,1.0
+CF-003,2025-05-30,Emergency,David Kim,Belt replacement and tensioning,V-belt,1.3
+CF-003,2025-06-06,Preventive,Emma Thompson,Belt replacement and tensioning,V-belt,1.5
+CF-003,2025-06-15,Predictive,James Wilson,Vibration analysis,None,0.5
+CF-003,2025-06-20,Corrective,Lisa Anderson,Control system check,None,0.9
+CF-003,2025-06-26,Preventive,John Martinez,Vibration analysis,None,0.5
+CF-003,2025-07-03,Preventive,Maria Garcia,Control system check,None,1.1
+CF-003,2025-07-06,Preventive,Sarah Chen,Belt replacement and tensioning,V-belt,1.2
+CF-003,2025-07-07,Preventive,Carlos Rodriguez,Vibration analysis,None,0.4
+CF-003,2025-07-08,Corrective,Maria Garcia,Electrical connection inspection,None,1.0
+CF-003,2025-07-24,Preventive,David Kim,Vibration analysis,None,0.4
+CF-003,2025-07-26,Preventive,Emma Thompson,Fan housing cleaning,Cleaning solution,2.0
+CF-003,2025-07-27,Preventive,Maria Garcia,Fan housing cleaning,Cleaning solution,1.9
+CF-003,2025-09-01,Corrective,David Kim,Fan blade balancing,Balancing weights,1.8
+CF-003,2025-09-19,Corrective,Emma Thompson,Motor bearing replacement,Bearings;Grease,3.4
+CF-003,2025-10-08,Preventive,John Martinez,Control system check,None,1.1
+CF-003,2025-10-09,Predictive,Sarah Chen,Belt replacement and tensioning,V-belt,1.7
+CF-003,2025-10-26,Preventive,Michael O'Brien,Electrical connection inspection,None,1.1
+CF-003,2025-10-28,Corrective,Emma Thompson,Fan blade balancing,Balancing weights,2.6
+CF-003,2025-11-01,Preventive,Lisa Anderson,Motor bearing replacement,Bearings;Grease,3.6
+CF-003,2025-11-16,Preventive,David Kim,Motor bearing replacement,Bearings;Grease,4.9
+CF-003,2025-11-17,Corrective,Emma Thompson,Fan housing cleaning,Cleaning solution,1.8
+CF-003,2025-12-10,Corrective,David Kim,Fan housing cleaning,Cleaning solution,2.0
+CF-003,2025-12-16,Preventive,Emma Thompson,Belt replacement and tensioning,V-belt,1.8
+CF-003,2025-12-26,Preventive,Lisa Anderson,Electrical connection inspection,None,1.0
+CF-003,2026-01-15,Preventive,Lisa Anderson,Control system check,None,1.0
+CF-003,2026-02-03,Preventive,Emma Thompson,Belt replacement and tensioning,V-belt,1.5
+CF-003,2026-02-03,Preventive,Emma Thompson,Electrical connection inspection,None,1.2
+CF-003,2026-02-07,Preventive,Maria Garcia,Belt replacement and tensioning,V-belt,1.8
+CF-003,2026-02-15,Preventive,Sarah Chen,Belt replacement and tensioning,V-belt,1.7
+CF-003,2026-03-10,Predictive,John Martinez,Control system check,None,0.9
+CF-003,2026-03-11,Preventive,Carlos Rodriguez,Motor bearing replacement,Bearings;Grease,4.9
+CF-003,2026-03-27,Preventive,Maria Garcia,Electrical connection inspection,None,1.0
+CF-003,2026-03-27,Corrective,Michael O'Brien,Belt replacement and tensioning,V-belt,1.5
+CF-003,2026-03-27,Preventive,James Wilson,Electrical connection inspection,None,0.9
+CF-003,2026-04-21,Preventive,Lisa Anderson,Electrical connection inspection,None,1.1
+CF-003,2026-04-28,Preventive,Sarah Chen,Vibration analysis,None,0.6
+CF-003,2026-04-28,Preventive,John Martinez,Fan housing cleaning,Cleaning solution,2.2
+CF-003,2026-05-16,Preventive,Priya Patel,Vibration analysis,None,0.4
+CF-003,2026-05-30,Preventive,Sarah Chen,Control system check,None,1.3
+CF-003,2026-06-05,Preventive,Michael O'Brien,Electrical connection inspection,None,1.1
+CF-003,2026-06-07,Preventive,Michael O'Brien,Electrical connection inspection,None,0.9
+CF-003,2026-06-08,Corrective,James Wilson,Control system check,None,0.8
+RM-005,2018-07-12,Scheduled,Maria Garcia,Cooling system maintenance,Coolant,2.6
+RM-005,2018-07-16,Preventive,David Kim,Hydraulic oil change,Hydraulic oil;Filter,4.3
+RM-005,2018-07-25,Predictive,Emma Thompson,Roll surface inspection,None,2.4
+RM-005,2018-08-19,Preventive,Priya Patel,Hydraulic oil change,Hydraulic oil;Filter,3.5
+RM-005,2018-09-01,Preventive,Sarah Chen,Roll surface inspection,None,2.1
+RM-005,2018-09-12,Preventive,Maria Garcia,Hydraulic oil change,Hydraulic oil;Filter,3.5
+RM-005,2018-09-19,Preventive,Sarah Chen,Bearing lubrication and inspection,Grease,3.7
+RM-005,2018-09-24,Preventive,John Martinez,Cooling system maintenance,Coolant,2.3
+RM-005,2018-09-29,Preventive,Carlos Rodriguez,Roll surface inspection,None,2.6
+RM-005,2018-10-12,Preventive,James Wilson,Bearing lubrication and inspection,Grease,3.0
+RM-005,2018-10-22,Preventive,Carlos Rodriguez,Drive motor inspection,None,1.7
+RM-005,2018-10-26,Preventive,Priya Patel,Roll surface inspection,None,2.0
+RM-005,2018-10-29,Preventive,Sarah Chen,Drive motor inspection,None,2.1
+RM-005,2018-11-10,Corrective,Priya Patel,Roll alignment check,None,3.5
+RM-005,2018-11-12,Preventive,Lisa Anderson,Lubrication pump maintenance,Pump seals,3.2
+RM-005,2018-11-16,Corrective,Lisa Anderson,Roll surface inspection,None,1.9
+RM-005,2019-01-04,Preventive,Priya Patel,Lubrication pump maintenance,Pump seals,3.8
+RM-005,2019-01-05,Corrective,Michael O'Brien,Roll alignment check,None,3.9
+RM-005,2019-01-12,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.2
+RM-005,2019-01-28,Preventive,Lisa Anderson,Hydraulic oil change,Hydraulic oil;Filter,4.1
+RM-005,2019-02-05,Preventive,Lisa Anderson,Lubrication pump maintenance,Pump seals,3.4
+RM-005,2019-02-06,Corrective,James Wilson,Cooling system maintenance,Coolant,2.9
+RM-005,2019-02-28,Preventive,John Martinez,Roll alignment check,None,3.9
+RM-005,2019-03-07,Preventive,Priya Patel,Lubrication pump maintenance,Pump seals,2.6
+RM-005,2019-03-21,Preventive,Maria Garcia,Roll surface inspection,None,1.8
+RM-005,2019-04-03,Preventive,Michael O'Brien,Cooling system maintenance,Coolant,2.9
+RM-005,2019-04-20,Preventive,James Wilson,Bearing lubrication and inspection,Grease,3.2
+RM-005,2019-05-08,Preventive,John Martinez,Bearing lubrication and inspection,Grease,2.5
+RM-005,2019-05-08,Corrective,John Martinez,Roll alignment check,None,4.3
+RM-005,2019-05-17,Corrective,Maria Garcia,Roll surface inspection,None,2.1
+RM-005,2019-05-22,Predictive,David Kim,Roll surface inspection,None,2.4
+RM-005,2019-05-27,Corrective,David Kim,Roll alignment check,None,3.8
+RM-005,2019-07-02,Preventive,Michael O'Brien,Roll surface inspection,None,1.8
+RM-005,2019-08-05,Preventive,David Kim,Bearing lubrication and inspection,Grease,3.8
+RM-005,2019-08-07,Preventive,Maria Garcia,Lubrication pump maintenance,Pump seals,3.3
+RM-005,2019-08-09,Corrective,James Wilson,Bearing lubrication and inspection,Grease,3.8
+RM-005,2019-08-18,Scheduled,Lisa Anderson,Bearing lubrication and inspection,Grease,3.0
+RM-005,2019-08-27,Corrective,Priya Patel,Bearing lubrication and inspection,Grease,3.8
+RM-005,2019-09-10,Corrective,James Wilson,Bearing lubrication and inspection,Grease,2.8
+RM-005,2019-09-21,Preventive,Maria Garcia,Cooling system maintenance,Coolant,2.8
+RM-005,2019-09-23,Preventive,Sarah Chen,Drive motor inspection,None,2.3
+RM-005,2019-10-23,Preventive,James Wilson,Hydraulic oil change,Hydraulic oil;Filter,4.1
+RM-005,2019-11-06,Preventive,James Wilson,Hydraulic oil change,Hydraulic oil;Filter,4.3
+RM-005,2019-11-19,Corrective,John Martinez,Roll alignment check,None,4.3
+RM-005,2019-11-20,Corrective,Carlos Rodriguez,Bearing lubrication and inspection,Grease,3.6
+RM-005,2019-11-23,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,2.7
+RM-005,2019-12-05,Preventive,Carlos Rodriguez,Lubrication pump maintenance,Pump seals,3.9
+RM-005,2019-12-15,Preventive,James Wilson,Bearing lubrication and inspection,Grease,2.7
+RM-005,2020-01-07,Scheduled,Sarah Chen,Cooling system maintenance,Coolant,2.3
+RM-005,2020-01-30,Preventive,Sarah Chen,Roll surface inspection,None,2.4
+RM-005,2020-02-17,Preventive,Lisa Anderson,Drive motor inspection,None,1.9
+RM-005,2020-03-03,Corrective,Sarah Chen,Bearing lubrication and inspection,Grease,3.0
+RM-005,2020-03-11,Scheduled,David Kim,Lubrication pump maintenance,Pump seals,3.6
+RM-005,2020-04-21,Preventive,John Martinez,Roll surface inspection,None,2.3
+RM-005,2020-04-25,Emergency,Priya Patel,Roll surface inspection,None,1.8
+RM-005,2020-05-08,Preventive,James Wilson,Lubrication pump maintenance,Pump seals,2.6
+RM-005,2020-06-01,Corrective,Priya Patel,Cooling system maintenance,Coolant,2.4
+RM-005,2020-06-08,Corrective,Michael O'Brien,Roll alignment check,None,4.7
+RM-005,2020-06-11,Preventive,David Kim,Roll alignment check,None,4.5
+RM-005,2020-06-14,Corrective,James Wilson,Bearing lubrication and inspection,Grease,2.9
+RM-005,2020-06-19,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.8
+RM-005,2020-07-04,Preventive,Sarah Chen,Roll surface inspection,None,2.4
+RM-005,2020-07-13,Preventive,Priya Patel,Drive motor inspection,None,1.7
+RM-005,2020-07-18,Predictive,David Kim,Cooling system maintenance,Coolant,2.8
+RM-005,2020-07-27,Preventive,David Kim,Roll surface inspection,None,1.6
+RM-005,2020-07-27,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2020-08-01,Preventive,David Kim,Lubrication pump maintenance,Pump seals,2.9
+RM-005,2020-08-05,Preventive,Michael O'Brien,Bearing lubrication and inspection,Grease,2.8
+RM-005,2020-08-15,Corrective,Carlos Rodriguez,Roll alignment check,None,3.5
+RM-005,2020-08-20,Scheduled,Maria Garcia,Lubrication pump maintenance,Pump seals,3.8
+RM-005,2020-08-24,Preventive,David Kim,Drive motor inspection,None,1.6
+RM-005,2020-09-14,Corrective,Sarah Chen,Cooling system maintenance,Coolant,2.1
+RM-005,2020-10-07,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,3.4
+RM-005,2020-10-08,Preventive,Lisa Anderson,Roll alignment check,None,4.8
+RM-005,2020-10-09,Corrective,Priya Patel,Roll alignment check,None,3.9
+RM-005,2020-10-10,Preventive,Priya Patel,Hydraulic oil change,Hydraulic oil;Filter,4.6
+RM-005,2020-10-18,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.4
+RM-005,2020-10-28,Preventive,Emma Thompson,Drive motor inspection,None,2.2
+RM-005,2020-11-04,Preventive,Maria Garcia,Cooling system maintenance,Coolant,2.6
+RM-005,2020-11-04,Preventive,Michael O'Brien,Bearing lubrication and inspection,Grease,2.4
+RM-005,2020-11-05,Scheduled,Lisa Anderson,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2020-11-09,Preventive,Lisa Anderson,Roll alignment check,None,3.3
+RM-005,2020-11-16,Scheduled,James Wilson,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2020-12-24,Corrective,Carlos Rodriguez,Lubrication pump maintenance,Pump seals,3.8
+RM-005,2020-12-27,Preventive,Sarah Chen,Hydraulic oil change,Hydraulic oil;Filter,4.7
+RM-005,2021-01-08,Scheduled,Lisa Anderson,Roll alignment check,None,3.9
+RM-005,2021-01-10,Preventive,Priya Patel,Roll surface inspection,None,2.4
+RM-005,2021-01-12,Preventive,Priya Patel,Lubrication pump maintenance,Pump seals,3.6
+RM-005,2021-01-14,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.9
+RM-005,2021-01-27,Corrective,John Martinez,Hydraulic oil change,Hydraulic oil;Filter,5.2
+RM-005,2021-02-28,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,3.5
+RM-005,2021-03-14,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,3.4
+RM-005,2021-03-17,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,3.2
+RM-005,2021-03-31,Corrective,David Kim,Roll alignment check,None,5.2
+RM-005,2021-04-22,Preventive,Carlos Rodriguez,Roll surface inspection,None,2.4
+RM-005,2021-05-18,Preventive,Emma Thompson,Roll surface inspection,None,2.6
+RM-005,2021-06-05,Preventive,Carlos Rodriguez,Drive motor inspection,None,2.1
+RM-005,2021-07-12,Preventive,Michael O'Brien,Bearing lubrication and inspection,Grease,3.7
+RM-005,2021-07-31,Corrective,Lisa Anderson,Cooling system maintenance,Coolant,2.0
+RM-005,2021-07-31,Preventive,Sarah Chen,Bearing lubrication and inspection,Grease,2.6
+RM-005,2021-08-01,Corrective,Lisa Anderson,Bearing lubrication and inspection,Grease,3.4
+RM-005,2021-08-01,Preventive,David Kim,Roll surface inspection,None,2.4
+RM-005,2021-08-10,Preventive,David Kim,Hydraulic oil change,Hydraulic oil;Filter,4.2
+RM-005,2021-08-16,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.0
+RM-005,2021-08-24,Preventive,David Kim,Bearing lubrication and inspection,Grease,3.5
+RM-005,2021-08-28,Preventive,John Martinez,Roll alignment check,None,5.0
+RM-005,2021-08-29,Preventive,John Martinez,Roll surface inspection,None,2.4
+RM-005,2021-09-04,Corrective,Carlos Rodriguez,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2021-09-15,Corrective,Sarah Chen,Roll alignment check,None,3.6
+RM-005,2021-10-18,Preventive,Carlos Rodriguez,Roll surface inspection,None,1.7
+RM-005,2021-11-18,Preventive,Sarah Chen,Roll alignment check,None,5.0
+RM-005,2021-11-21,Preventive,Lisa Anderson,Roll surface inspection,None,2.0
+RM-005,2021-12-03,Preventive,James Wilson,Hydraulic oil change,Hydraulic oil;Filter,3.3
+RM-005,2021-12-10,Preventive,Sarah Chen,Roll surface inspection,None,2.0
+RM-005,2021-12-15,Preventive,Michael O'Brien,Hydraulic oil change,Hydraulic oil;Filter,4.7
+RM-005,2021-12-17,Preventive,Michael O'Brien,Hydraulic oil change,Hydraulic oil;Filter,3.9
+RM-005,2021-12-21,Corrective,Priya Patel,Hydraulic oil change,Hydraulic oil;Filter,3.4
+RM-005,2021-12-26,Corrective,Michael O'Brien,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2021-12-28,Corrective,James Wilson,Roll alignment check,None,4.6
+RM-005,2022-01-23,Preventive,Lisa Anderson,Hydraulic oil change,Hydraulic oil;Filter,4.7
+RM-005,2022-01-24,Emergency,Carlos Rodriguez,Cooling system maintenance,Coolant,2.7
+RM-005,2022-02-11,Preventive,Maria Garcia,Bearing lubrication and inspection,Grease,3.8
+RM-005,2022-02-21,Preventive,David Kim,Hydraulic oil change,Hydraulic oil;Filter,3.2
+RM-005,2022-02-22,Preventive,Michael O'Brien,Cooling system maintenance,Coolant,3.2
+RM-005,2022-02-25,Corrective,Maria Garcia,Hydraulic oil change,Hydraulic oil;Filter,4.4
+RM-005,2022-03-06,Emergency,Carlos Rodriguez,Roll alignment check,None,4.0
+RM-005,2022-03-14,Preventive,Sarah Chen,Hydraulic oil change,Hydraulic oil;Filter,4.6
+RM-005,2022-03-18,Preventive,Sarah Chen,Hydraulic oil change,Hydraulic oil;Filter,3.9
+RM-005,2022-03-21,Corrective,David Kim,Cooling system maintenance,Coolant,3.0
+RM-005,2022-04-02,Corrective,Michael O'Brien,Drive motor inspection,None,2.1
+RM-005,2022-06-03,Preventive,Michael O'Brien,Cooling system maintenance,Coolant,2.9
+RM-005,2022-06-18,Corrective,Sarah Chen,Roll alignment check,None,5.0
+RM-005,2022-06-20,Preventive,Lisa Anderson,Roll surface inspection,None,2.3
+RM-005,2022-07-10,Preventive,James Wilson,Drive motor inspection,None,1.8
+RM-005,2022-07-18,Emergency,David Kim,Bearing lubrication and inspection,Grease,3.1
+RM-005,2022-07-24,Preventive,Sarah Chen,Drive motor inspection,None,1.7
+RM-005,2022-07-25,Corrective,Sarah Chen,Hydraulic oil change,Hydraulic oil;Filter,3.3
+RM-005,2022-08-09,Preventive,John Martinez,Hydraulic oil change,Hydraulic oil;Filter,4.8
+RM-005,2022-08-15,Emergency,Carlos Rodriguez,Roll alignment check,None,5.2
+RM-005,2022-08-28,Preventive,James Wilson,Bearing lubrication and inspection,Grease,3.3
+RM-005,2022-10-15,Preventive,John Martinez,Hydraulic oil change,Hydraulic oil;Filter,3.4
+RM-005,2022-11-21,Preventive,Sarah Chen,Cooling system maintenance,Coolant,3.0
+RM-005,2022-11-23,Preventive,Carlos Rodriguez,Cooling system maintenance,Coolant,3.1
+RM-005,2022-12-05,Emergency,Maria Garcia,Lubrication pump maintenance,Pump seals,2.9
+RM-005,2022-12-08,Preventive,John Martinez,Hydraulic oil change,Hydraulic oil;Filter,3.7
+RM-005,2022-12-20,Preventive,Michael O'Brien,Lubrication pump maintenance,Pump seals,3.1
+RM-005,2022-12-20,Preventive,Priya Patel,Lubrication pump maintenance,Pump seals,2.9
+RM-005,2022-12-30,Preventive,James Wilson,Lubrication pump maintenance,Pump seals,3.5
+RM-005,2023-01-25,Scheduled,Carlos Rodriguez,Roll alignment check,None,4.8
+RM-005,2023-01-28,Preventive,Sarah Chen,Roll alignment check,None,4.8
+RM-005,2023-02-01,Preventive,James Wilson,Hydraulic oil change,Hydraulic oil;Filter,3.6
+RM-005,2023-02-03,Preventive,James Wilson,Cooling system maintenance,Coolant,2.8
+RM-005,2023-02-04,Preventive,Michael O'Brien,Lubrication pump maintenance,Pump seals,2.4
+RM-005,2023-02-20,Corrective,Michael O'Brien,Roll surface inspection,None,1.6
+RM-005,2023-03-12,Preventive,John Martinez,Drive motor inspection,None,1.9
+RM-005,2023-03-18,Scheduled,Carlos Rodriguez,Bearing lubrication and inspection,Grease,2.4
+RM-005,2023-03-30,Predictive,Emma Thompson,Bearing lubrication and inspection,Grease,2.7
+RM-005,2023-04-13,Preventive,Emma Thompson,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2023-05-11,Corrective,James Wilson,Roll alignment check,None,3.6
+RM-005,2023-05-18,Corrective,Sarah Chen,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2023-05-25,Corrective,Maria Garcia,Cooling system maintenance,Coolant,3.0
+RM-005,2023-06-09,Preventive,Priya Patel,Cooling system maintenance,Coolant,2.3
+RM-005,2023-06-12,Preventive,Sarah Chen,Cooling system maintenance,Coolant,2.3
+RM-005,2023-06-15,Preventive,Carlos Rodriguez,Drive motor inspection,None,1.9
+RM-005,2023-06-28,Corrective,Sarah Chen,Roll surface inspection,None,1.6
+RM-005,2023-07-05,Corrective,James Wilson,Roll alignment check,None,3.3
+RM-005,2023-07-10,Preventive,James Wilson,Roll alignment check,None,3.7
+RM-005,2023-08-04,Preventive,David Kim,Bearing lubrication and inspection,Grease,3.5
+RM-005,2023-08-14,Corrective,Maria Garcia,Roll alignment check,None,4.5
+RM-005,2023-08-21,Corrective,Priya Patel,Cooling system maintenance,Coolant,2.8
+RM-005,2023-08-30,Preventive,Emma Thompson,Drive motor inspection,None,2.2
+RM-005,2023-09-07,Predictive,Michael O'Brien,Roll alignment check,None,3.4
+RM-005,2023-09-12,Preventive,Sarah Chen,Lubrication pump maintenance,Pump seals,3.2
+RM-005,2023-09-24,Preventive,Sarah Chen,Hydraulic oil change,Hydraulic oil;Filter,5.0
+RM-005,2023-10-21,Corrective,David Kim,Roll alignment check,None,3.6
+RM-005,2023-11-18,Preventive,Priya Patel,Roll surface inspection,None,2.4
+RM-005,2023-12-22,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2023-12-29,Preventive,John Martinez,Roll surface inspection,None,1.8
+RM-005,2023-12-30,Scheduled,Maria Garcia,Roll surface inspection,None,2.6
+RM-005,2024-01-02,Preventive,John Martinez,Bearing lubrication and inspection,Grease,3.4
+RM-005,2024-01-03,Preventive,Maria Garcia,Cooling system maintenance,Coolant,2.4
+RM-005,2024-01-29,Preventive,Maria Garcia,Drive motor inspection,None,2.4
+RM-005,2024-02-13,Preventive,Emma Thompson,Bearing lubrication and inspection,Grease,3.1
+RM-005,2024-02-28,Preventive,John Martinez,Cooling system maintenance,Coolant,3.1
+RM-005,2024-03-15,Preventive,Michael O'Brien,Roll surface inspection,None,2.1
+RM-005,2024-03-23,Preventive,Michael O'Brien,Roll alignment check,None,4.6
+RM-005,2024-03-26,Preventive,Maria Garcia,Cooling system maintenance,Coolant,2.8
+RM-005,2024-03-29,Preventive,Priya Patel,Drive motor inspection,None,2.6
+RM-005,2024-04-20,Preventive,James Wilson,Roll surface inspection,None,2.5
+RM-005,2024-04-20,Emergency,Maria Garcia,Bearing lubrication and inspection,Grease,3.7
+RM-005,2024-05-16,Emergency,James Wilson,Cooling system maintenance,Coolant,2.5
+RM-005,2024-06-22,Preventive,Maria Garcia,Cooling system maintenance,Coolant,3.1
+RM-005,2024-06-23,Preventive,David Kim,Drive motor inspection,None,2.3
+RM-005,2024-06-30,Preventive,David Kim,Hydraulic oil change,Hydraulic oil;Filter,5.0
+RM-005,2024-07-07,Preventive,Lisa Anderson,Cooling system maintenance,Coolant,2.1
+RM-005,2024-08-15,Preventive,James Wilson,Bearing lubrication and inspection,Grease,3.2
+RM-005,2024-08-27,Preventive,Priya Patel,Bearing lubrication and inspection,Grease,3.1
+RM-005,2024-10-15,Preventive,David Kim,Roll surface inspection,None,2.5
+RM-005,2024-10-15,Corrective,Carlos Rodriguez,Bearing lubrication and inspection,Grease,2.9
+RM-005,2024-11-19,Preventive,James Wilson,Roll surface inspection,None,2.2
+RM-005,2024-12-09,Preventive,Carlos Rodriguez,Hydraulic oil change,Hydraulic oil;Filter,4.6
+RM-005,2024-12-12,Preventive,Sarah Chen,Cooling system maintenance,Coolant,2.1
+RM-005,2024-12-27,Preventive,Sarah Chen,Drive motor inspection,None,2.5
+RM-005,2025-01-30,Corrective,John Martinez,Roll alignment check,None,4.1
+RM-005,2025-02-03,Preventive,Sarah Chen,Roll alignment check,None,3.7
+RM-005,2025-02-07,Preventive,David Kim,Hydraulic oil change,Hydraulic oil;Filter,3.2
+RM-005,2025-03-04,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,3.3
+RM-005,2025-03-16,Preventive,David Kim,Lubrication pump maintenance,Pump seals,2.6
+RM-005,2025-03-21,Preventive,James Wilson,Drive motor inspection,None,2.1
+RM-005,2025-04-12,Preventive,Lisa Anderson,Drive motor inspection,None,1.9
+RM-005,2025-04-12,Preventive,Michael O'Brien,Roll surface inspection,None,1.6
+RM-005,2025-07-06,Preventive,Michael O'Brien,Lubrication pump maintenance,Pump seals,3.1
+RM-005,2025-07-09,Preventive,Lisa Anderson,Roll alignment check,None,3.7
+RM-005,2025-07-11,Preventive,Sarah Chen,Roll alignment check,None,4.4
+RM-005,2025-07-13,Corrective,Priya Patel,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2025-07-20,Preventive,Sarah Chen,Lubrication pump maintenance,Pump seals,3.1
+RM-005,2025-07-23,Preventive,John Martinez,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2025-07-24,Preventive,Emma Thompson,Roll alignment check,None,3.3
+RM-005,2025-08-01,Preventive,Emma Thompson,Hydraulic oil change,Hydraulic oil;Filter,4.2
+RM-005,2025-08-03,Preventive,David Kim,Lubrication pump maintenance,Pump seals,2.6
+RM-005,2025-08-10,Corrective,Carlos Rodriguez,Bearing lubrication and inspection,Grease,2.9
+RM-005,2025-08-10,Scheduled,Priya Patel,Hydraulic oil change,Hydraulic oil;Filter,4.9
+RM-005,2025-08-14,Preventive,Priya Patel,Lubrication pump maintenance,Pump seals,2.5
+RM-005,2025-08-22,Preventive,John Martinez,Cooling system maintenance,Coolant,3.0
+RM-005,2025-08-27,Emergency,John Martinez,Roll surface inspection,None,2.0
+RM-005,2025-08-29,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,3.2
+RM-005,2025-09-08,Corrective,John Martinez,Roll alignment check,None,4.9
+RM-005,2025-09-20,Corrective,Michael O'Brien,Lubrication pump maintenance,Pump seals,3.7
+RM-005,2025-09-29,Preventive,Lisa Anderson,Cooling system maintenance,Coolant,2.6
+RM-005,2025-10-19,Preventive,John Martinez,Bearing lubrication and inspection,Grease,2.5
+RM-005,2025-10-26,Predictive,Priya Patel,Lubrication pump maintenance,Pump seals,3.3
+RM-005,2025-11-11,Preventive,John Martinez,Roll surface inspection,None,2.2
+RM-005,2025-12-17,Preventive,Lisa Anderson,Roll surface inspection,None,2.4
+RM-005,2026-01-05,Preventive,Lisa Anderson,Lubrication pump maintenance,Pump seals,3.2
+RM-005,2026-02-16,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,2.5
+RM-005,2026-03-02,Preventive,Lisa Anderson,Cooling system maintenance,Coolant,2.9
+RM-005,2026-03-06,Preventive,Lisa Anderson,Bearing lubrication and inspection,Grease,3.6
+RM-005,2026-04-24,Preventive,Emma Thompson,Cooling system maintenance,Coolant,2.7
+RM-005,2026-05-19,Corrective,Michael O'Brien,Hydraulic oil change,Hydraulic oil;Filter,4.0
+RM-005,2026-05-19,Preventive,Maria Garcia,Hydraulic oil change,Hydraulic oil;Filter,4.8
+CM-007,2021-01-07,Preventive,Sarah Chen,Belt tension adjustment,None,1.3
+CM-007,2021-01-10,Predictive,Michael O'Brien,Speed sensor calibration,None,0.6
+CM-007,2021-01-19,Scheduled,Lisa Anderson,Motor bearing lubrication,Grease,1.7
+CM-007,2021-01-23,Predictive,Priya Patel,Shaft alignment check,None,2.3
+CM-007,2021-02-24,Preventive,Carlos Rodriguez,Shaft alignment check,None,2.3
+CM-007,2021-03-08,Corrective,Maria Garcia,Motor bearing lubrication,Grease,1.9
+CM-007,2021-03-08,Corrective,Sarah Chen,Belt tension adjustment,None,1.0
+CM-007,2021-03-24,Corrective,John Martinez,Chain lubrication,Chain lubricant,1.1
+CM-007,2021-04-20,Corrective,Emma Thompson,Speed sensor calibration,None,0.6
+CM-007,2021-04-29,Corrective,Lisa Anderson,Gearbox oil change,Gear oil,2.5
+CM-007,2021-05-13,Corrective,Priya Patel,Shaft alignment check,None,1.8
+CM-007,2021-05-14,Corrective,Sarah Chen,Belt tension adjustment,None,1.0
+CM-007,2021-05-21,Preventive,Carlos Rodriguez,Chain lubrication,Chain lubricant,1.0
+CM-007,2021-07-05,Corrective,Maria Garcia,Belt tension adjustment,None,1.2
+CM-007,2021-08-27,Preventive,Priya Patel,Shaft alignment check,None,2.5
+CM-007,2021-09-01,Corrective,Maria Garcia,Belt tension adjustment,None,1.2
+CM-007,2021-09-09,Corrective,Sarah Chen,Chain lubrication,Chain lubricant,1.2
+CM-007,2021-10-12,Preventive,Carlos Rodriguez,Shaft alignment check,None,2.4
+CM-007,2021-10-14,Preventive,James Wilson,Gearbox oil change,Gear oil,1.7
+CM-007,2021-11-01,Preventive,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2021-11-03,Preventive,John Martinez,Motor bearing lubrication,Grease,1.7
+CM-007,2021-11-12,Predictive,Carlos Rodriguez,Belt tension adjustment,None,1.1
+CM-007,2021-12-02,Preventive,Emma Thompson,Shaft alignment check,None,2.3
+CM-007,2021-12-12,Preventive,Lisa Anderson,Speed sensor calibration,None,0.6
+CM-007,2021-12-17,Corrective,David Kim,Brake pad inspection,Brake pads,1.9
+CM-007,2022-01-04,Preventive,Maria Garcia,Belt tension adjustment,None,1.2
+CM-007,2022-01-17,Predictive,Michael O'Brien,Speed sensor calibration,None,0.4
+CM-007,2022-02-10,Preventive,Sarah Chen,Shaft alignment check,None,1.8
+CM-007,2022-02-26,Preventive,Michael O'Brien,Brake pad inspection,Brake pads,1.6
+CM-007,2022-02-27,Preventive,James Wilson,Speed sensor calibration,None,0.5
+CM-007,2022-03-07,Preventive,James Wilson,Chain lubrication,Chain lubricant,0.8
+CM-007,2022-03-09,Preventive,Michael O'Brien,Speed sensor calibration,None,0.6
+CM-007,2022-03-23,Preventive,John Martinez,Brake pad inspection,Brake pads,1.8
+CM-007,2022-03-25,Preventive,Sarah Chen,Shaft alignment check,None,2.5
+CM-007,2022-04-05,Preventive,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2022-04-13,Corrective,John Martinez,Brake pad inspection,Brake pads,1.5
+CM-007,2022-04-27,Preventive,Michael O'Brien,Speed sensor calibration,None,0.5
+CM-007,2022-04-30,Corrective,Carlos Rodriguez,Gearbox oil change,Gear oil,2.4
+CM-007,2022-05-09,Preventive,Lisa Anderson,Gearbox oil change,Gear oil,2.6
+CM-007,2022-05-22,Corrective,John Martinez,Gearbox oil change,Gear oil,2.5
+CM-007,2022-06-10,Corrective,Emma Thompson,Speed sensor calibration,None,0.4
+CM-007,2022-07-29,Preventive,Priya Patel,Motor bearing lubrication,Grease,1.7
+CM-007,2022-08-02,Preventive,David Kim,Belt tension adjustment,None,1.1
+CM-007,2022-08-13,Predictive,John Martinez,Brake pad inspection,Brake pads,1.9
+CM-007,2022-08-14,Preventive,Emma Thompson,Chain lubrication,Chain lubricant,1.1
+CM-007,2022-08-26,Scheduled,Michael O'Brien,Belt tension adjustment,None,1.1
+CM-007,2022-08-27,Preventive,Carlos Rodriguez,Speed sensor calibration,None,0.5
+CM-007,2022-09-03,Preventive,Maria Garcia,Chain lubrication,Chain lubricant,1.0
+CM-007,2022-09-10,Preventive,Sarah Chen,Shaft alignment check,None,2.5
+CM-007,2022-09-21,Corrective,James Wilson,Belt tension adjustment,None,1.3
+CM-007,2022-09-25,Emergency,James Wilson,Shaft alignment check,None,2.6
+CM-007,2022-10-11,Preventive,Priya Patel,Brake pad inspection,Brake pads,1.7
+CM-007,2022-10-12,Preventive,Sarah Chen,Brake pad inspection,Brake pads,1.7
+CM-007,2022-11-03,Preventive,David Kim,Chain lubrication,Chain lubricant,0.9
+CM-007,2022-11-07,Preventive,Emma Thompson,Chain lubrication,Chain lubricant,1.1
+CM-007,2022-11-08,Preventive,Michael O'Brien,Gearbox oil change,Gear oil,2.3
+CM-007,2023-01-02,Preventive,Carlos Rodriguez,Motor bearing lubrication,Grease,1.8
+CM-007,2023-01-13,Preventive,Emma Thompson,Gearbox oil change,Gear oil,2.5
+CM-007,2023-01-21,Corrective,Sarah Chen,Gearbox oil change,Gear oil,2.3
+CM-007,2023-01-28,Preventive,Maria Garcia,Chain lubrication,Chain lubricant,1.1
+CM-007,2023-01-28,Preventive,Emma Thompson,Brake pad inspection,Brake pads,1.3
+CM-007,2023-02-05,Emergency,John Martinez,Gearbox oil change,Gear oil,2.4
+CM-007,2023-03-04,Preventive,Emma Thompson,Chain lubrication,Chain lubricant,1.0
+CM-007,2023-03-17,Preventive,James Wilson,Speed sensor calibration,None,0.6
+CM-007,2023-03-20,Preventive,Sarah Chen,Speed sensor calibration,None,0.5
+CM-007,2023-03-23,Preventive,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2023-03-25,Preventive,Maria Garcia,Chain lubrication,Chain lubricant,1.2
+CM-007,2023-04-07,Corrective,James Wilson,Speed sensor calibration,None,0.5
+CM-007,2023-04-14,Scheduled,Maria Garcia,Shaft alignment check,None,2.3
+CM-007,2023-04-24,Preventive,Carlos Rodriguez,Shaft alignment check,None,1.8
+CM-007,2023-05-04,Corrective,James Wilson,Shaft alignment check,None,2.4
+CM-007,2023-05-11,Preventive,David Kim,Brake pad inspection,Brake pads,1.8
+CM-007,2023-05-17,Scheduled,Michael O'Brien,Motor bearing lubrication,Grease,1.6
+CM-007,2023-05-19,Preventive,Lisa Anderson,Belt tension adjustment,None,1.3
+CM-007,2023-06-06,Preventive,Sarah Chen,Shaft alignment check,None,2.6
+CM-007,2023-08-13,Preventive,Emma Thompson,Brake pad inspection,Brake pads,1.3
+CM-007,2023-08-20,Preventive,John Martinez,Speed sensor calibration,None,0.4
+CM-007,2023-08-21,Preventive,Sarah Chen,Chain lubrication,Chain lubricant,1.0
+CM-007,2023-09-04,Preventive,Sarah Chen,Belt tension adjustment,None,0.9
+CM-007,2023-09-12,Preventive,Priya Patel,Brake pad inspection,Brake pads,1.8
+CM-007,2023-09-12,Preventive,Carlos Rodriguez,Motor bearing lubrication,Grease,1.5
+CM-007,2023-09-23,Corrective,David Kim,Speed sensor calibration,None,0.6
+CM-007,2023-10-22,Preventive,Sarah Chen,Speed sensor calibration,None,0.5
+CM-007,2023-10-28,Corrective,James Wilson,Chain lubrication,Chain lubricant,1.2
+CM-007,2023-10-28,Preventive,Carlos Rodriguez,Chain lubrication,Chain lubricant,1.1
+CM-007,2023-11-03,Corrective,Michael O'Brien,Speed sensor calibration,None,0.5
+CM-007,2023-11-19,Corrective,Lisa Anderson,Chain lubrication,Chain lubricant,1.0
+CM-007,2023-11-22,Predictive,Emma Thompson,Chain lubrication,Chain lubricant,0.8
+CM-007,2023-12-22,Preventive,John Martinez,Chain lubrication,Chain lubricant,1.0
+CM-007,2023-12-25,Preventive,Priya Patel,Brake pad inspection,Brake pads,1.9
+CM-007,2023-12-25,Preventive,Maria Garcia,Speed sensor calibration,None,0.6
+CM-007,2024-01-27,Preventive,Lisa Anderson,Speed sensor calibration,None,0.5
+CM-007,2024-02-08,Preventive,John Martinez,Motor bearing lubrication,Grease,1.3
+CM-007,2024-02-24,Preventive,Priya Patel,Belt tension adjustment,None,1.3
+CM-007,2024-02-26,Preventive,Michael O'Brien,Gearbox oil change,Gear oil,2.0
+CM-007,2024-03-10,Preventive,Carlos Rodriguez,Chain lubrication,Chain lubricant,1.0
+CM-007,2024-04-24,Preventive,Sarah Chen,Gearbox oil change,Gear oil,1.9
+CM-007,2024-06-08,Preventive,Priya Patel,Motor bearing lubrication,Grease,1.9
+CM-007,2024-06-15,Preventive,Lisa Anderson,Belt tension adjustment,None,0.8
+CM-007,2024-06-28,Preventive,Sarah Chen,Belt tension adjustment,None,1.2
+CM-007,2024-07-17,Corrective,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2024-07-23,Preventive,Michael O'Brien,Chain lubrication,Chain lubricant,0.9
+CM-007,2024-09-24,Corrective,Michael O'Brien,Belt tension adjustment,None,1.1
+CM-007,2024-10-09,Preventive,Carlos Rodriguez,Chain lubrication,Chain lubricant,1.1
+CM-007,2024-10-20,Preventive,John Martinez,Speed sensor calibration,None,0.4
+CM-007,2024-10-22,Preventive,Priya Patel,Speed sensor calibration,None,0.4
+CM-007,2024-10-26,Corrective,Michael O'Brien,Gearbox oil change,Gear oil,2.4
+CM-007,2024-11-02,Preventive,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2024-11-03,Preventive,David Kim,Shaft alignment check,None,2.3
+CM-007,2024-11-05,Preventive,Priya Patel,Shaft alignment check,None,2.5
+CM-007,2024-11-08,Preventive,Priya Patel,Chain lubrication,Chain lubricant,1.1
+CM-007,2024-11-24,Preventive,David Kim,Chain lubrication,Chain lubricant,1.1
+CM-007,2024-12-05,Preventive,Emma Thompson,Belt tension adjustment,None,1.2
+CM-007,2025-02-13,Corrective,John Martinez,Brake pad inspection,Brake pads,1.7
+CM-007,2025-02-25,Preventive,John Martinez,Motor bearing lubrication,Grease,1.6
+CM-007,2025-03-17,Corrective,James Wilson,Chain lubrication,Chain lubricant,1.1
+CM-007,2025-03-18,Preventive,Lisa Anderson,Shaft alignment check,None,2.0
+CM-007,2025-03-20,Preventive,Maria Garcia,Motor bearing lubrication,Grease,1.4
+CM-007,2025-04-01,Preventive,Emma Thompson,Belt tension adjustment,None,1.2
+CM-007,2025-04-02,Corrective,James Wilson,Motor bearing lubrication,Grease,1.4
+CM-007,2025-04-28,Preventive,Lisa Anderson,Speed sensor calibration,None,0.6
+CM-007,2025-05-27,Preventive,James Wilson,Chain lubrication,Chain lubricant,1.3
+CM-007,2025-06-02,Corrective,Priya Patel,Brake pad inspection,Brake pads,1.7
+CM-007,2025-06-02,Corrective,Emma Thompson,Speed sensor calibration,None,0.5
+CM-007,2025-06-05,Preventive,Sarah Chen,Gearbox oil change,Gear oil,2.4
+CM-007,2025-06-15,Preventive,Emma Thompson,Motor bearing lubrication,Grease,1.2
+CM-007,2025-06-17,Preventive,Emma Thompson,Speed sensor calibration,None,0.5
+CM-007,2025-06-27,Preventive,David Kim,Gearbox oil change,Gear oil,1.7
+CM-007,2025-07-17,Preventive,Michael O'Brien,Belt tension adjustment,None,1.1
+CM-007,2025-07-18,Preventive,Michael O'Brien,Speed sensor calibration,None,0.5
+CM-007,2025-07-25,Corrective,John Martinez,Brake pad inspection,Brake pads,1.3
+CM-007,2025-08-14,Preventive,James Wilson,Gearbox oil change,Gear oil,2.5
+CM-007,2025-08-23,Preventive,Michael O'Brien,Motor bearing lubrication,Grease,1.4
+CM-007,2025-09-11,Preventive,Michael O'Brien,Gearbox oil change,Gear oil,2.5
+CM-007,2025-09-11,Preventive,David Kim,Gearbox oil change,Gear oil,2.3
+CM-007,2025-09-18,Corrective,James Wilson,Motor bearing lubrication,Grease,1.6
+CM-007,2025-09-25,Preventive,Emma Thompson,Gearbox oil change,Gear oil,1.8
+CM-007,2025-09-30,Preventive,David Kim,Speed sensor calibration,None,0.4
+CM-007,2025-10-02,Preventive,Lisa Anderson,Belt tension adjustment,None,0.9
+CM-007,2025-10-13,Corrective,Carlos Rodriguez,Shaft alignment check,None,2.6
+CM-007,2025-10-15,Corrective,Maria Garcia,Shaft alignment check,None,2.5
+CM-007,2025-11-04,Preventive,Emma Thompson,Shaft alignment check,None,2.5
+CM-007,2025-11-13,Preventive,Priya Patel,Brake pad inspection,Brake pads,1.3
+CM-007,2025-11-30,Corrective,Maria Garcia,Gearbox oil change,Gear oil,1.7
+CM-007,2025-12-12,Scheduled,Maria Garcia,Shaft alignment check,None,1.7
+CM-007,2026-01-04,Corrective,Maria Garcia,Brake pad inspection,Brake pads,1.3
+CM-007,2026-01-10,Scheduled,Maria Garcia,Shaft alignment check,None,2.1
+CM-007,2026-01-14,Preventive,Emma Thompson,Chain lubrication,Chain lubricant,1.2
+CM-007,2026-01-17,Preventive,John Martinez,Brake pad inspection,Brake pads,1.9
+CM-007,2026-01-19,Preventive,James Wilson,Shaft alignment check,None,2.3
+CM-007,2026-02-12,Corrective,Lisa Anderson,Belt tension adjustment,None,1.0
+CM-007,2026-03-02,Preventive,Carlos Rodriguez,Belt tension adjustment,None,0.9
+CM-007,2026-03-12,Corrective,Sarah Chen,Shaft alignment check,None,2.4
+CM-007,2026-03-15,Preventive,Lisa Anderson,Motor bearing lubrication,Grease,1.6
+CM-007,2026-03-22,Preventive,Sarah Chen,Motor bearing lubrication,Grease,1.7
+CM-007,2026-04-01,Preventive,James Wilson,Brake pad inspection,Brake pads,1.6
+CM-007,2026-04-30,Preventive,Maria Garcia,Brake pad inspection,Brake pads,1.9
+CM-007,2026-05-08,Corrective,James Wilson,Belt tension adjustment,None,1.2
+CM-007,2026-05-15,Preventive,Carlos Rodriguez,Chain lubrication,Chain lubricant,0.9
+CM-007,2026-05-18,Emergency,Emma Thompson,Shaft alignment check,None,2.3

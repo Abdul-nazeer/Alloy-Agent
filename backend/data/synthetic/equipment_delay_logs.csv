@@ -1,0 +1,701 @@
+equipment_id,delay_date,duration_hours,reason,impact,resolved
+AC-001,2020-03-31,1.7,Cooling system issue,Minimal impact,true
+AC-001,2020-04-18,1.8,Control system error,Minimal impact,true
+AC-001,2020-04-24,5.6,Valve malfunction,Production reduced,true
+AC-001,2020-04-27,2.0,Oil filter clogged,Minor disruption,true
+AC-001,2020-05-17,2.7,Temperature sensor failure,Minor disruption,true
+AC-001,2020-05-26,3.1,Compressor shutdown,Minor disruption,true
+AC-001,2020-05-28,1.0,Temperature sensor failure,Minimal impact,true
+AC-001,2020-06-08,4.8,Temperature sensor failure,Production reduced,true
+AC-001,2020-06-14,2.8,Cooling system issue,Minor disruption,true
+AC-001,2020-07-08,2.2,Compressor shutdown,Minor disruption,true
+AC-001,2020-07-20,6.0,Pressure drop,Production reduced,true
+AC-001,2020-07-26,4.8,Compressor shutdown,Production reduced,true
+AC-001,2020-08-08,5.9,Oil filter clogged,Production reduced,true
+AC-001,2020-08-12,3.4,Oil filter clogged,Minor disruption,true
+AC-001,2020-09-09,5.2,Cooling system issue,Production reduced,false
+AC-001,2020-10-18,5.1,Temperature sensor failure,Production reduced,true
+AC-001,2020-10-19,2.3,Pressure drop,Minor disruption,true
+AC-001,2020-11-17,5.2,Valve malfunction,Production reduced,true
+AC-001,2020-11-18,3.6,Compressor shutdown,Minor disruption,true
+AC-001,2020-11-22,3.3,Control system error,Minor disruption,true
+AC-001,2020-12-01,2.2,Cooling system issue,Minor disruption,true
+AC-001,2021-01-09,3.7,Oil filter clogged,Minor disruption,true
+AC-001,2021-01-16,0.8,Pressure drop,Minimal impact,true
+AC-001,2021-01-27,1.9,Pressure drop,Minimal impact,true
+AC-001,2021-03-08,1.6,Control system error,Minimal impact,true
+AC-001,2021-03-11,5.7,Cooling system issue,Production reduced,true
+AC-001,2021-05-04,1.6,Oil filter clogged,Minimal impact,true
+AC-001,2021-05-05,0.9,Temperature sensor failure,Minimal impact,true
+AC-001,2021-06-02,8.8,Temperature sensor failure,Production stopped,true
+AC-001,2021-08-01,4.2,Pressure drop,Production reduced,true
+AC-001,2021-08-07,5.9,Compressor shutdown,Production reduced,true
+AC-001,2021-08-09,11.8,Control system error,Production stopped,true
+AC-001,2021-08-26,7.8,Oil filter clogged,Production reduced,true
+AC-001,2021-09-03,4.6,Valve malfunction,Production reduced,true
+AC-001,2021-09-04,5.4,Cooling system issue,Production reduced,true
+AC-001,2021-09-19,2.4,Compressor shutdown,Minor disruption,true
+AC-001,2021-09-28,5.2,Control system error,Production reduced,true
+AC-001,2021-10-12,2.0,Control system error,Minor disruption,true
+AC-001,2021-10-14,5.3,Temperature sensor failure,Production reduced,true
+AC-001,2021-10-28,2.8,Valve malfunction,Minor disruption,true
+AC-001,2021-11-13,5.8,Valve malfunction,Production reduced,true
+AC-001,2021-11-17,4.3,Temperature sensor failure,Production reduced,true
+AC-001,2021-12-16,4.1,Cooling system issue,Production reduced,true
+AC-001,2021-12-18,5.5,Compressor shutdown,Production reduced,true
+AC-001,2021-12-24,4.8,Valve malfunction,Production reduced,true
+AC-001,2022-01-21,0.6,Compressor shutdown,Minimal impact,false
+AC-001,2022-01-28,1.1,Compressor shutdown,Minimal impact,true
+AC-001,2022-01-28,5.8,Temperature sensor failure,Production reduced,true
+AC-001,2022-01-31,6.0,Valve malfunction,Production reduced,true
+AC-001,2022-03-05,2.4,Oil filter clogged,Minor disruption,true
+AC-001,2022-03-06,0.8,Pressure drop,Minimal impact,true
+AC-001,2022-04-03,2.4,Valve malfunction,Minor disruption,true
+AC-001,2022-04-20,2.8,Oil filter clogged,Minor disruption,true
+AC-001,2022-04-25,2.9,Cooling system issue,Minor disruption,true
+AC-001,2022-05-12,2.0,Compressor shutdown,Minimal impact,true
+AC-001,2022-05-14,1.6,Cooling system issue,Minimal impact,true
+AC-001,2022-06-10,11.9,Compressor shutdown,Production stopped,true
+AC-001,2022-06-25,7.8,Oil filter clogged,Production reduced,true
+AC-001,2022-07-04,2.6,Control system error,Minor disruption,true
+AC-001,2022-08-07,5.2,Temperature sensor failure,Production reduced,true
+AC-001,2022-08-08,11.6,Compressor shutdown,Production stopped,true
+AC-001,2022-08-22,4.2,Oil filter clogged,Production reduced,true
+AC-001,2022-08-25,9.6,Pressure drop,Production stopped,true
+AC-001,2022-09-03,0.9,Compressor shutdown,Minimal impact,false
+AC-001,2022-09-05,5.1,Compressor shutdown,Production reduced,true
+AC-001,2022-09-25,2.3,Pressure drop,Minor disruption,true
+AC-001,2022-10-08,1.7,Valve malfunction,Minimal impact,true
+AC-001,2022-10-25,2.6,Cooling system issue,Minor disruption,true
+AC-001,2022-10-30,3.5,Cooling system issue,Minor disruption,true
+AC-001,2022-11-24,2.7,Oil filter clogged,Minor disruption,false
+AC-001,2022-11-27,1.1,Oil filter clogged,Minimal impact,true
+AC-001,2023-01-14,4.3,Cooling system issue,Production reduced,true
+AC-001,2023-01-18,5.6,Valve malfunction,Production reduced,true
+AC-001,2023-03-02,0.9,Valve malfunction,Minimal impact,true
+AC-001,2023-03-05,4.4,Pressure drop,Production reduced,true
+AC-001,2023-03-21,5.6,Compressor shutdown,Production reduced,true
+AC-001,2023-03-22,4.8,Cooling system issue,Production reduced,true
+AC-001,2023-04-10,2.1,Compressor shutdown,Minor disruption,true
+AC-001,2023-04-11,0.9,Pressure drop,Minimal impact,true
+AC-001,2023-05-11,4.9,Valve malfunction,Production reduced,true
+AC-001,2023-05-30,1.1,Compressor shutdown,Minimal impact,true
+AC-001,2023-06-20,8.1,Control system error,Production stopped,true
+AC-001,2023-06-23,7.2,Oil filter clogged,Production reduced,true
+AC-001,2023-06-26,4.8,Oil filter clogged,Production reduced,true
+AC-001,2023-08-14,10.2,Valve malfunction,Production stopped,true
+AC-001,2023-09-26,1.4,Oil filter clogged,Minimal impact,true
+AC-001,2023-10-01,0.7,Valve malfunction,Minimal impact,true
+AC-001,2023-10-11,5.3,Pressure drop,Production reduced,true
+AC-001,2023-10-13,3.6,Control system error,Minor disruption,true
+AC-001,2023-10-25,0.5,Cooling system issue,Minimal impact,false
+AC-001,2023-11-01,2.2,Valve malfunction,Minor disruption,true
+AC-001,2023-11-20,4.6,Control system error,Production reduced,true
+AC-001,2023-11-21,2.5,Control system error,Minor disruption,true
+AC-001,2023-11-29,2.3,Oil filter clogged,Minor disruption,false
+AC-001,2023-12-13,4.0,Compressor shutdown,Production reduced,true
+AC-001,2024-01-09,1.6,Valve malfunction,Minimal impact,true
+AC-001,2024-03-16,1.8,Compressor shutdown,Minimal impact,true
+AC-001,2024-03-27,4.3,Control system error,Production reduced,false
+AC-001,2024-05-06,5.1,Valve malfunction,Production reduced,true
+AC-001,2024-05-13,3.4,Pressure drop,Minor disruption,true
+AC-001,2024-05-21,3.9,Valve malfunction,Minor disruption,true
+AC-001,2024-06-03,7.5,Cooling system issue,Production reduced,true
+AC-001,2024-06-07,4.9,Compressor shutdown,Production reduced,true
+AC-001,2024-06-08,8.4,Cooling system issue,Production stopped,true
+AC-001,2024-06-16,9.2,Cooling system issue,Production stopped,true
+AC-001,2024-07-18,4.8,Oil filter clogged,Production reduced,true
+AC-001,2024-07-21,4.6,Pressure drop,Production reduced,true
+AC-001,2024-08-31,11.7,Compressor shutdown,Production stopped,true
+AC-001,2024-09-03,2.2,Valve malfunction,Minor disruption,true
+AC-001,2024-10-23,3.0,Valve malfunction,Minor disruption,true
+AC-001,2024-11-25,5.2,Cooling system issue,Production reduced,true
+AC-001,2024-12-09,2.2,Compressor shutdown,Minor disruption,true
+AC-001,2024-12-17,2.7,Compressor shutdown,Minor disruption,true
+AC-001,2024-12-24,2.5,Valve malfunction,Minor disruption,true
+AC-001,2025-01-06,2.1,Pressure drop,Minor disruption,true
+AC-001,2025-01-07,5.9,Compressor shutdown,Production reduced,true
+AC-001,2025-01-18,5.3,Control system error,Production reduced,true
+AC-001,2025-01-21,4.1,Control system error,Production reduced,true
+AC-001,2025-01-28,2.3,Control system error,Minor disruption,true
+AC-001,2025-02-14,5.2,Temperature sensor failure,Production reduced,true
+AC-001,2025-03-06,3.1,Oil filter clogged,Minor disruption,false
+AC-001,2025-05-05,3.4,Cooling system issue,Minor disruption,true
+AC-001,2025-05-09,0.8,Control system error,Minimal impact,true
+AC-001,2025-05-18,5.8,Temperature sensor failure,Production reduced,true
+AC-001,2025-05-19,4.8,Control system error,Production reduced,true
+AC-001,2025-06-04,8.8,Compressor shutdown,Production stopped,true
+AC-001,2025-06-04,7.5,Cooling system issue,Production reduced,true
+AC-001,2025-06-07,3.6,Compressor shutdown,Minor disruption,true
+AC-001,2025-07-04,11.7,Control system error,Production stopped,true
+AC-001,2025-07-12,6.7,Oil filter clogged,Production reduced,true
+AC-001,2025-08-06,12.0,Valve malfunction,Production stopped,true
+AC-001,2025-08-13,9.5,Valve malfunction,Production stopped,true
+AC-001,2025-08-14,4.6,Valve malfunction,Production reduced,true
+AC-001,2025-09-25,1.1,Valve malfunction,Minimal impact,true
+AC-001,2025-10-02,4.5,Compressor shutdown,Production reduced,true
+AC-001,2025-10-15,2.9,Valve malfunction,Minor disruption,true
+AC-001,2025-11-14,5.8,Compressor shutdown,Production reduced,true
+AC-001,2025-11-19,4.5,Compressor shutdown,Production reduced,true
+AC-001,2025-12-10,5.8,Compressor shutdown,Production reduced,true
+AC-001,2025-12-20,1.3,Control system error,Minimal impact,true
+AC-001,2026-01-11,1.7,Compressor shutdown,Minimal impact,true
+AC-001,2026-02-04,5.2,Pressure drop,Production reduced,true
+AC-001,2026-02-09,2.8,Valve malfunction,Minor disruption,true
+AC-001,2026-02-19,5.5,Pressure drop,Production reduced,true
+AC-001,2026-02-20,0.6,Valve malfunction,Minimal impact,true
+AC-001,2026-03-19,1.9,Temperature sensor failure,Minimal impact,true
+AC-001,2026-04-17,1.3,Control system error,Minimal impact,true
+AC-001,2026-04-17,1.2,Valve malfunction,Minimal impact,true
+AC-001,2026-05-03,5.4,Valve malfunction,Production reduced,true
+AC-001,2026-05-23,3.2,Valve malfunction,Minor disruption,true
+AC-002,2020-04-03,2.1,Compressor shutdown,Minor disruption,true
+AC-002,2020-04-18,4.9,Cooling system issue,Production reduced,true
+AC-002,2020-04-19,4.6,Oil filter clogged,Production reduced,true
+AC-002,2020-04-25,5.8,Temperature sensor failure,Production reduced,true
+AC-002,2020-04-25,0.9,Temperature sensor failure,Minimal impact,true
+AC-002,2020-05-18,0.7,Valve malfunction,Minimal impact,true
+AC-002,2020-08-13,10.4,Pressure drop,Production stopped,true
+AC-002,2020-08-26,7.3,Cooling system issue,Production reduced,true
+AC-002,2020-09-03,5.3,Valve malfunction,Production reduced,true
+AC-002,2020-09-14,1.7,Valve malfunction,Minimal impact,true
+AC-002,2020-09-17,4.2,Control system error,Production reduced,true
+AC-002,2020-09-23,2.2,Cooling system issue,Minor disruption,false
+AC-002,2020-10-17,2.1,Cooling system issue,Minor disruption,true
+AC-002,2020-11-07,1.8,Compressor shutdown,Minimal impact,true
+AC-002,2020-12-01,1.4,Oil filter clogged,Minimal impact,true
+AC-002,2020-12-05,5.7,Pressure drop,Production reduced,true
+AC-002,2020-12-06,0.7,Compressor shutdown,Minimal impact,true
+AC-002,2021-01-12,2.1,Pressure drop,Minor disruption,true
+AC-002,2021-01-14,4.2,Valve malfunction,Production reduced,true
+AC-002,2021-01-19,5.2,Compressor shutdown,Production reduced,true
+AC-002,2021-02-06,3.8,Temperature sensor failure,Minor disruption,true
+AC-002,2021-03-09,2.9,Cooling system issue,Minor disruption,true
+AC-002,2021-03-11,2.7,Compressor shutdown,Minor disruption,true
+AC-002,2021-03-28,3.7,Valve malfunction,Minor disruption,true
+AC-002,2021-03-30,4.7,Pressure drop,Production reduced,true
+AC-002,2021-04-03,2.9,Control system error,Minor disruption,true
+AC-002,2021-04-07,2.5,Pressure drop,Minor disruption,true
+AC-002,2021-04-19,1.4,Control system error,Minimal impact,true
+AC-002,2021-04-20,3.9,Oil filter clogged,Minor disruption,true
+AC-002,2021-05-10,3.9,Cooling system issue,Minor disruption,true
+AC-002,2021-05-10,5.3,Pressure drop,Production reduced,true
+AC-002,2021-05-10,2.1,Temperature sensor failure,Minor disruption,true
+AC-002,2021-05-14,3.2,Oil filter clogged,Minor disruption,true
+AC-002,2021-05-19,3.5,Valve malfunction,Minor disruption,true
+AC-002,2021-05-20,2.0,Valve malfunction,Minor disruption,true
+AC-002,2021-05-20,5.9,Oil filter clogged,Production reduced,true
+AC-002,2021-05-23,4.5,Control system error,Production reduced,true
+AC-002,2021-06-11,3.1,Oil filter clogged,Minor disruption,true
+AC-002,2021-07-09,8.1,Temperature sensor failure,Production stopped,true
+AC-002,2021-08-18,3.2,Control system error,Minor disruption,true
+AC-002,2021-08-31,7.7,Pressure drop,Production reduced,true
+AC-002,2021-09-05,4.5,Control system error,Production reduced,true
+AC-002,2021-09-08,4.3,Oil filter clogged,Production reduced,true
+AC-002,2021-09-15,1.0,Temperature sensor failure,Minimal impact,true
+AC-002,2021-09-26,2.4,Cooling system issue,Minor disruption,true
+AC-002,2021-10-19,3.5,Compressor shutdown,Minor disruption,true
+AC-002,2021-11-07,2.3,Control system error,Minor disruption,true
+AC-002,2021-11-09,5.3,Temperature sensor failure,Production reduced,true
+AC-002,2021-11-26,2.1,Valve malfunction,Minor disruption,true
+AC-002,2021-11-28,1.7,Pressure drop,Minimal impact,true
+AC-002,2021-12-24,2.0,Control system error,Minor disruption,true
+AC-002,2022-01-05,5.9,Valve malfunction,Production reduced,true
+AC-002,2022-01-13,2.3,Pressure drop,Minor disruption,true
+AC-002,2022-03-03,4.0,Oil filter clogged,Minor disruption,true
+AC-002,2022-03-10,3.9,Oil filter clogged,Minor disruption,false
+AC-002,2022-03-10,1.0,Valve malfunction,Minimal impact,true
+AC-002,2022-03-23,3.2,Control system error,Minor disruption,true
+AC-002,2022-04-14,2.9,Compressor shutdown,Minor disruption,true
+AC-002,2022-04-23,1.2,Valve malfunction,Minimal impact,false
+AC-002,2022-04-29,5.3,Valve malfunction,Production reduced,true
+AC-002,2022-05-21,0.8,Compressor shutdown,Minimal impact,true
+AC-002,2022-06-03,4.9,Control system error,Production reduced,true
+AC-002,2022-07-14,5.6,Pressure drop,Production reduced,true
+AC-002,2022-07-20,8.5,Cooling system issue,Production stopped,false
+AC-002,2022-08-01,3.8,Oil filter clogged,Minor disruption,true
+AC-002,2022-08-07,3.5,Control system error,Minor disruption,true
+AC-002,2022-08-23,2.3,Pressure drop,Minor disruption,true
+AC-002,2022-09-02,3.9,Pressure drop,Minor disruption,true
+AC-002,2022-09-21,4.7,Valve malfunction,Production reduced,true
+AC-002,2022-09-28,1.4,Valve malfunction,Minimal impact,false
+AC-002,2022-10-01,3.0,Control system error,Minor disruption,true
+AC-002,2022-10-07,5.2,Compressor shutdown,Production reduced,true
+AC-002,2022-10-30,1.5,Oil filter clogged,Minimal impact,true
+AC-002,2022-12-04,3.3,Valve malfunction,Minor disruption,true
+AC-002,2022-12-07,0.9,Cooling system issue,Minimal impact,true
+AC-002,2022-12-10,2.0,Temperature sensor failure,Minimal impact,true
+AC-002,2022-12-20,1.9,Oil filter clogged,Minimal impact,true
+AC-002,2023-01-08,3.0,Control system error,Minor disruption,true
+AC-002,2023-02-03,2.7,Cooling system issue,Minor disruption,true
+AC-002,2023-03-12,3.4,Valve malfunction,Minor disruption,true
+AC-002,2023-04-13,2.6,Temperature sensor failure,Minor disruption,true
+AC-002,2023-04-18,2.3,Valve malfunction,Minor disruption,true
+AC-002,2023-04-25,4.3,Oil filter clogged,Production reduced,true
+AC-002,2023-05-22,0.9,Control system error,Minimal impact,true
+AC-002,2023-06-13,4.2,Pressure drop,Production reduced,true
+AC-002,2023-07-19,4.5,Temperature sensor failure,Production reduced,true
+AC-002,2023-07-25,10.5,Oil filter clogged,Production stopped,true
+AC-002,2023-09-06,5.0,Compressor shutdown,Production reduced,true
+AC-002,2023-09-14,1.2,Cooling system issue,Minimal impact,true
+AC-002,2023-09-19,3.8,Oil filter clogged,Minor disruption,true
+AC-002,2023-09-25,5.0,Temperature sensor failure,Production reduced,true
+AC-002,2023-10-22,4.7,Compressor shutdown,Production reduced,true
+AC-002,2023-11-10,4.9,Valve malfunction,Production reduced,true
+AC-002,2023-12-17,0.7,Pressure drop,Minimal impact,true
+AC-002,2023-12-26,5.4,Compressor shutdown,Production reduced,true
+AC-002,2024-01-17,3.3,Oil filter clogged,Minor disruption,true
+AC-002,2024-01-20,1.6,Control system error,Minimal impact,true
+AC-002,2024-01-24,4.3,Pressure drop,Production reduced,true
+AC-002,2024-02-08,4.8,Valve malfunction,Production reduced,true
+AC-002,2024-02-12,5.6,Pressure drop,Production reduced,true
+AC-002,2024-04-11,5.1,Valve malfunction,Production reduced,true
+AC-002,2024-04-13,2.9,Control system error,Minor disruption,true
+AC-002,2024-04-21,5.3,Cooling system issue,Production reduced,true
+AC-002,2024-04-25,5.0,Oil filter clogged,Production reduced,true
+AC-002,2024-05-24,4.3,Oil filter clogged,Production reduced,true
+AC-002,2024-06-27,2.7,Temperature sensor failure,Minor disruption,true
+AC-002,2024-07-24,1.8,Temperature sensor failure,Minimal impact,true
+AC-002,2024-08-01,10.5,Compressor shutdown,Production stopped,true
+AC-002,2024-08-26,10.7,Compressor shutdown,Production stopped,true
+AC-002,2024-09-02,3.6,Compressor shutdown,Minor disruption,true
+AC-002,2024-09-27,4.4,Compressor shutdown,Production reduced,true
+AC-002,2024-10-15,5.0,Cooling system issue,Production reduced,true
+AC-002,2024-11-22,3.9,Temperature sensor failure,Minor disruption,false
+AC-002,2024-12-04,4.3,Compressor shutdown,Production reduced,true
+AC-002,2024-12-16,4.3,Temperature sensor failure,Production reduced,true
+AC-002,2024-12-22,5.3,Oil filter clogged,Production reduced,true
+AC-002,2025-02-05,4.8,Pressure drop,Production reduced,true
+AC-002,2025-03-27,2.5,Control system error,Minor disruption,true
+AC-002,2025-04-27,3.1,Compressor shutdown,Minor disruption,true
+AC-002,2025-05-10,3.1,Cooling system issue,Minor disruption,true
+AC-002,2025-05-12,4.5,Valve malfunction,Production reduced,true
+AC-002,2025-05-28,3.9,Compressor shutdown,Minor disruption,true
+AC-002,2025-06-06,3.3,Temperature sensor failure,Minor disruption,true
+AC-002,2025-06-09,6.9,Temperature sensor failure,Production reduced,true
+AC-002,2025-07-06,9.5,Pressure drop,Production stopped,true
+AC-002,2025-07-14,7.1,Cooling system issue,Production reduced,true
+AC-002,2025-07-21,7.0,Oil filter clogged,Production reduced,true
+AC-002,2025-07-24,11.6,Temperature sensor failure,Production stopped,true
+AC-002,2025-08-23,3.5,Control system error,Minor disruption,true
+AC-002,2025-09-13,5.2,Control system error,Production reduced,true
+AC-002,2025-10-20,0.8,Pressure drop,Minimal impact,true
+AC-002,2025-11-15,4.3,Oil filter clogged,Production reduced,true
+AC-002,2025-12-08,2.5,Cooling system issue,Minor disruption,true
+AC-002,2025-12-10,5.8,Pressure drop,Production reduced,true
+AC-002,2025-12-27,4.4,Oil filter clogged,Production reduced,true
+AC-002,2026-01-01,1.7,Cooling system issue,Minimal impact,true
+AC-002,2026-01-08,5.6,Cooling system issue,Production reduced,false
+AC-002,2026-01-15,1.6,Temperature sensor failure,Minimal impact,true
+AC-002,2026-01-27,4.1,Compressor shutdown,Production reduced,true
+AC-002,2026-02-17,4.9,Control system error,Production reduced,true
+AC-002,2026-02-26,0.7,Oil filter clogged,Minimal impact,true
+AC-002,2026-03-06,0.6,Valve malfunction,Minimal impact,true
+AC-002,2026-03-11,4.5,Valve malfunction,Production reduced,true
+AC-002,2026-04-08,1.3,Pressure drop,Minimal impact,true
+AC-002,2026-04-13,3.6,Oil filter clogged,Minor disruption,true
+AC-002,2026-04-16,5.8,Control system error,Production reduced,true
+AC-002,2026-05-04,3.1,Compressor shutdown,Minor disruption,true
+AC-002,2026-05-18,3.4,Oil filter clogged,Minor disruption,true
+AC-002,2026-05-29,2.6,Temperature sensor failure,Minor disruption,true
+AC-002,2026-06-14,7.1,Control system error,Production reduced,true
+CF-003,2019-12-02,0.6,Overheating,Minimal impact,true
+CF-003,2019-12-03,5.1,Belt slippage,Production reduced,true
+CF-003,2019-12-07,5.8,Belt slippage,Production reduced,true
+CF-003,2019-12-11,5.5,Motor bearing noise,Production reduced,true
+CF-003,2019-12-28,0.8,Belt slippage,Minimal impact,true
+CF-003,2020-01-05,5.4,Overheating,Production reduced,true
+CF-003,2020-01-12,2.5,Overheating,Minor disruption,true
+CF-003,2020-01-14,3.0,Electrical fault,Minor disruption,true
+CF-003,2020-01-20,2.2,Fan speed irregular,Minor disruption,true
+CF-003,2020-02-06,4.5,Fan blade imbalance,Production reduced,true
+CF-003,2020-03-01,1.5,Fan speed irregular,Minimal impact,true
+CF-003,2020-03-08,2.1,Electrical fault,Minor disruption,true
+CF-003,2020-04-11,2.9,Motor bearing noise,Minor disruption,true
+CF-003,2020-04-18,2.5,Electrical fault,Minor disruption,true
+CF-003,2020-05-09,2.8,Belt slippage,Minor disruption,true
+CF-003,2020-05-17,0.7,Belt slippage,Minimal impact,true
+CF-003,2020-05-26,4.2,Fan speed irregular,Production reduced,true
+CF-003,2020-05-28,4.5,Fan speed irregular,Production reduced,true
+CF-003,2020-05-30,4.3,Electrical fault,Production reduced,true
+CF-003,2020-06-06,8.5,Vibration alarm,Production stopped,true
+CF-003,2020-07-08,9.7,Overheating,Production stopped,true
+CF-003,2020-07-11,4.3,Electrical fault,Production reduced,true
+CF-003,2020-07-13,4.7,Electrical fault,Production reduced,true
+CF-003,2020-07-14,2.2,Belt slippage,Minor disruption,true
+CF-003,2020-07-29,9.4,Fan speed irregular,Production stopped,true
+CF-003,2020-09-20,1.7,Fan blade imbalance,Minimal impact,true
+CF-003,2020-10-01,4.3,Electrical fault,Production reduced,true
+CF-003,2020-10-04,0.5,Overheating,Minimal impact,true
+CF-003,2020-10-05,0.6,Belt slippage,Minimal impact,true
+CF-003,2020-10-14,0.9,Vibration alarm,Minimal impact,true
+CF-003,2020-11-09,0.8,Fan blade imbalance,Minimal impact,true
+CF-003,2020-11-13,1.6,Belt slippage,Minimal impact,true
+CF-003,2020-11-13,4.9,Belt slippage,Production reduced,true
+CF-003,2020-11-22,1.6,Electrical fault,Minimal impact,true
+CF-003,2020-12-16,5.4,Overheating,Production reduced,true
+CF-003,2021-01-02,4.2,Electrical fault,Production reduced,true
+CF-003,2021-01-12,4.3,Belt slippage,Production reduced,true
+CF-003,2021-02-07,1.3,Vibration alarm,Minimal impact,true
+CF-003,2021-02-14,2.0,Electrical fault,Minimal impact,true
+CF-003,2021-03-06,5.4,Motor bearing noise,Production reduced,true
+CF-003,2021-03-06,3.4,Electrical fault,Minor disruption,true
+CF-003,2021-05-14,4.3,Fan speed irregular,Production reduced,true
+CF-003,2021-06-30,6.9,Vibration alarm,Production reduced,true
+CF-003,2021-08-03,11.3,Belt slippage,Production stopped,true
+CF-003,2021-08-30,1.5,Electrical fault,Minimal impact,true
+CF-003,2021-09-09,4.9,Fan speed irregular,Production reduced,true
+CF-003,2021-10-04,2.3,Overheating,Minor disruption,false
+CF-003,2021-10-06,1.3,Overheating,Minimal impact,true
+CF-003,2021-10-16,1.0,Electrical fault,Minimal impact,true
+CF-003,2021-12-08,2.3,Electrical fault,Minor disruption,true
+CF-003,2021-12-12,0.7,Overheating,Minimal impact,true
+CF-003,2021-12-17,2.8,Electrical fault,Minor disruption,true
+CF-003,2021-12-18,5.5,Belt slippage,Production reduced,true
+CF-003,2021-12-30,2.5,Fan blade imbalance,Minor disruption,true
+CF-003,2022-02-08,3.1,Electrical fault,Minor disruption,true
+CF-003,2022-02-09,0.7,Electrical fault,Minimal impact,true
+CF-003,2022-02-24,1.9,Belt slippage,Minimal impact,true
+CF-003,2022-03-27,4.6,Electrical fault,Production reduced,false
+CF-003,2022-06-18,3.7,Belt slippage,Minor disruption,false
+CF-003,2022-06-23,2.3,Vibration alarm,Minor disruption,true
+CF-003,2022-06-29,4.3,Vibration alarm,Production reduced,true
+CF-003,2022-06-30,9.6,Belt slippage,Production stopped,false
+CF-003,2022-07-19,2.2,Fan speed irregular,Minor disruption,true
+CF-003,2022-07-21,6.0,Vibration alarm,Production reduced,true
+CF-003,2022-08-09,2.1,Overheating,Minor disruption,false
+CF-003,2022-09-27,5.3,Overheating,Production reduced,true
+CF-003,2022-10-24,5.8,Vibration alarm,Production reduced,true
+CF-003,2022-10-26,3.1,Fan blade imbalance,Minor disruption,true
+CF-003,2022-11-06,2.2,Belt slippage,Minor disruption,true
+CF-003,2022-12-05,0.6,Electrical fault,Minimal impact,true
+CF-003,2022-12-25,5.3,Fan speed irregular,Production reduced,true
+CF-003,2022-12-27,1.9,Motor bearing noise,Minimal impact,true
+CF-003,2023-01-09,5.5,Vibration alarm,Production reduced,true
+CF-003,2023-01-11,0.7,Fan blade imbalance,Minimal impact,true
+CF-003,2023-01-26,1.7,Fan speed irregular,Minimal impact,true
+CF-003,2023-02-04,1.9,Belt slippage,Minimal impact,true
+CF-003,2023-02-13,2.4,Electrical fault,Minor disruption,true
+CF-003,2023-02-25,4.8,Fan blade imbalance,Production reduced,false
+CF-003,2023-03-06,3.0,Motor bearing noise,Minor disruption,false
+CF-003,2023-03-07,0.6,Motor bearing noise,Minimal impact,true
+CF-003,2023-03-28,0.9,Vibration alarm,Minimal impact,true
+CF-003,2023-04-12,5.5,Fan blade imbalance,Production reduced,true
+CF-003,2023-04-25,5.7,Fan speed irregular,Production reduced,true
+CF-003,2023-04-29,4.4,Vibration alarm,Production reduced,true
+CF-003,2023-05-27,5.0,Belt slippage,Production reduced,true
+CF-003,2023-05-30,4.6,Vibration alarm,Production reduced,true
+CF-003,2023-05-31,5.8,Fan speed irregular,Production reduced,true
+CF-003,2023-06-03,5.5,Overheating,Production reduced,true
+CF-003,2023-06-18,5.9,Electrical fault,Production reduced,true
+CF-003,2023-06-30,5.7,Fan blade imbalance,Production reduced,true
+CF-003,2023-07-01,1.8,Vibration alarm,Minimal impact,true
+CF-003,2023-09-27,4.7,Belt slippage,Production reduced,true
+CF-003,2023-10-01,2.9,Fan blade imbalance,Minor disruption,false
+CF-003,2023-10-13,4.5,Vibration alarm,Production reduced,true
+CF-003,2023-11-03,4.6,Fan blade imbalance,Production reduced,true
+CF-003,2023-11-03,1.0,Fan blade imbalance,Minimal impact,true
+CF-003,2023-11-08,2.9,Fan blade imbalance,Minor disruption,true
+CF-003,2023-11-14,3.3,Belt slippage,Minor disruption,true
+CF-003,2023-12-29,2.0,Motor bearing noise,Minimal impact,true
+CF-003,2024-01-15,0.7,Overheating,Minimal impact,true
+CF-003,2024-01-28,3.6,Electrical fault,Minor disruption,true
+CF-003,2024-01-31,5.8,Fan blade imbalance,Production reduced,true
+CF-003,2024-02-05,0.6,Vibration alarm,Minimal impact,true
+CF-003,2024-02-23,4.3,Motor bearing noise,Production reduced,true
+CF-003,2024-03-01,5.3,Electrical fault,Production reduced,true
+CF-003,2024-03-15,1.4,Overheating,Minimal impact,true
+CF-003,2024-03-24,1.3,Vibration alarm,Minimal impact,true
+CF-003,2024-04-03,5.5,Belt slippage,Production reduced,true
+CF-003,2024-05-24,4.1,Overheating,Production reduced,true
+CF-003,2024-05-24,5.9,Motor bearing noise,Production reduced,true
+CF-003,2024-05-28,4.3,Vibration alarm,Production reduced,true
+CF-003,2024-06-10,4.0,Belt slippage,Production reduced,true
+CF-003,2024-07-17,5.4,Electrical fault,Production reduced,true
+CF-003,2024-08-03,1.7,Fan speed irregular,Minimal impact,true
+CF-003,2024-08-29,6.3,Belt slippage,Production reduced,true
+CF-003,2024-08-31,11.1,Overheating,Production stopped,true
+CF-003,2024-08-31,6.1,Fan speed irregular,Production reduced,true
+CF-003,2024-09-16,5.4,Belt slippage,Production reduced,true
+CF-003,2024-09-19,4.8,Overheating,Production reduced,true
+CF-003,2024-10-01,1.4,Overheating,Minimal impact,true
+CF-003,2024-10-16,4.6,Motor bearing noise,Production reduced,true
+CF-003,2024-11-28,4.8,Vibration alarm,Production reduced,true
+CF-003,2024-12-01,3.1,Fan blade imbalance,Minor disruption,true
+CF-003,2024-12-12,0.9,Motor bearing noise,Minimal impact,true
+CF-003,2025-01-18,5.2,Belt slippage,Production reduced,true
+CF-003,2025-01-22,4.8,Belt slippage,Production reduced,true
+CF-003,2025-02-04,0.9,Fan speed irregular,Minimal impact,true
+CF-003,2025-02-18,3.0,Belt slippage,Minor disruption,false
+CF-003,2025-04-02,3.0,Electrical fault,Minor disruption,false
+CF-003,2025-04-23,1.0,Overheating,Minimal impact,true
+CF-003,2025-05-14,4.3,Fan blade imbalance,Production reduced,true
+CF-003,2025-07-05,7.3,Overheating,Production reduced,true
+CF-003,2025-08-03,4.5,Motor bearing noise,Production reduced,true
+CF-003,2025-08-06,11.1,Motor bearing noise,Production stopped,true
+CF-003,2025-08-25,1.6,Motor bearing noise,Minimal impact,true
+CF-003,2025-10-17,4.0,Overheating,Production reduced,true
+CF-003,2025-11-02,2.9,Vibration alarm,Minor disruption,true
+CF-003,2025-11-22,3.5,Fan speed irregular,Minor disruption,true
+CF-003,2025-11-29,5.8,Overheating,Production reduced,true
+CF-003,2025-12-23,1.0,Vibration alarm,Minimal impact,true
+CF-003,2026-01-17,0.6,Motor bearing noise,Minimal impact,true
+CF-003,2026-02-05,3.1,Motor bearing noise,Minor disruption,true
+CF-003,2026-02-14,2.9,Vibration alarm,Minor disruption,true
+CF-003,2026-02-22,2.5,Fan speed irregular,Minor disruption,true
+CF-003,2026-03-17,3.1,Motor bearing noise,Minor disruption,true
+CF-003,2026-03-17,2.7,Motor bearing noise,Minor disruption,true
+CF-003,2026-03-20,0.8,Motor bearing noise,Minimal impact,true
+CF-003,2026-04-02,3.4,Motor bearing noise,Minor disruption,true
+CF-003,2026-05-25,4.5,Belt slippage,Production reduced,false
+CF-003,2026-06-04,7.0,Electrical fault,Production reduced,false
+RM-005,2018-07-21,8.2,Emergency stop activated,Production stopped,true
+RM-005,2018-07-22,3.7,Roll misalignment,Minor disruption,true
+RM-005,2018-07-28,5.5,Emergency stop activated,Production reduced,true
+RM-005,2018-07-29,10.2,Drive motor overload,Production stopped,true
+RM-005,2018-08-08,9.8,Lubrication failure,Production stopped,true
+RM-005,2018-08-15,8.1,Hydraulic pressure loss,Production stopped,true
+RM-005,2018-08-23,7.3,Lubrication failure,Production reduced,true
+RM-005,2018-08-27,9.5,Roll misalignment,Production stopped,true
+RM-005,2018-09-01,3.0,Bearing temperature high,Minor disruption,true
+RM-005,2018-09-16,0.9,Roll misalignment,Minimal impact,false
+RM-005,2018-10-06,4.6,Material jam,Production reduced,true
+RM-005,2018-11-11,3.2,Emergency stop activated,Minor disruption,true
+RM-005,2018-11-13,5.2,Emergency stop activated,Production reduced,true
+RM-005,2018-11-26,4.0,Bearing temperature high,Production reduced,true
+RM-005,2018-12-23,4.2,Hydraulic pressure loss,Production reduced,true
+RM-005,2019-01-06,5.1,Hydraulic pressure loss,Production reduced,true
+RM-005,2019-01-12,2.1,Bearing temperature high,Minor disruption,true
+RM-005,2019-02-08,3.0,Drive motor overload,Minor disruption,true
+RM-005,2019-02-25,4.7,Drive motor overload,Production reduced,true
+RM-005,2019-03-19,5.8,Bearing temperature high,Production reduced,true
+RM-005,2019-04-06,4.4,Drive motor overload,Production reduced,true
+RM-005,2019-04-07,4.9,Bearing temperature high,Production reduced,true
+RM-005,2019-06-11,10.5,Bearing temperature high,Production stopped,true
+RM-005,2019-06-25,5.3,Roll misalignment,Production reduced,true
+RM-005,2019-08-07,6.2,Hydraulic pressure loss,Production reduced,true
+RM-005,2019-08-28,11.1,Lubrication failure,Production stopped,true
+RM-005,2019-09-12,0.8,Lubrication failure,Minimal impact,true
+RM-005,2019-09-22,2.4,Hydraulic pressure loss,Minor disruption,true
+RM-005,2019-09-22,3.0,Material jam,Minor disruption,true
+RM-005,2019-09-26,5.1,Hydraulic pressure loss,Production reduced,true
+RM-005,2019-09-27,2.1,Drive motor overload,Minor disruption,true
+RM-005,2019-10-25,1.6,Hydraulic pressure loss,Minimal impact,true
+RM-005,2019-11-02,1.4,Hydraulic pressure loss,Minimal impact,false
+RM-005,2019-11-09,5.5,Bearing temperature high,Production reduced,true
+RM-005,2020-01-10,4.9,Material jam,Production reduced,true
+RM-005,2020-01-13,4.0,Lubrication failure,Minor disruption,true
+RM-005,2020-02-07,1.5,Lubrication failure,Minimal impact,true
+RM-005,2020-02-15,4.0,Drive motor overload,Minor disruption,true
+RM-005,2020-04-04,5.5,Drive motor overload,Production reduced,true
+RM-005,2020-04-06,0.8,Bearing temperature high,Minimal impact,true
+RM-005,2020-04-15,2.4,Emergency stop activated,Minor disruption,false
+RM-005,2020-05-25,5.8,Bearing temperature high,Production reduced,true
+RM-005,2020-05-27,1.5,Drive motor overload,Minimal impact,true
+RM-005,2020-06-12,2.4,Roll misalignment,Minor disruption,true
+RM-005,2020-07-26,2.6,Emergency stop activated,Minor disruption,true
+RM-005,2020-08-12,5.3,Roll misalignment,Production reduced,true
+RM-005,2020-08-14,11.9,Drive motor overload,Production stopped,true
+RM-005,2020-08-16,2.6,Lubrication failure,Minor disruption,true
+RM-005,2020-08-19,11.2,Lubrication failure,Production stopped,true
+RM-005,2020-09-09,2.3,Hydraulic pressure loss,Minor disruption,true
+RM-005,2020-09-27,1.0,Lubrication failure,Minimal impact,true
+RM-005,2020-10-13,2.9,Roll misalignment,Minor disruption,true
+RM-005,2020-11-05,1.9,Roll misalignment,Minimal impact,true
+RM-005,2020-12-17,1.1,Lubrication failure,Minimal impact,true
+RM-005,2021-02-23,0.6,Material jam,Minimal impact,true
+RM-005,2021-02-25,5.2,Lubrication failure,Production reduced,true
+RM-005,2021-03-30,0.5,Drive motor overload,Minimal impact,false
+RM-005,2021-03-31,0.8,Drive motor overload,Minimal impact,true
+RM-005,2021-04-15,0.6,Drive motor overload,Minimal impact,true
+RM-005,2021-05-01,1.9,Hydraulic pressure loss,Minimal impact,true
+RM-005,2021-05-31,1.4,Hydraulic pressure loss,Minimal impact,true
+RM-005,2021-06-01,1.9,Emergency stop activated,Minimal impact,true
+RM-005,2021-06-12,4.2,Emergency stop activated,Production reduced,true
+RM-005,2021-06-19,1.8,Bearing temperature high,Minimal impact,true
+RM-005,2021-07-15,5.4,Drive motor overload,Production reduced,true
+RM-005,2021-08-17,2.8,Emergency stop activated,Minor disruption,true
+RM-005,2021-09-11,4.8,Hydraulic pressure loss,Production reduced,true
+RM-005,2021-10-16,1.8,Emergency stop activated,Minimal impact,true
+RM-005,2021-10-30,1.8,Bearing temperature high,Minimal impact,true
+RM-005,2021-11-01,1.0,Lubrication failure,Minimal impact,true
+RM-005,2021-11-25,3.1,Material jam,Minor disruption,true
+RM-005,2021-11-26,2.3,Material jam,Minor disruption,true
+RM-005,2021-12-01,0.6,Lubrication failure,Minimal impact,true
+RM-005,2021-12-24,5.8,Drive motor overload,Production reduced,true
+RM-005,2021-12-27,1.8,Material jam,Minimal impact,true
+RM-005,2022-01-02,5.5,Material jam,Production reduced,true
+RM-005,2022-03-14,1.8,Lubrication failure,Minimal impact,true
+RM-005,2022-03-30,5.0,Lubrication failure,Production reduced,true
+RM-005,2022-04-06,5.7,Emergency stop activated,Production reduced,true
+RM-005,2022-08-15,8.3,Bearing temperature high,Production stopped,true
+RM-005,2022-08-28,10.3,Bearing temperature high,Production stopped,true
+RM-005,2022-09-17,4.0,Roll misalignment,Minor disruption,false
+RM-005,2022-10-15,2.5,Material jam,Minor disruption,true
+RM-005,2022-11-04,4.9,Material jam,Production reduced,true
+RM-005,2022-11-10,5.3,Lubrication failure,Production reduced,true
+RM-005,2022-11-30,1.7,Drive motor overload,Minimal impact,true
+RM-005,2023-02-06,1.4,Hydraulic pressure loss,Minimal impact,true
+RM-005,2023-02-12,4.2,Bearing temperature high,Production reduced,true
+RM-005,2023-03-20,1.6,Bearing temperature high,Minimal impact,true
+RM-005,2023-04-09,5.3,Bearing temperature high,Production reduced,true
+RM-005,2023-05-05,3.5,Drive motor overload,Minor disruption,true
+RM-005,2023-06-14,6.9,Drive motor overload,Production reduced,true
+RM-005,2023-06-22,10.0,Drive motor overload,Production stopped,true
+RM-005,2023-07-22,6.7,Roll misalignment,Production reduced,true
+RM-005,2023-08-09,4.5,Drive motor overload,Production reduced,true
+RM-005,2023-08-14,4.0,Emergency stop activated,Minor disruption,true
+RM-005,2023-09-05,5.8,Lubrication failure,Production reduced,true
+RM-005,2023-09-22,5.3,Lubrication failure,Production reduced,true
+RM-005,2023-09-24,0.6,Bearing temperature high,Minimal impact,true
+RM-005,2023-10-12,2.3,Emergency stop activated,Minor disruption,true
+RM-005,2023-10-16,6.0,Emergency stop activated,Production reduced,true
+RM-005,2023-11-02,2.8,Emergency stop activated,Minor disruption,true
+RM-005,2023-11-08,2.7,Emergency stop activated,Minor disruption,true
+RM-005,2023-11-14,5.4,Material jam,Production reduced,false
+RM-005,2023-11-19,3.0,Bearing temperature high,Minor disruption,true
+RM-005,2023-11-29,4.2,Drive motor overload,Production reduced,true
+RM-005,2023-12-31,3.0,Roll misalignment,Minor disruption,true
+RM-005,2024-01-01,5.3,Lubrication failure,Production reduced,true
+RM-005,2024-02-11,1.8,Material jam,Minimal impact,true
+RM-005,2024-02-23,3.3,Hydraulic pressure loss,Minor disruption,true
+RM-005,2024-03-01,5.7,Roll misalignment,Production reduced,true
+RM-005,2024-03-12,3.9,Hydraulic pressure loss,Minor disruption,true
+RM-005,2024-04-05,4.1,Emergency stop activated,Production reduced,true
+RM-005,2024-05-03,1.1,Lubrication failure,Minimal impact,true
+RM-005,2024-05-13,1.0,Hydraulic pressure loss,Minimal impact,true
+RM-005,2024-05-16,0.8,Emergency stop activated,Minimal impact,true
+RM-005,2024-06-27,3.8,Hydraulic pressure loss,Minor disruption,true
+RM-005,2024-07-13,11.3,Roll misalignment,Production stopped,true
+RM-005,2024-07-21,6.8,Roll misalignment,Production reduced,true
+RM-005,2024-09-28,2.4,Hydraulic pressure loss,Minor disruption,true
+RM-005,2024-10-21,2.5,Lubrication failure,Minor disruption,false
+RM-005,2024-11-01,5.1,Drive motor overload,Production reduced,true
+RM-005,2024-11-02,2.5,Material jam,Minor disruption,true
+RM-005,2024-11-30,2.8,Bearing temperature high,Minor disruption,true
+RM-005,2024-12-05,0.8,Drive motor overload,Minimal impact,true
+RM-005,2024-12-14,2.1,Roll misalignment,Minor disruption,true
+RM-005,2024-12-17,5.5,Roll misalignment,Production reduced,true
+RM-005,2024-12-19,2.2,Emergency stop activated,Minor disruption,true
+RM-005,2025-01-31,0.9,Hydraulic pressure loss,Minimal impact,true
+RM-005,2025-02-25,2.0,Drive motor overload,Minor disruption,true
+RM-005,2025-04-06,4.7,Roll misalignment,Production reduced,true
+RM-005,2025-04-09,5.1,Drive motor overload,Production reduced,true
+RM-005,2025-04-21,4.2,Roll misalignment,Production reduced,true
+RM-005,2025-07-17,11.5,Material jam,Production stopped,true
+RM-005,2025-08-14,8.5,Hydraulic pressure loss,Production stopped,true
+RM-005,2025-08-18,7.6,Hydraulic pressure loss,Production reduced,true
+RM-005,2025-09-05,1.0,Hydraulic pressure loss,Minimal impact,true
+RM-005,2025-11-01,4.7,Bearing temperature high,Production reduced,true
+RM-005,2025-11-14,2.4,Material jam,Minor disruption,true
+RM-005,2025-11-27,3.5,Lubrication failure,Minor disruption,true
+RM-005,2025-12-22,1.3,Bearing temperature high,Minimal impact,true
+RM-005,2025-12-26,1.9,Emergency stop activated,Minimal impact,true
+RM-005,2026-02-19,1.6,Drive motor overload,Minimal impact,true
+RM-005,2026-03-16,5.5,Bearing temperature high,Production reduced,true
+RM-005,2026-03-24,0.6,Bearing temperature high,Minimal impact,true
+RM-005,2026-03-26,4.1,Emergency stop activated,Production reduced,true
+RM-005,2026-04-14,1.0,Drive motor overload,Minimal impact,true
+RM-005,2026-05-07,1.4,Lubrication failure,Minimal impact,true
+RM-005,2026-05-19,3.5,Bearing temperature high,Minor disruption,true
+RM-005,2026-05-24,3.3,Roll misalignment,Minor disruption,true
+CM-007,2021-01-06,2.6,Gearbox noise,Minor disruption,true
+CM-007,2021-01-20,1.7,Motor overload,Minimal impact,false
+CM-007,2021-01-21,5.1,Gearbox noise,Production reduced,true
+CM-007,2021-02-14,4.2,Belt tension low,Production reduced,true
+CM-007,2021-03-04,1.9,Brake failure,Minimal impact,true
+CM-007,2021-04-12,5.2,Motor overload,Production reduced,true
+CM-007,2021-05-26,3.2,Motor overload,Minor disruption,true
+CM-007,2021-07-18,5.3,Alignment issue,Production reduced,true
+CM-007,2021-07-20,3.7,Alignment issue,Minor disruption,true
+CM-007,2021-07-24,3.2,Chain wear,Minor disruption,true
+CM-007,2021-07-29,10.4,Speed fluctuation,Production stopped,true
+CM-007,2021-08-13,9.7,Brake failure,Production stopped,true
+CM-007,2021-08-15,8.8,Alignment issue,Production stopped,true
+CM-007,2021-09-11,4.6,Alignment issue,Production reduced,true
+CM-007,2021-09-12,4.4,Gearbox noise,Production reduced,true
+CM-007,2021-09-23,3.0,Speed fluctuation,Minor disruption,true
+CM-007,2021-10-09,2.5,Speed fluctuation,Minor disruption,true
+CM-007,2021-10-30,1.7,Brake failure,Minimal impact,true
+CM-007,2021-11-10,2.0,Speed fluctuation,Minor disruption,true
+CM-007,2021-11-14,4.4,Belt tension low,Production reduced,true
+CM-007,2021-12-23,5.6,Chain wear,Production reduced,true
+CM-007,2022-01-08,3.8,Alignment issue,Minor disruption,true
+CM-007,2022-01-23,5.3,Brake failure,Production reduced,true
+CM-007,2022-02-26,2.4,Brake failure,Minor disruption,true
+CM-007,2022-04-11,5.3,Motor overload,Production reduced,true
+CM-007,2022-05-09,1.1,Motor overload,Minimal impact,true
+CM-007,2022-05-22,4.3,Motor overload,Production reduced,true
+CM-007,2022-05-24,5.9,Chain wear,Production reduced,true
+CM-007,2022-08-05,7.8,Brake failure,Production reduced,true
+CM-007,2022-11-14,3.6,Chain wear,Minor disruption,true
+CM-007,2022-11-16,5.6,Brake failure,Production reduced,true
+CM-007,2022-11-23,0.9,Brake failure,Minimal impact,true
+CM-007,2022-12-20,4.6,Chain wear,Production reduced,true
+CM-007,2022-12-24,4.0,Speed fluctuation,Production reduced,true
+CM-007,2022-12-30,4.8,Speed fluctuation,Production reduced,true
+CM-007,2023-01-06,1.6,Speed fluctuation,Minimal impact,true
+CM-007,2023-01-26,3.4,Chain wear,Minor disruption,true
+CM-007,2023-03-13,4.6,Gearbox noise,Production reduced,true
+CM-007,2023-03-31,4.4,Gearbox noise,Production reduced,true
+CM-007,2023-04-01,4.5,Chain wear,Production reduced,true
+CM-007,2023-04-07,2.0,Alignment issue,Minimal impact,true
+CM-007,2023-05-05,2.8,Belt tension low,Minor disruption,true
+CM-007,2023-05-08,5.8,Belt tension low,Production reduced,true
+CM-007,2023-05-27,1.7,Speed fluctuation,Minimal impact,true
+CM-007,2023-06-08,4.6,Alignment issue,Production reduced,true
+CM-007,2023-06-19,7.0,Motor overload,Production reduced,true
+CM-007,2023-07-02,11.1,Alignment issue,Production stopped,true
+CM-007,2023-07-14,4.2,Speed fluctuation,Production reduced,true
+CM-007,2023-07-16,7.4,Brake failure,Production reduced,true
+CM-007,2023-07-18,5.7,Alignment issue,Production reduced,true
+CM-007,2023-07-19,5.7,Belt tension low,Production reduced,true
+CM-007,2023-08-08,10.2,Brake failure,Production stopped,true
+CM-007,2023-08-17,11.7,Motor overload,Production stopped,true
+CM-007,2023-09-05,2.3,Motor overload,Minor disruption,true
+CM-007,2023-09-10,4.4,Speed fluctuation,Production reduced,true
+CM-007,2023-09-29,3.3,Speed fluctuation,Minor disruption,true
+CM-007,2023-10-16,4.8,Belt tension low,Production reduced,true
+CM-007,2023-10-20,2.2,Chain wear,Minor disruption,true
+CM-007,2023-10-24,3.6,Alignment issue,Minor disruption,true
+CM-007,2023-12-08,1.4,Gearbox noise,Minimal impact,true
+CM-007,2023-12-08,1.1,Brake failure,Minimal impact,true
+CM-007,2024-01-02,3.5,Chain wear,Minor disruption,true
+CM-007,2024-02-07,0.8,Gearbox noise,Minimal impact,true
+CM-007,2024-02-19,4.8,Chain wear,Production reduced,true
+CM-007,2024-03-05,4.7,Gearbox noise,Production reduced,true
+CM-007,2024-03-25,3.1,Alignment issue,Minor disruption,true
+CM-007,2024-05-13,1.8,Motor overload,Minimal impact,true
+CM-007,2024-05-15,3.9,Alignment issue,Minor disruption,true
+CM-007,2024-05-23,0.6,Speed fluctuation,Minimal impact,true
+CM-007,2024-06-09,10.2,Speed fluctuation,Production stopped,true
+CM-007,2024-06-30,4.6,Gearbox noise,Production reduced,true
+CM-007,2024-07-24,9.7,Chain wear,Production stopped,true
+CM-007,2024-12-29,3.5,Speed fluctuation,Minor disruption,true
+CM-007,2025-02-02,4.9,Alignment issue,Production reduced,true
+CM-007,2025-02-14,2.1,Speed fluctuation,Minor disruption,true
+CM-007,2025-02-18,5.2,Belt tension low,Production reduced,true
+CM-007,2025-02-22,4.9,Motor overload,Production reduced,true
+CM-007,2025-03-23,3.9,Motor overload,Minor disruption,true
+CM-007,2025-03-25,0.6,Brake failure,Minimal impact,true
+CM-007,2025-05-28,4.5,Gearbox noise,Production reduced,true
+CM-007,2025-06-10,6.4,Motor overload,Production reduced,true
+CM-007,2025-06-15,2.4,Chain wear,Minor disruption,true
+CM-007,2025-07-02,3.4,Speed fluctuation,Minor disruption,false
+CM-007,2025-07-13,11.1,Gearbox noise,Production stopped,true
+CM-007,2025-09-08,4.4,Belt tension low,Production reduced,true
+CM-007,2025-10-01,2.3,Alignment issue,Minor disruption,true
+CM-007,2025-10-03,4.8,Motor overload,Production reduced,true
+CM-007,2025-10-21,2.0,Speed fluctuation,Minimal impact,true
+CM-007,2025-10-23,3.5,Brake failure,Minor disruption,true
+CM-007,2025-11-14,5.3,Alignment issue,Production reduced,true
+CM-007,2025-11-24,4.6,Speed fluctuation,Production reduced,true
+CM-007,2025-12-13,5.8,Gearbox noise,Production reduced,true
+CM-007,2025-12-28,4.6,Belt tension low,Production reduced,true
+CM-007,2026-01-10,0.8,Speed fluctuation,Minimal impact,true
+CM-007,2026-01-31,1.8,Belt tension low,Minimal impact,true
+CM-007,2026-02-19,3.3,Speed fluctuation,Minor disruption,true
+CM-007,2026-03-31,4.1,Gearbox noise,Production reduced,true
+CM-007,2026-04-06,2.8,Brake failure,Minor disruption,true
+CM-007,2026-04-19,4.8,Speed fluctuation,Production reduced,true
+CM-007,2026-05-26,5.3,Motor overload,Production reduced,true

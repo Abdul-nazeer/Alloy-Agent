@@ -142,8 +142,8 @@ class AutoReportGenerator:
         )
         
         # Generate incident if critical or high severity
-        await self.create_incident_and_report(sensor_data, anomalies, use_ai_generation)
-        await self.create_logbook_entry(sensor_data, anomalies)
+        ai_response = await self.create_incident_and_report(sensor_data, anomalies, use_ai_generation)
+        await self.create_logbook_entry(sensor_data, anomalies, ai_response)
     
     async def create_incident_and_report(self, sensor_data: Dict, anomalies: List[Dict], use_ai: bool = True):
         """
@@ -235,7 +235,7 @@ class AutoReportGenerator:
                             oldest_key = list(self.report_cache[equipment_id].keys())[0]
                             del self.report_cache[equipment_id][oldest_key]
                 
-                risk_level = ai_response.get('risk_level', risk_level)
+                risk_level = ai_response.get('risk_level', risk_level) or risk_level  # Ensure non-None
             else:
                 # Use template-based response (no API calls)
                 logger.info(f"📝 Generating template-based report for {incident_id} (no API call)")
@@ -271,7 +271,8 @@ class AutoReportGenerator:
                 "title": f"Equipment Health Alert - {equipment_id}",
                 "risk_level": risk_level,
                 "summary": f"{len(anomalies)} anomalies detected: {anomaly_description}",
-                "content": ai_response.get('answer', ''),
+                "content": ai_response.get('answer', ''),  # Short summary for quick view
+                "report_content": ai_response.get('report', ''),  # Full comprehensive markdown report
                 "recommendations": recommendations,
                 "root_causes": root_causes,
                 "agents_used": ai_response.get('agents_used', []),
@@ -306,6 +307,9 @@ class AutoReportGenerator:
             alert_title = f"🚨 {risk_level} Alert: {equipment_id}"
             alert_message = f"{len(anomalies)} anomalies detected. Auto-report generated."
             
+            # Ensure severity is never None
+            alert_severity = risk_level if risk_level else 'MEDIUM'
+            
             cursor.execute("""
                 INSERT INTO alerts (
                     alert_id, equipment_id, equipment_name, alert_type, 
@@ -318,7 +322,7 @@ class AutoReportGenerator:
                 equipment_id,
                 equipment_type,
                 'anomaly_detected',
-                risk_level,
+                alert_severity,  # Use safeguarded value
                 alert_title,
                 alert_message,
                 report_id,
@@ -333,11 +337,15 @@ class AutoReportGenerator:
             logger.info(f"✅ Auto-generated report {report_id} for incident {incident_id}")
             logger.info(f"📢 Created alert {alert_id} for frontend notification")
             
+            # Return ai_response so it can be passed to logbook creation
+            return ai_response
+            
         except Exception as e:
             logger.error(f"Failed to create incident report: {e}", exc_info=True)
+            return None
     
-    async def create_logbook_entry(self, sensor_data: Dict, anomalies: List[Dict]):
-        """Create logbook entry for maintenance tracking"""
+    async def create_logbook_entry(self, sensor_data: Dict, anomalies: List[Dict], ai_response: Dict = None):
+        """Create comprehensive logbook entry for maintenance tracking"""
         try:
             equipment_id = sensor_data['equipment_id']
             equipment_type = sensor_data['equipment_type']
@@ -356,22 +364,100 @@ class AutoReportGenerator:
             else:
                 risk_level = 'MEDIUM'
             
-            fault_description = f"Anomaly detected: {', '.join([a['message'] for a in anomalies[:2]])}"
+            # Create comprehensive fault description with incident details
+            fault_lines = [
+                f"* **Equipment**: {equipment_type} ({equipment_id})",
+                f"* **Alert**: {len(anomalies)} anomalies detected at {timestamp}",
+                "",
+                "**Current Sensor Readings:**"
+            ]
+            
+            # Add sensor readings (skip internal fields)
+            skip_fields = ['equipment_id', 'equipment_type', 'timestamp', 'has_anomaly', 'anomalies']
+            for key, value in sensor_data.items():
+                if key not in skip_fields and value is not None:
+                    fault_lines.append(f"  - {key}: {value}")
+            
+            fault_lines.append("")
+            fault_lines.append("**Anomalies:**")
+            for anomaly in anomalies[:5]:  # Top 5 anomalies
+                fault_lines.append(f"  - {anomaly.get('message', 'Unknown anomaly')}")
+            
+            fault_description = "\n".join(fault_lines)
+            
+            # Extract comprehensive data from AI response
+            root_cause = "N/A"
+            immediate_actions = "N/A"
+            repair_steps = "N/A"
+            long_term_recommendations = "N/A"
+            
+            if ai_response:
+                # Root causes
+                if ai_response.get('root_causes'):
+                    root_causes_list = []
+                    for i, rc in enumerate(ai_response['root_causes'][:3], 1):
+                        cause_text = f"{i}. {rc.get('cause', 'Unknown')} ({int(rc.get('confidence', 0) * 100)}% confident)"
+                        if rc.get('evidence'):
+                            evidence = rc['evidence'] if isinstance(rc['evidence'], list) else [rc['evidence']]
+                            cause_text += f"\n   Evidence: {', '.join(evidence[:2])}"
+                        root_causes_list.append(cause_text)
+                    root_cause = "\n".join(root_causes_list)
+                
+                # Immediate actions from recommendations
+                if ai_response.get('recommendations'):
+                    actions_list = []
+                    for i, rec in enumerate(ai_response['recommendations'][:5], 1):
+                        action = f"{i}. {rec.get('action', 'Unknown action')}"
+                        if rec.get('estimated_time'):
+                            action += f" (Est: {rec['estimated_time']})"
+                        if rec.get('safety_notes'):
+                            action += f"\n   ⚠️ Safety: {rec['safety_notes']}"
+                        actions_list.append(action)
+                    immediate_actions = "\n".join(actions_list)
+                
+                # Repair steps from report content
+                if ai_response.get('report'):
+                    report_content = ai_response['report']
+                    # Extract repair procedure section if available
+                    if "## REPAIR PROCEDURE" in report_content:
+                        repair_start = report_content.find("## REPAIR PROCEDURE")
+                        repair_end = report_content.find("##", repair_start + 20)
+                        if repair_end == -1:
+                            repair_end = len(report_content)
+                        repair_steps = report_content[repair_start:repair_end].strip()[:1000]  # First 1000 chars
+                    
+                    # Extract long-term recommendations
+                    if "## LONG-TERM RECOMMENDATIONS" in report_content:
+                        long_start = report_content.find("## LONG-TERM RECOMMENDATIONS")
+                        long_end = report_content.find("##", long_start + 30)
+                        if long_end == -1:
+                            long_end = len(report_content)
+                        long_term_recommendations = report_content[long_start:long_end].strip()[:1000]
+            
+            # Estimate urgency in hours
+            urgency_map = {'CRITICAL': 4, 'HIGH': 24, 'MEDIUM': 72, 'LOW': 168}
+            urgency_hours = urgency_map.get(risk_level, 72)
             
             conn = get_connection()
             cursor = conn.cursor()
             
             cursor.execute("""
                 INSERT INTO logbook_entries (
-                    entry_id, equipment_name, fault_description, risk_level, 
-                    status, timestamp, created_at
+                    entry_id, equipment_name, fault_description, root_cause,
+                    risk_level, urgency_hours, immediate_actions, repair_steps,
+                    long_term_recommendations, status, timestamp, created_at
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 entry_id,
                 f"{equipment_type} ({equipment_id})",
                 fault_description,
+                root_cause,
                 risk_level,
+                urgency_hours,
+                immediate_actions,
+                repair_steps,
+                long_term_recommendations,
                 'OPEN',
                 timestamp,
                 datetime.now().isoformat()
@@ -380,7 +466,7 @@ class AutoReportGenerator:
             conn.commit()
             conn.close()
             
-            logger.info(f"✅ Created logbook entry {entry_id}")
+            logger.info(f"✅ Created comprehensive logbook entry {entry_id}")
             
         except Exception as e:
             logger.error(f"Failed to create logbook entry: {e}", exc_info=True)

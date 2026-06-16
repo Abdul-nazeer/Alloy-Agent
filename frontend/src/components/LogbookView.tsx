@@ -7,14 +7,16 @@ interface LogEntry {
   equipment: string;
   timestamp: string;
   root_cause: string;
+  risk_level: string;
   risk: string;
   status: string;
   notes: string;
-  details?: {
-    alert?: string;
-    fault?: string;
-    actions?: string[];
-  };
+  fault_description?: string;
+  alert?: string;
+  urgency_hours?: number;
+  immediate_actions?: string[];
+  repair_steps?: string;
+  long_term_recommendations?: string;
 }
 
 export default function LogbookView() {
@@ -34,20 +36,23 @@ export default function LogbookView() {
       const response = await reportsAPI.getLogbook(undefined, undefined, 30);
       const rawEntries = response.data.entries || [];
       
-      // Transform to match production format
+      // Transform to include comprehensive data
       const transformed = rawEntries.map((e: any) => ({
         id: e.id,
         equipment: e.equipment,
         timestamp: e.time,
-        root_cause: e.notes.split(':')[0] || 'Anomaly detected',
-        risk: e.type === 'alert' ? 'HIGH' : 'MEDIUM',
+        root_cause: e.root_cause || 'Analyzing...',
+        risk_level: e.risk_level || 'MEDIUM',
+        risk: e.risk_level || (e.type === 'alert' ? 'HIGH' : 'MEDIUM'),
         status: e.status || 'OPEN',
         notes: e.notes,
-        details: {
-          alert: e.type === 'alert' ? 'N/A' : undefined,
-          fault: e.notes,
-          actions: []
-        }
+        // Comprehensive fields
+        fault_description: e.fault_description,
+        alert: e.alert,
+        urgency_hours: e.urgency_hours,
+        immediate_actions: e.immediate_actions || [],
+        repair_steps: e.repair_steps,
+        long_term_recommendations: e.long_term_recommendations,
       }));
       
       setEntries(transformed);
@@ -213,42 +218,108 @@ export default function LogbookView() {
                   {/* Expanded Details */}
                   {expandedEntry === entry.id && (
                     <div 
-                      className="px-4 py-4 border-b space-y-3"
+                      className="px-4 py-4 border-b space-y-4"
                       style={{ 
                         backgroundColor: 'var(--bg-base)',
                         borderColor: 'var(--border-subtle)'
                       }}
                     >
-                      <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--accent-cyan)' }}>
-                        Incident Details
-                      </div>
-
-                      {entry.details?.alert && (
-                        <div>
-                          <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Alert:</div>
-                          <div className="text-sm font-sans" style={{ color: 'var(--text-primary)' }}>{entry.details.alert}</div>
-                        </div>
-                      )}
-
+                      {/* INCIDENT DETAILS Section */}
                       <div>
-                        <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Fault:</div>
-                        <div className="text-sm font-sans leading-relaxed" style={{ color: 'var(--text-primary)' }}>
-                          {entry.notes}
+                        <div className="text-xs font-mono uppercase mb-2 pb-2 border-b" 
+                          style={{ color: 'var(--accent-cyan)', borderColor: 'var(--border-default)' }}>
+                          📋 INCIDENT DETAILS
                         </div>
+                        
+                        {entry.alert && entry.alert !== 'N/A' && (
+                          <div className="mb-3">
+                            <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Alert:</div>
+                            <div className="text-sm font-sans" style={{ color: 'var(--text-primary)' }}>{entry.alert}</div>
+                          </div>
+                        )}
+
+                        <div className="mb-3">
+                          <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Fault:</div>
+                          <div 
+                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
+                            style={{ color: 'var(--text-primary)' }}
+                          >
+                            {entry.fault_description || entry.notes}
+                          </div>
+                        </div>
+
+                        {entry.root_cause && entry.root_cause !== 'N/A' && (
+                          <div className="mb-3">
+                            <div className="text-xs font-mono mb-1" style={{ color: 'var(--text-tertiary)' }}>Root Cause Analysis:</div>
+                            <div 
+                              className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
+                              style={{ color: 'var(--text-primary)' }}
+                            >
+                              {entry.root_cause}
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {entry.details?.actions && entry.details.actions.length > 0 && (
+                      {/* IMMEDIATE ACTIONS Section */}
+                      {entry.immediate_actions && entry.immediate_actions.length > 0 && (
                         <div>
-                          <div className="text-xs font-mono uppercase mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                            Immediate Actions
+                          <div className="text-xs font-mono uppercase mb-2 pb-2 border-b" 
+                            style={{ color: 'var(--accent-orange)', borderColor: 'var(--border-default)' }}>
+                            ⚡ IMMEDIATE ACTIONS
                           </div>
-                          <ol className="list-decimal list-inside space-y-1">
-                            {entry.details.actions.map((action, i) => (
-                              <li key={i} className="text-sm font-sans" style={{ color: 'var(--text-secondary)' }}>
+                          <ol className="list-decimal list-inside space-y-2 pl-2">
+                            {entry.immediate_actions.map((action, i) => (
+                              <li key={i} className="text-sm font-sans leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                                 {action}
                               </li>
                             ))}
                           </ol>
+                        </div>
+                      )}
+
+                      {/* REPAIR PROCEDURE Section */}
+                      {entry.repair_steps && entry.repair_steps !== 'N/A' && entry.repair_steps.length > 30 && (
+                        <div>
+                          <div className="text-xs font-mono uppercase mb-2 pb-2 border-b" 
+                            style={{ color: 'var(--accent-cyan)', borderColor: 'var(--border-default)' }}>
+                            🔧 REPAIR PROCEDURE
+                          </div>
+                          <div 
+                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
+                            style={{ color: 'var(--text-secondary)' }}
+                          >
+                            {entry.repair_steps}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* LONG-TERM RECOMMENDATIONS Section */}
+                      {entry.long_term_recommendations && entry.long_term_recommendations !== 'N/A' && entry.long_term_recommendations.length > 30 && (
+                        <div>
+                          <div className="text-xs font-mono uppercase mb-2 pb-2 border-b" 
+                            style={{ color: 'var(--text-tertiary)', borderColor: 'var(--border-default)' }}>
+                            📊 LONG-TERM RECOMMENDATIONS
+                          </div>
+                          <div 
+                            className="text-sm font-sans leading-relaxed whitespace-pre-wrap" 
+                            style={{ color: 'var(--text-secondary)' }}
+                          >
+                            {entry.long_term_recommendations}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Urgency Info */}
+                      {entry.urgency_hours && (
+                        <div className="pt-3 border-t" style={{ borderColor: 'var(--border-subtle)' }}>
+                          <div className="text-xs font-mono" style={{ color: 'var(--text-tertiary)' }}>
+                            ⏱️ Recommended Response Time: <span style={{ color: 'var(--accent-orange)' }}>
+                              {entry.urgency_hours < 24 
+                                ? `${entry.urgency_hours} hours` 
+                                : `${Math.floor(entry.urgency_hours / 24)} days`}
+                            </span>
+                          </div>
                         </div>
                       )}
                     </div>

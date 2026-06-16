@@ -109,21 +109,27 @@ def _fallback_routing(state: AgentState) -> str:
     # Check for conversational queries
     greetings = ["hi", "hello", "hey", "greetings", "good morning", "good afternoon"]
     general_questions = ["what can you do", "capabilities", "help", "how do you work", "what are you"]
+    status_checks = ["status", "check status", "how is", "tell me about", "what's happening"]
     
-    if any(g in query_lower for g in greetings) or any(q in query_lower for q in general_questions):
+    # Route to conversational for greetings, general questions, or status checks
+    if (any(g in query_lower for g in greetings) or 
+        any(q in query_lower for q in general_questions) or
+        any(s in query_lower for s in status_checks)):
         return "conversational"
     
     # If query is very short and no sensor data → conversational
     if len(query_lower.split()) <= 2 and not state.get("sensor_readings"):
         return "conversational"
     
-    # If we have sensor readings and haven't checked anomalies → anomaly
-    if state.get("sensor_readings") and "anomaly" not in completed:
-        return "anomaly"
+    # Only route to anomaly if explicitly asking for anomaly detection
+    anomaly_keywords = ["detect anomalies", "check for issues", "analyze sensors", "any problems", "alert"]
+    if any(kw in query_lower for kw in anomaly_keywords):
+        if state.get("sensor_readings") and "anomaly" not in completed:
+            return "anomaly"
     
     # If we have anomalies or query asks "why" → diagnosis
     if (state.get("anomalies_detected") or 
-        any(word in query_lower for word in ["why", "cause", "diagnose", "wrong"])):
+        any(word in query_lower for word in ["why", "cause", "diagnose", "wrong", "failure"])):
         if "diagnosis_agent" not in completed:
             return "diagnosis_agent"
     
@@ -131,8 +137,8 @@ def _fallback_routing(state: AgentState) -> str:
     if state.get("diagnosis") and "recommendation" not in completed:
         return "recommendation"
     
-    # Default → report
-    return "report"
+    # Default → conversational (changed from report)
+    return "conversational"
 
 
 # ══════════════════════════════════════════════════════════════════════════════

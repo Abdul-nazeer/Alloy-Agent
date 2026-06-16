@@ -15,9 +15,17 @@ DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 
 def get_connection():
-    """Get database connection."""
-    conn = sqlite3.connect(str(DB_PATH), check_same_thread=False)
+    """Get database connection with proper timeout and isolation for concurrent access."""
+    conn = sqlite3.connect(
+        str(DB_PATH), 
+        check_same_thread=False,
+        timeout=30.0,  # Wait up to 30 seconds if database is locked
+        isolation_level='DEFERRED'  # Allow concurrent reads
+    )
     conn.row_factory = sqlite3.Row  # Return rows as dicts
+    # Enable WAL mode for better concurrent access
+    conn.execute('PRAGMA journal_mode=WAL')
+    conn.execute('PRAGMA busy_timeout=30000')  # 30 second timeout
     return conn
 
 

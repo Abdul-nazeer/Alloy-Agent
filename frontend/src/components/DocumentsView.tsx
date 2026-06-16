@@ -3,62 +3,41 @@ import { FileText, Download, Eye, Search } from 'lucide-react';
 import PDFViewerModal from './PDFViewerModal';
 
 interface Document {
+  doc_id?: string;
   filename: string;
-  size: string;
-  chunks: number;
-  uploadDate: string;
+  size?: string;
+  file_size_kb?: number;
+  chunks?: number;
+  chunk_count?: number;
+  uploadDate?: string;
   type: string;
+  page_count?: number;
+  status?: string;
 }
 
 export default function DocumentsView() {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null);
-  const [documents] = useState<Document[]>([
-    {
-      filename: '76-Contitech-Conveyor-Belt-Maintenance-Manual-2015.pdf',
-      size: '2.4 MB',
-      chunks: 456,
-      uploadDate: '2024-01-15',
-      type: 'Maintenance Manual'
-    },
-    {
-      filename: 'FORM-70012.pdf',
-      size: '1.8 MB',
-      chunks: 389,
-      uploadDate: '2024-01-15',
-      type: 'Technical Form'
-    },
-    {
-      filename: 'p00120_user_manual.pdf',
-      size: '3.1 MB',
-      chunks: 512,
-      uploadDate: '2024-01-15',
-      type: 'User Manual'
-    },
-    {
-      filename: '10m.pdf',
-      size: '2.2 MB',
-      chunks: 423,
-      uploadDate: '2024-01-15',
-      type: 'Equipment Guide'
-    },
-    {
-      filename: 'Steel-Manufacturing-Incident-Analysis-and-Prediction.pdf',
-      size: '1.5 MB',
-      chunks: 312,
-      uploadDate: '2024-01-15',
-      type: 'Safety Analysis'
-    },
-    {
-      filename: 'ijrtssh.vol_.4.issue2_171.pdf',
-      size: '2.0 MB',
-      chunks: 514,
-      uploadDate: '2024-01-15',
-      type: 'Research Paper'
-    }
-  ]);
-
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredDocs, setFilteredDocs] = useState(documents);
+  const [filteredDocs, setFilteredDocs] = useState<Document[]>([]);
+
+  // Fetch documents from API
+  useEffect(() => {
+    fetchDocuments();
+  }, []);
+
+  const fetchDocuments = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/rag/documents`);
+      if (response.ok) {
+        const docs = await response.json();
+        setDocuments(docs);
+      }
+    } catch (error) {
+      console.error('Failed to fetch documents:', error);
+    }
+  };
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -73,36 +52,42 @@ export default function DocumentsView() {
     }
   }, [searchQuery, documents]);
 
-  const totalChunks = documents.reduce((sum, doc) => sum + doc.chunks, 0);
+  const totalChunks = documents.reduce((sum, doc) => sum + (doc.chunks || doc.chunk_count || 0), 0);
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      {/* Header - Read-Only Knowledge Library */}
       <div className="flex items-start justify-between">
         <div>
           <h2 
-            className="text-xs font-mono tracking-widest mb-1"
+            className="heading-primary text-xl text-uppercase-spaced mb-2"
             style={{ color: 'var(--accent-cyan)' }}
           >
-            📄 KNOWLEDGE BASE DOCUMENTS
+            📄 KNOWLEDGE BASE LIBRARY
           </h2>
           <p 
-            className="text-sm font-sans"
+            className="text-body text-base"
             style={{ color: 'var(--text-secondary)' }}
           >
             {documents.length} documents indexed → {totalChunks.toLocaleString()} chunks stored
           </p>
+          <p 
+            className="text-mono text-xs mt-2"
+            style={{ color: 'var(--text-tertiary)' }}
+          >
+            Pre-indexed maintenance manuals and technical documentation. Search via AI Chat for intelligent retrieval.
+          </p>
         </div>
 
         <div 
-          className="px-3 py-1 rounded-sm text-xs font-mono"
+          className="glass-card px-4 py-2 rounded-lg text-xs text-mono"
           style={{
             border: '1px solid rgba(34, 197, 94, 0.4)',
-            backgroundColor: 'rgba(34, 197, 94, 0.05)',
-            color: '#22c55e'
+            color: 'var(--status-normal)'
           }}
         >
-          ● RAG Active
+          <span className="status-dot status-normal pulse-dot mr-2" style={{ width: '6px', height: '6px' }} />
+          RAG ACTIVE
         </div>
       </div>
 
@@ -128,97 +113,125 @@ export default function DocumentsView() {
 
       {/* Documents List */}
       <div className="space-y-2">
-        {filteredDocs.map((doc, idx) => (
-          <div
-            key={idx}
-            className="p-4 rounded-sm hover:border-opacity-60 transition-all"
-            style={{
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--border-default)'
-            }}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex items-start space-x-3 flex-1">
-                <div 
-                  className="p-2 rounded-sm"
-                  style={{ backgroundColor: 'var(--bg-elevated)' }}
-                >
-                  <FileText className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
-                </div>
-
-                <div className="flex-1">
-                  <h3 
-                    className="text-sm font-medium font-sans mb-1"
-                    style={{ color: 'var(--text-primary)' }}
+        {filteredDocs.map((doc, idx) => {
+          const displaySize = doc.size || (doc.file_size_kb ? `${doc.file_size_kb.toFixed(1)} KB` : 'Unknown');
+          const displayChunks = doc.chunks || doc.chunk_count || 0;
+          const displayDate = doc.uploadDate || new Date().toISOString().split('T')[0];
+          
+          return (
+            <div
+              key={doc.doc_id || idx}
+              className="p-4 rounded-sm hover:border-opacity-60 transition-all"
+              style={{
+                backgroundColor: 'var(--bg-surface)',
+                border: '1px solid var(--border-default)'
+              }}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-3 flex-1">
+                  <div 
+                    className="p-2 rounded-sm"
+                    style={{ backgroundColor: 'var(--bg-elevated)' }}
                   >
-                    {doc.filename}
-                  </h3>
-                  
-                  <div className="flex items-center space-x-4 text-xs font-mono mb-2" style={{ color: 'var(--text-secondary)' }}>
-                    <span>
-                      <span style={{ color: 'var(--text-tertiary)' }}>Size:</span>{' '}
-                      <span style={{ color: 'var(--text-primary)' }}>{doc.size}</span>
-                    </span>
-                    <span>•</span>
-                    <span>
-                      <span style={{ color: 'var(--text-tertiary)' }}>Chunks:</span>{' '}
-                      <span style={{ color: 'var(--accent-cyan)' }}>{doc.chunks}</span>
-                    </span>
-                    <span>•</span>
-                    <span>
-                      <span style={{ color: 'var(--text-tertiary)' }}>Uploaded:</span>{' '}
-                      <span style={{ color: 'var(--text-primary)' }}>{doc.uploadDate}</span>
-                    </span>
+                    <FileText className="w-5 h-5" style={{ color: 'var(--accent-cyan)' }} />
                   </div>
 
-                  <div>
-                    <span 
-                      className="inline-block px-2 py-0.5 rounded-sm text-2xs font-mono"
-                      style={{
-                        border: '1px solid var(--border-default)',
-                        backgroundColor: 'var(--bg-elevated)',
-                        color: 'var(--text-secondary)'
-                      }}
+                  <div className="flex-1">
+                    <h3 
+                      className="text-sm font-medium font-sans mb-1"
+                      style={{ color: 'var(--text-primary)' }}
                     >
-                      {doc.type}
-                    </span>
+                      {doc.filename}
+                    </h3>
+                    
+                    <div className="flex items-center space-x-4 text-xs font-mono mb-2" style={{ color: 'var(--text-secondary)' }}>
+                      <span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>Size:</span>{' '}
+                        <span style={{ color: 'var(--text-primary)' }}>{displaySize}</span>
+                      </span>
+                      <span>•</span>
+                      <span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>Chunks:</span>{' '}
+                        <span style={{ color: 'var(--accent-cyan)' }}>{displayChunks}</span>
+                      </span>
+                      {doc.page_count && (
+                        <>
+                          <span>•</span>
+                          <span>
+                            <span style={{ color: 'var(--text-tertiary)' }}>Pages:</span>{' '}
+                            <span style={{ color: 'var(--text-primary)' }}>{doc.page_count}</span>
+                          </span>
+                        </>
+                      )}
+                      <span>•</span>
+                      <span>
+                        <span style={{ color: 'var(--text-tertiary)' }}>Uploaded:</span>{' '}
+                        <span style={{ color: 'var(--text-primary)' }}>{displayDate}</span>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <span 
+                        className="inline-block px-2 py-0.5 rounded-sm text-2xs font-mono"
+                        style={{
+                          border: '1px solid var(--border-default)',
+                          backgroundColor: 'var(--bg-elevated)',
+                          color: 'var(--text-secondary)'
+                        }}
+                      >
+                        {doc.type}
+                      </span>
+                      {doc.status === 'indexed' && (
+                        <span 
+                          className="inline-block px-2 py-0.5 rounded-sm text-2xs font-mono"
+                          style={{
+                            border: '1px solid rgba(34, 197, 94, 0.4)',
+                            backgroundColor: 'rgba(34, 197, 94, 0.05)',
+                            color: '#22c55e'
+                          }}
+                        >
+                          ✓ Indexed
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center space-x-2 ml-4">
-                <button
-                  onClick={() => setSelectedPDF(doc.filename)}
-                  className="p-2 rounded-sm transition-all hover:border-opacity-80"
-                  style={{
-                    backgroundColor: 'var(--bg-elevated)',
-                    border: '1px solid var(--border-default)',
-                    color: 'var(--text-secondary)'
-                  }}
-                  title="View document"
-                >
-                  <Eye className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => {
-                    // Trigger download
-                    window.open(`${import.meta.env.VITE_API_URL || 'https://alloy-agent-production.up.railway.app'}/api/pdfs/${doc.filename}`, '_blank');
-                  }}
-                  className="p-2 rounded-sm transition-all hover:border-opacity-80"
-                  style={{
-                    backgroundColor: 'var(--bg-elevated)',
-                    border: '1px solid var(--border-default)',
-                    color: 'var(--text-secondary)'
-                  }}
-                  title="Download document"
-                >
-                  <Download className="w-4 h-4" />
-                </button>
+                {/* Action Buttons */}
+                <div className="flex items-center space-x-2 ml-4">
+                  <button
+                    onClick={() => setSelectedPDF(doc.doc_id || doc.filename)}
+                    className="p-2 rounded-sm transition-all hover:border-opacity-80"
+                    style={{
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-secondary)'
+                    }}
+                    title="View document"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+                      const docId = doc.doc_id || doc.filename;
+                      window.open(`${apiUrl}/api/rag/pdf/${docId}`, '_blank');
+                    }}
+                    className="p-2 rounded-sm transition-all hover:border-opacity-80"
+                    style={{
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-default)',
+                      color: 'var(--text-secondary)'
+                    }}
+                    title="Download document"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Empty State */}

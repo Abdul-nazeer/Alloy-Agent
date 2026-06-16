@@ -1,0 +1,221 @@
+equipment_id,failure_date,failure_type,root_cause,downtime_hours,repair_cost,parts_replaced
+AC-001,2020-06-17,Valve failure,Valve seat erosion,8.7,1122.11,Control valve;Seals
+AC-001,2020-08-11,Valve failure,Valve seat erosion,9.2,1272.75,Control valve;Seals
+AC-001,2020-10-07,Motor failure,Winding insulation breakdown,15.1,3595.21,Motor;Bearings
+AC-001,2020-10-11,Oil pump failure,Pump impeller wear,7.4,1004.57,Oil pump
+AC-001,2021-03-31,Valve failure,Valve seat erosion,7.3,1488.32,Control valve;Seals
+AC-001,2021-04-10,Valve failure,Valve seat erosion,9.9,1323.49,Control valve;Seals
+AC-001,2021-04-15,Motor failure,Winding insulation breakdown,14.2,3550.26,Motor;Bearings
+AC-001,2021-04-24,Oil pump failure,Pump impeller wear,6.6,1032.57,Oil pump
+AC-001,2021-07-05,Pressure sensor failure,Sensor drift,2.0,517.37,Pressure sensor
+AC-001,2021-07-15,Pressure sensor failure,Sensor drift,1.7,432.78,Pressure sensor
+AC-001,2021-08-31,Compressor head failure,Piston ring wear,15.9,4858.99,Compressor head;Piston rings
+AC-001,2022-02-06,Pressure sensor failure,Sensor drift,2.3,561.38,Pressure sensor
+AC-001,2022-02-20,Compressor head failure,Piston ring wear,18.2,5559.36,Compressor head;Piston rings
+AC-001,2022-03-09,Motor failure,Winding insulation breakdown,14.3,3012.60,Motor;Bearings
+AC-001,2022-05-04,Oil pump failure,Pump impeller wear,7.6,1092.29,Oil pump
+AC-001,2022-05-25,Compressor head failure,Piston ring wear,14.0,4675.68,Compressor head;Piston rings
+AC-001,2022-06-01,Oil pump failure,Pump impeller wear,6.5,1060.00,Oil pump
+AC-001,2022-09-11,Pressure sensor failure,Sensor drift,1.8,407.22,Pressure sensor
+AC-001,2022-09-12,Motor failure,Winding insulation breakdown,11.5,3502.87,Motor;Bearings
+AC-001,2023-01-02,Valve failure,Valve seat erosion,8.8,1286.50,Control valve;Seals
+AC-001,2023-02-01,Oil pump failure,Pump impeller wear,5.6,1032.73,Oil pump
+AC-001,2023-02-24,Compressor head failure,Piston ring wear,16.9,6459.94,Compressor head;Piston rings
+AC-001,2023-04-25,Valve failure,Valve seat erosion,8.9,1451.81,Control valve;Seals
+AC-001,2023-11-02,Oil pump failure,Pump impeller wear,6.0,861.07,Oil pump
+AC-001,2024-01-24,Compressor head failure,Piston ring wear,18.6,6042.85,Compressor head;Piston rings
+AC-001,2024-03-11,Pressure sensor failure,Sensor drift,2.1,467.43,Pressure sensor
+AC-001,2024-06-13,Pressure sensor failure,Sensor drift,1.9,528.78,Pressure sensor
+AC-001,2024-06-27,Oil pump failure,Pump impeller wear,5.5,892.46,Oil pump
+AC-001,2024-07-07,Motor failure,Winding insulation breakdown,12.3,3233.45,Motor;Bearings
+AC-001,2024-07-10,Compressor head failure,Piston ring wear,19.8,5236.72,Compressor head;Piston rings
+AC-001,2024-08-04,Pressure sensor failure,Sensor drift,1.8,526.02,Pressure sensor
+AC-001,2024-12-15,Compressor head failure,Piston ring wear,13.8,5064.07,Compressor head;Piston rings
+AC-001,2024-12-24,Compressor head failure,Piston ring wear,19.2,6688.37,Compressor head;Piston rings
+AC-001,2025-02-08,Oil pump failure,Pump impeller wear,5.7,1088.18,Oil pump
+AC-001,2025-02-20,Valve failure,Valve seat erosion,8.0,1257.28,Control valve;Seals
+AC-001,2025-05-12,Valve failure,Valve seat erosion,7.4,1362.22,Control valve;Seals
+AC-001,2025-06-22,Oil pump failure,Pump impeller wear,6.9,862.44,Oil pump
+AC-001,2025-09-09,Motor failure,Winding insulation breakdown,12.0,4244.40,Motor;Bearings
+AC-001,2026-03-19,Oil pump failure,Pump impeller wear,5.3,1062.92,Oil pump
+AC-001,2026-04-11,Compressor head failure,Piston ring wear,16.7,5310.44,Compressor head;Piston rings
+AC-002,2020-04-07,Valve failure,Valve seat erosion,9.7,1032.26,Control valve;Seals
+AC-002,2020-05-14,Motor failure,Winding insulation breakdown,9.8,3585.70,Motor;Bearings
+AC-002,2020-05-21,Valve failure,Valve seat erosion,9.9,1222.83,Control valve;Seals
+AC-002,2021-03-20,Valve failure,Valve seat erosion,9.6,1170.04,Control valve;Seals
+AC-002,2021-03-24,Compressor head failure,Piston ring wear,20.5,6547.00,Compressor head;Piston rings
+AC-002,2021-05-15,Oil pump failure,Pump impeller wear,6.0,830.68,Oil pump
+AC-002,2021-06-14,Compressor head failure,Piston ring wear,15.2,5858.66,Compressor head;Piston rings
+AC-002,2021-06-23,Pressure sensor failure,Sensor drift,2.5,454.36,Pressure sensor
+AC-002,2021-11-13,Pressure sensor failure,Sensor drift,1.9,434.62,Pressure sensor
+AC-002,2021-11-27,Valve failure,Valve seat erosion,8.1,1487.90,Control valve;Seals
+AC-002,2022-03-11,Motor failure,Winding insulation breakdown,14.3,4305.55,Motor;Bearings
+AC-002,2022-03-22,Valve failure,Valve seat erosion,7.1,1175.78,Control valve;Seals
+AC-002,2022-03-25,Oil pump failure,Pump impeller wear,5.1,953.05,Oil pump
+AC-002,2022-06-21,Motor failure,Winding insulation breakdown,12.2,3104.22,Motor;Bearings
+AC-002,2022-07-14,Oil pump failure,Pump impeller wear,5.3,962.66,Oil pump
+AC-002,2022-11-01,Valve failure,Valve seat erosion,6.4,1482.58,Control valve;Seals
+AC-002,2022-11-12,Compressor head failure,Piston ring wear,19.5,6439.86,Compressor head;Piston rings
+AC-002,2022-12-13,Valve failure,Valve seat erosion,10.1,1063.13,Control valve;Seals
+AC-002,2022-12-25,Motor failure,Winding insulation breakdown,14.2,3978.53,Motor;Bearings
+AC-002,2023-01-14,Oil pump failure,Pump impeller wear,6.6,919.30,Oil pump
+AC-002,2023-02-09,Oil pump failure,Pump impeller wear,5.3,1002.71,Oil pump
+AC-002,2023-05-16,Compressor head failure,Piston ring wear,18.6,5929.97,Compressor head;Piston rings
+AC-002,2023-06-12,Pressure sensor failure,Sensor drift,2.5,534.25,Pressure sensor
+AC-002,2023-10-26,Valve failure,Valve seat erosion,6.8,1460.27,Control valve;Seals
+AC-002,2024-03-03,Motor failure,Winding insulation breakdown,10.4,3399.43,Motor;Bearings
+AC-002,2024-08-26,Motor failure,Winding insulation breakdown,12.7,3018.47,Motor;Bearings
+AC-002,2024-08-27,Valve failure,Valve seat erosion,6.9,1478.57,Control valve;Seals
+AC-002,2024-09-09,Oil pump failure,Pump impeller wear,5.6,1067.63,Oil pump
+AC-002,2024-09-24,Oil pump failure,Pump impeller wear,7.2,1126.25,Oil pump
+AC-002,2024-11-30,Compressor head failure,Piston ring wear,14.4,5608.97,Compressor head;Piston rings
+AC-002,2024-12-24,Compressor head failure,Piston ring wear,20.3,5447.28,Compressor head;Piston rings
+AC-002,2025-03-22,Compressor head failure,Piston ring wear,18.4,5976.83,Compressor head;Piston rings
+AC-002,2025-05-21,Pressure sensor failure,Sensor drift,1.7,476.92,Pressure sensor
+AC-002,2025-06-18,Motor failure,Winding insulation breakdown,11.1,4301.66,Motor;Bearings
+AC-002,2025-08-15,Oil pump failure,Pump impeller wear,5.0,835.55,Oil pump
+AC-002,2025-08-19,Oil pump failure,Pump impeller wear,6.1,854.86,Oil pump
+AC-002,2025-09-08,Valve failure,Valve seat erosion,7.1,1461.39,Control valve;Seals
+AC-002,2026-01-02,Valve failure,Valve seat erosion,8.9,1039.47,Control valve;Seals
+AC-002,2026-05-17,Pressure sensor failure,Sensor drift,2.5,488.44,Pressure sensor
+AC-002,2026-06-06,Valve failure,Valve seat erosion,7.8,1394.74,Control valve;Seals
+CF-003,2020-03-18,Control system failure,Relay contact failure,2.9,834.55,Control relay;Contactor
+CF-003,2020-04-18,Belt failure,Belt wear and tear,5.0,557.76,V-belt
+CF-003,2020-08-19,Shaft failure,Torsional stress,17.7,4297.18,Drive shaft;Coupling
+CF-003,2020-10-23,Shaft failure,Torsional stress,16.3,4024.55,Drive shaft;Coupling
+CF-003,2021-01-30,Fan blade failure,Fatigue crack,13.0,2987.37,Fan blades
+CF-003,2021-02-17,Fan blade failure,Fatigue crack,13.0,3231.59,Fan blades
+CF-003,2021-03-21,Fan blade failure,Fatigue crack,15.1,3249.68,Fan blades
+CF-003,2021-04-06,Belt failure,Belt wear and tear,4.7,457.08,V-belt
+CF-003,2021-04-28,Motor failure,Bearing seizure,8.5,2837.21,Motor;Bearings
+CF-003,2021-06-05,Motor failure,Bearing seizure,8.4,3124.62,Motor;Bearings
+CF-003,2021-07-14,Shaft failure,Torsional stress,17.3,4870.28,Drive shaft;Coupling
+CF-003,2021-08-11,Control system failure,Relay contact failure,3.9,839.45,Control relay;Contactor
+CF-003,2022-03-14,Control system failure,Relay contact failure,2.6,618.57,Control relay;Contactor
+CF-003,2022-04-16,Fan blade failure,Fatigue crack,14.1,3153.95,Fan blades
+CF-003,2022-05-03,Motor failure,Bearing seizure,8.1,3006.39,Motor;Bearings
+CF-003,2022-05-24,Motor failure,Bearing seizure,8.5,2527.42,Motor;Bearings
+CF-003,2022-07-11,Fan blade failure,Fatigue crack,9.7,2877.96,Fan blades
+CF-003,2023-03-21,Belt failure,Belt wear and tear,5.1,484.51,V-belt
+CF-003,2023-04-29,Fan blade failure,Fatigue crack,11.8,3468.05,Fan blades
+CF-003,2023-09-07,Shaft failure,Torsional stress,11.6,3792.20,Drive shaft;Coupling
+CF-003,2024-02-12,Motor failure,Bearing seizure,9.9,2777.52,Motor;Bearings
+CF-003,2024-02-29,Control system failure,Relay contact failure,3.8,830.45,Control relay;Contactor
+CF-003,2024-05-04,Belt failure,Belt wear and tear,4.3,407.81,V-belt
+CF-003,2024-06-24,Motor failure,Bearing seizure,10.4,2686.64,Motor;Bearings
+CF-003,2024-07-13,Shaft failure,Torsional stress,14.1,5095.52,Drive shaft;Coupling
+CF-003,2024-08-31,Fan blade failure,Fatigue crack,15.3,2965.30,Fan blades
+CF-003,2024-11-19,Control system failure,Relay contact failure,3.1,842.37,Control relay;Contactor
+CF-003,2024-12-01,Belt failure,Belt wear and tear,4.4,525.20,V-belt
+CF-003,2024-12-24,Fan blade failure,Fatigue crack,14.7,3465.69,Fan blades
+CF-003,2024-12-27,Shaft failure,Torsional stress,17.0,3667.32,Drive shaft;Coupling
+CF-003,2025-02-25,Control system failure,Relay contact failure,3.3,595.69,Control relay;Contactor
+CF-003,2025-07-27,Control system failure,Relay contact failure,3.0,817.18,Control relay;Contactor
+CF-003,2025-09-28,Fan blade failure,Fatigue crack,11.1,3128.37,Fan blades
+CF-003,2025-10-24,Fan blade failure,Fatigue crack,10.7,3942.46,Fan blades
+CF-003,2025-10-25,Motor failure,Bearing seizure,13.0,3145.08,Motor;Bearings
+CF-003,2025-11-18,Belt failure,Belt wear and tear,3.7,511.48,V-belt
+CF-003,2025-12-28,Motor failure,Bearing seizure,12.1,2668.50,Motor;Bearings
+CF-003,2026-02-04,Motor failure,Bearing seizure,9.1,3275.95,Motor;Bearings
+CF-003,2026-02-16,Fan blade failure,Fatigue crack,13.4,2790.49,Fan blades
+CF-003,2026-03-21,Shaft failure,Torsional stress,11.2,5085.35,Drive shaft;Coupling
+RM-005,2018-07-17,Drive motor failure,Rotor bar crack,22.1,15841.40,Drive motor
+RM-005,2018-11-12,Roll bearing failure,Spalling,21.7,11587.33,Roll bearings;Bearing housing
+RM-005,2018-12-03,Hydraulic system failure,Pump seal leak,23.3,7314.25,Hydraulic pump;Seals
+RM-005,2018-12-09,Hydraulic system failure,Pump seal leak,16.5,8364.34,Hydraulic pump;Seals
+RM-005,2018-12-28,Roll surface damage,Material buildup,15.8,7968.32,Roll surface treatment
+RM-005,2019-01-06,Roll bearing failure,Spalling,20.1,12856.52,Roll bearings;Bearing housing
+RM-005,2019-05-17,Lubrication system failure,Filter blockage,6.6,2317.99,Oil filter;Lubrication pump
+RM-005,2019-06-07,Roll surface damage,Material buildup,17.5,6293.84,Roll surface treatment
+RM-005,2019-06-10,Drive motor failure,Rotor bar crack,20.9,16492.91,Drive motor
+RM-005,2019-08-31,Lubrication system failure,Filter blockage,8.9,2695.69,Oil filter;Lubrication pump
+RM-005,2019-10-19,Hydraulic system failure,Pump seal leak,22.2,8490.77,Hydraulic pump;Seals
+RM-005,2019-12-09,Hydraulic system failure,Pump seal leak,17.1,9652.43,Hydraulic pump;Seals
+RM-005,2020-01-18,Hydraulic system failure,Pump seal leak,15.2,8971.96,Hydraulic pump;Seals
+RM-005,2020-02-02,Lubrication system failure,Filter blockage,8.8,2621.26,Oil filter;Lubrication pump
+RM-005,2020-02-18,Roll bearing failure,Spalling,21.8,11720.13,Roll bearings;Bearing housing
+RM-005,2020-05-11,Drive motor failure,Rotor bar crack,20.9,13403.61,Drive motor
+RM-005,2020-05-11,Drive motor failure,Rotor bar crack,24.9,17124.97,Drive motor
+RM-005,2020-06-24,Drive motor failure,Rotor bar crack,23.8,12974.88,Drive motor
+RM-005,2020-10-29,Roll surface damage,Material buildup,12.1,5765.56,Roll surface treatment
+RM-005,2020-11-06,Roll surface damage,Material buildup,18.1,7318.05,Roll surface treatment
+RM-005,2020-11-13,Drive motor failure,Rotor bar crack,23.6,17555.51,Drive motor
+RM-005,2020-12-24,Roll bearing failure,Spalling,28.3,10533.48,Roll bearings;Bearing housing
+RM-005,2021-02-23,Roll surface damage,Material buildup,15.6,6386.55,Roll surface treatment
+RM-005,2021-03-23,Roll bearing failure,Spalling,21.1,13687.30,Roll bearings;Bearing housing
+RM-005,2021-04-08,Drive motor failure,Rotor bar crack,21.0,13833.06,Drive motor
+RM-005,2021-05-16,Roll surface damage,Material buildup,14.7,7962.54,Roll surface treatment
+RM-005,2021-09-18,Hydraulic system failure,Pump seal leak,18.3,8538.26,Hydraulic pump;Seals
+RM-005,2021-09-23,Roll bearing failure,Spalling,20.4,11221.06,Roll bearings;Bearing housing
+RM-005,2021-10-17,Roll surface damage,Material buildup,17.6,5821.60,Roll surface treatment
+RM-005,2021-10-18,Lubrication system failure,Filter blockage,7.6,1891.11,Oil filter;Lubrication pump
+RM-005,2021-10-28,Drive motor failure,Rotor bar crack,22.2,14424.32,Drive motor
+RM-005,2021-11-10,Roll surface damage,Material buildup,14.2,7923.57,Roll surface treatment
+RM-005,2022-06-10,Hydraulic system failure,Pump seal leak,22.5,7597.75,Hydraulic pump;Seals
+RM-005,2022-08-08,Roll surface damage,Material buildup,13.6,7860.37,Roll surface treatment
+RM-005,2022-10-20,Lubrication system failure,Filter blockage,6.5,1924.72,Oil filter;Lubrication pump
+RM-005,2022-11-17,Drive motor failure,Rotor bar crack,19.2,17833.23,Drive motor
+RM-005,2023-02-18,Drive motor failure,Rotor bar crack,23.7,17541.43,Drive motor
+RM-005,2023-03-20,Drive motor failure,Rotor bar crack,18.1,13687.17,Drive motor
+RM-005,2023-07-16,Roll surface damage,Material buildup,14.5,6657.45,Roll surface treatment
+RM-005,2023-08-24,Drive motor failure,Rotor bar crack,23.5,13639.18,Drive motor
+RM-005,2023-10-12,Hydraulic system failure,Pump seal leak,22.9,8768.39,Hydraulic pump;Seals
+RM-005,2023-11-26,Hydraulic system failure,Pump seal leak,15.7,7284.86,Hydraulic pump;Seals
+RM-005,2023-12-04,Roll surface damage,Material buildup,11.9,6748.63,Roll surface treatment
+RM-005,2024-02-26,Roll bearing failure,Spalling,18.8,13797.34,Roll bearings;Bearing housing
+RM-005,2024-05-26,Drive motor failure,Rotor bar crack,25.8,12933.79,Drive motor
+RM-005,2024-05-27,Roll bearing failure,Spalling,26.9,10493.10,Roll bearings;Bearing housing
+RM-005,2024-07-20,Roll bearing failure,Spalling,17.8,10625.76,Roll bearings;Bearing housing
+RM-005,2024-07-21,Roll bearing failure,Spalling,28.2,10418.70,Roll bearings;Bearing housing
+RM-005,2024-08-03,Roll bearing failure,Spalling,20.6,14277.86,Roll bearings;Bearing housing
+RM-005,2024-08-21,Lubrication system failure,Filter blockage,8.0,2579.96,Oil filter;Lubrication pump
+RM-005,2024-11-20,Hydraulic system failure,Pump seal leak,15.4,9556.00,Hydraulic pump;Seals
+RM-005,2025-01-02,Lubrication system failure,Filter blockage,7.4,1947.10,Oil filter;Lubrication pump
+RM-005,2025-04-17,Drive motor failure,Rotor bar crack,17.8,17888.25,Drive motor
+RM-005,2025-05-27,Roll surface damage,Material buildup,12.1,5766.48,Roll surface treatment
+RM-005,2025-07-01,Drive motor failure,Rotor bar crack,18.0,17195.91,Drive motor
+RM-005,2025-08-26,Drive motor failure,Rotor bar crack,17.3,16588.18,Drive motor
+RM-005,2025-09-10,Roll surface damage,Material buildup,14.3,7863.58,Roll surface treatment
+RM-005,2026-02-03,Hydraulic system failure,Pump seal leak,21.8,10435.72,Hydraulic pump;Seals
+RM-005,2026-03-27,Drive motor failure,Rotor bar crack,25.0,16303.39,Drive motor
+RM-005,2026-05-10,Roll surface damage,Material buildup,17.9,7377.44,Roll surface treatment
+CM-007,2021-02-19,Brake failure,Brake pad wear,4.7,862.82,Brake assembly
+CM-007,2021-03-05,Motor bearing failure,Bearing wear,5.8,1727.24,Motor bearings
+CM-007,2021-05-02,Gearbox failure,Gear tooth breakage,9.8,3888.62,Gearbox;Gears
+CM-007,2021-05-23,Shaft failure,Shaft misalignment,6.6,1881.87,Drive shaft;Coupling
+CM-007,2021-06-07,Gearbox failure,Gear tooth breakage,8.4,4260.72,Gearbox;Gears
+CM-007,2021-09-10,Motor bearing failure,Bearing wear,7.5,2077.89,Motor bearings
+CM-007,2021-11-19,Belt failure,Belt tension loss,3.0,974.56,Conveyor belt
+CM-007,2022-01-19,Brake failure,Brake pad wear,4.9,1018.40,Brake assembly
+CM-007,2022-03-17,Brake failure,Brake pad wear,4.3,1011.21,Brake assembly
+CM-007,2022-04-07,Motor bearing failure,Bearing wear,6.5,1554.26,Motor bearings
+CM-007,2022-04-10,Belt failure,Belt tension loss,3.3,957.29,Conveyor belt
+CM-007,2022-07-07,Shaft failure,Shaft misalignment,8.9,2076.98,Drive shaft;Coupling
+CM-007,2022-07-15,Motor bearing failure,Bearing wear,5.6,1762.23,Motor bearings
+CM-007,2022-10-23,Shaft failure,Shaft misalignment,7.1,2412.53,Drive shaft;Coupling
+CM-007,2022-10-24,Shaft failure,Shaft misalignment,6.7,2734.59,Drive shaft;Coupling
+CM-007,2022-12-21,Gearbox failure,Gear tooth breakage,12.4,3654.61,Gearbox;Gears
+CM-007,2023-02-05,Brake failure,Brake pad wear,4.6,938.57,Brake assembly
+CM-007,2023-02-15,Brake failure,Brake pad wear,3.6,833.37,Brake assembly
+CM-007,2023-02-28,Belt failure,Belt tension loss,3.9,776.94,Conveyor belt
+CM-007,2023-08-14,Motor bearing failure,Bearing wear,5.7,1972.04,Motor bearings
+CM-007,2023-11-01,Belt failure,Belt tension loss,3.1,960.82,Conveyor belt
+CM-007,2024-01-07,Brake failure,Brake pad wear,4.0,879.49,Brake assembly
+CM-007,2024-01-29,Brake failure,Brake pad wear,3.6,977.27,Brake assembly
+CM-007,2024-03-22,Belt failure,Belt tension loss,2.5,779.81,Conveyor belt
+CM-007,2024-05-15,Gearbox failure,Gear tooth breakage,11.8,3691.59,Gearbox;Gears
+CM-007,2024-07-06,Motor bearing failure,Bearing wear,6.9,1824.89,Motor bearings
+CM-007,2024-07-28,Brake failure,Brake pad wear,4.4,1119.27,Brake assembly
+CM-007,2024-09-19,Motor bearing failure,Bearing wear,5.9,1878.12,Motor bearings
+CM-007,2025-01-23,Motor bearing failure,Bearing wear,6.8,2213.71,Motor bearings
+CM-007,2025-03-17,Brake failure,Brake pad wear,3.8,959.38,Brake assembly
+CM-007,2025-04-11,Belt failure,Belt tension loss,3.1,833.02,Conveyor belt
+CM-007,2025-04-24,Brake failure,Brake pad wear,5.2,907.20,Brake assembly
+CM-007,2025-07-02,Brake failure,Brake pad wear,4.4,1180.12,Brake assembly
+CM-007,2025-10-09,Shaft failure,Shaft misalignment,7.5,2524.11,Drive shaft;Coupling
+CM-007,2025-11-20,Shaft failure,Shaft misalignment,10.4,2735.82,Drive shaft;Coupling
+CM-007,2025-12-18,Motor bearing failure,Bearing wear,6.8,1971.95,Motor bearings
+CM-007,2026-01-25,Gearbox failure,Gear tooth breakage,12.4,3650.91,Gearbox;Gears
+CM-007,2026-02-14,Gearbox failure,Gear tooth breakage,8.0,3265.91,Gearbox;Gears
+CM-007,2026-02-22,Brake failure,Brake pad wear,4.0,832.11,Brake assembly
+CM-007,2026-06-15,Brake failure,Brake pad wear,4.3,1027.75,Brake assembly

@@ -143,6 +143,8 @@ def _format_sources(citations: list[dict]) -> list[dict]:
         sources.append({
             "index": citation.get("index"),
             "document": citation.get("doc_name"),
+            "doc_name": citation.get("doc_name"),  # Include both for compatibility
+            "doc_id": citation.get("doc_id"),  # Essential for PDF lookup
             "section": citation.get("section"),
             "pages": citation.get("pages", []),
             "bboxes": citation.get("bboxes", []),

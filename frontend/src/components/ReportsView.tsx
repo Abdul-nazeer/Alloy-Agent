@@ -297,7 +297,121 @@ export default function ReportsView() {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-6">
+            {/* Show ONLY Full Detailed Report if available, otherwise show structured sections */}
+            {selectedReport.content?.report_content ? (
+              /* Full Comprehensive Report - Clean Preview Mode */
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-lg font-mono uppercase flex items-center" style={{ color: 'var(--accent-cyan)' }}>
+                    <span className="mr-2">📄</span> Equipment Health Analysis Report
+                  </div>
+                  <button
+                    onClick={() => {
+                      const blob = new Blob([selectedReport.content.report_content], { type: 'text/markdown' });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `report-${selectedReport.equipment_id}-${selectedReport.id}.md`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }}
+                    className="px-4 py-2 text-xs font-mono rounded-sm hover:opacity-80 transition-all flex items-center space-x-2"
+                    style={{
+                      backgroundColor: 'var(--accent-cyan)',
+                      color: '#0a0e27'
+                    }}
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>DOWNLOAD REPORT</span>
+                  </button>
+                </div>
+                
+                {/* Clean Report Preview */}
+                <div 
+                  className="report-content p-6 rounded-sm"
+                  style={{ 
+                    backgroundColor: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-default)',
+                    color: 'var(--text-primary)',
+                    lineHeight: '1.8',
+                    fontSize: '14px'
+                  }}
+                >
+                  <style>{`
+                    .report-content h1 {
+                      font-size: 24px;
+                      font-weight: bold;
+                      color: var(--accent-cyan);
+                      margin-top: 24px;
+                      margin-bottom: 16px;
+                      padding-bottom: 8px;
+                      border-bottom: 2px solid var(--border-default);
+                    }
+                    .report-content h2 {
+                      font-size: 18px;
+                      font-weight: 600;
+                      color: var(--accent-cyan);
+                      margin-top: 20px;
+                      margin-bottom: 12px;
+                    }
+                    .report-content h3 {
+                      font-size: 16px;
+                      font-weight: 600;
+                      color: var(--text-primary);
+                      margin-top: 16px;
+                      margin-bottom: 8px;
+                    }
+                    .report-content p {
+                      margin-bottom: 12px;
+                    }
+                    .report-content ul, .report-content ol {
+                      margin-left: 24px;
+                      margin-bottom: 12px;
+                    }
+                    .report-content li {
+                      margin-bottom: 6px;
+                    }
+                    .report-content strong {
+                      font-weight: 600;
+                      color: var(--text-primary);
+                    }
+                    .report-content em {
+                      font-style: italic;
+                    }
+                    .report-content code {
+                      background: var(--bg-surface);
+                      padding: 2px 6px;
+                      border-radius: 3px;
+                      font-family: monospace;
+                      font-size: 13px;
+                    }
+                    .report-content table {
+                      width: 100%;
+                      border-collapse: collapse;
+                      margin: 16px 0;
+                    }
+                    .report-content th, .report-content td {
+                      border: 1px solid var(--border-default);
+                      padding: 8px 12px;
+                      text-align: left;
+                    }
+                    .report-content th {
+                      background: var(--bg-surface);
+                      font-weight: 600;
+                    }
+                    .report-content hr {
+                      border: none;
+                      border-top: 1px solid var(--border-default);
+                      margin: 20px 0;
+                    }
+                  `}</style>
+                  <div dangerouslySetInnerHTML={{ __html: markdownToHTML(selectedReport.content.report_content) }} />
+                </div>
+              </div>
+            ) : (
+              /* Fallback: Show structured sections if full report not available */
+              <div className="space-y-6">
             {/* Risk Level Banner */}
             <div className="p-4 rounded-sm" style={{ 
               backgroundColor: `${getRiskColor(selectedReport.status)}15`,
@@ -511,6 +625,8 @@ export default function ReportsView() {
                 </div>
               </div>
             </div>
+              </div>
+            )}
           </div>
         </div>
       )}

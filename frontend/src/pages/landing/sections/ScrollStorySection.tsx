@@ -1,26 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { motion } from 'framer-motion';
 
 export default function ScrollStorySection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [currentScene, setCurrentScene] = useState(0);
-  
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"]
-  });
-
-  const sceneProgress = useTransform(scrollYProgress, [0, 1], [0, 8]);
-
-  useEffect(() => {
-    return sceneProgress.onChange(latest => {
-      setCurrentScene(Math.min(Math.floor(latest), 7));
-    });
-  }, [sceneProgress]);
+  const [isLocked, setIsLocked] = useState(false);
+  const lastScrollTime = useRef(0);
 
   const scenes = [
     {
@@ -73,12 +58,97 @@ export default function ScrollStorySection() {
     }
   ];
 
+  useEffect(() => {
+    let scrollTimeout: number;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const inView = rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+
+      if (inView || isLocked) {
+        // Prevent normal scroll
+        e.preventDefault();
+        e.stopPropagation();
+        
+        setIsLocked(true);
+
+        // Debounce wheel events
+        const now = Date.now();
+        if (now - lastScrollTime.current < 300) return;
+        lastScrollTime.current = now;
+
+        const direction = e.deltaY > 0 ? 1 : -1;
+
+        clearTimeout(scrollTimeout);
+        scrollTimeout = window.setTimeout(() => {
+          setCurrentScene((prev) => {
+            const next = prev + direction;
+            
+            // Unlock and allow scroll to next section
+            if (next >= scenes.length) {
+              setIsLocked(false);
+              // Scroll to next section manually
+              window.scrollTo({
+                top: window.scrollY + window.innerHeight,
+                behavior: 'smooth'
+              });
+              return prev;
+            }
+            
+            // Unlock and allow scroll to previous section
+            if (next < 0) {
+              setIsLocked(false);
+              window.scrollTo({
+                top: window.scrollY - window.innerHeight,
+                behavior: 'smooth'
+              });
+              return 0;
+            }
+            
+            return next;
+          });
+        }, 50);
+      }
+    };
+
+    // Use capture phase to intercept early
+    document.addEventListener('wheel', handleWheel, { passive: false, capture: true });
+
+    return () => {
+      document.removeEventListener('wheel', handleWheel, { capture: true });
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, [isLocked, scenes.length]);
+
+  // Reset when leaving section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting && !isLocked) {
+            setCurrentScene(0);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [isLocked]);
+
   const currentSceneData = scenes[currentScene] || scenes[0];
 
   return (
     <section
-      ref={sectionRef}
-      className="relative h-[300vh] bg-gradient-to-b from-[#050505] via-[#0A0A0A] to-[#050505]"
+      ref={containerRef}
+      className="relative h-screen bg-gradient-to-b from-[#050505] via-[#0A0A0A] to-[#050505]"
+      style={{ scrollSnapAlign: 'start' }}
     >
       {/* Sticky Container */}
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
@@ -86,9 +156,10 @@ export default function ScrollStorySection() {
         <div className="absolute inset-0">
           <motion.div
             className="absolute inset-0 landing-grid"
-            style={{
-              opacity: useTransform(scrollYProgress, [0, 0.5, 1], [0.2, 0.5, 0.2])
+            animate={{
+              opacity: currentScene >= 3 ? 0.5 : 0.2
             }}
+            transition={{ duration: 0.5 }}
           />
           
           {/* Alert Flash Effect */}
@@ -122,10 +193,11 @@ export default function ScrollStorySection() {
 
           {/* Title */}
           <motion.h2
-            key={currentScene}
+            key={`title-${currentScene}`}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
             className="text-5xl lg:text-7xl font-bold landing-heading mb-6"
             style={{ color: currentSceneData.color }}
           >
@@ -137,6 +209,7 @@ export default function ScrollStorySection() {
             key={`subtitle-${currentScene}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl lg:text-2xl text-[#B8C1CC] font-medium"
           >
             {currentSceneData.subtitle}
@@ -145,15 +218,35 @@ export default function ScrollStorySection() {
           {/* Progress Indicator */}
           <div className="mt-12 flex justify-center gap-2">
             {scenes.map((_, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="h-1 w-12 rounded-full transition-all duration-300"
-                style={{
-                  backgroundColor: index <= currentScene ? currentSceneData.color : 'rgba(255,255,255,0.1)'
+                animate={{
+                  backgroundColor: index <= currentScene ? currentSceneData.color : 'rgba(255,255,255,0.1)',
+                  width: index === currentScene ? 48 : 32
                 }}
               />
             ))}
           </div>
+
+          {/* Scroll Hint */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: currentScene < scenes.length - 1 ? [0.5, 1, 0.5] : 0 
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="mt-8 text-sm text-[#6B7280] font-mono"
+          >
+            {currentScene < scenes.length - 1 ? '↓ Scroll to continue ↓' : ''}
+          </motion.div>
+          
+          {/* Locked Indicator */}
+          {isLocked && (
+            <div className="mt-4 text-xs text-[#00E5FF] font-mono opacity-50">
+              Scene {currentScene + 1}/{scenes.length}
+            </div>
+          )}
         </div>
       </div>
     </section>
