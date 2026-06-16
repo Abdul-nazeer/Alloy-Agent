@@ -35,6 +35,7 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
+  const [uploadingPDF, setUploadingPDF] = useState(false);
   const [selectedCitation, setSelectedCitation] = useState<{
     docName: string;
     docId: string;
@@ -45,6 +46,9 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Generate unique session ID for this chat instance (persists across component lifecycle)
+  const [sessionId] = useState(() => `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
 
   // Auto-submit initial message if provided
   useEffect(() => {
@@ -105,15 +109,83 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
     setAttachedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const uploadPDFToKnowledgeBase = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('http://localhost:8000/api/rag/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to upload ${file.name}`);
+    }
+
+    const result = await response.json();
+    return result.doc_name || file.name;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
 
-    console.log('🚀 Chat submit handler called - using STREAMING endpoint');
+    console.log('🚀 Chat submit handler called');
+
+    // If PDFs attached, upload them first
+    let uploadedDocs: string[] = [];
+    if (attachedFiles.length > 0) {
+      setUploadingPDF(true);
+      
+      // Show uploading message
+      const uploadingMessage: Message = {
+        role: 'assistant',
+        content: `📤 Uploading ${attachedFiles.length} PDF${attachedFiles.length > 1 ? 's' : ''} to knowledge base...`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, uploadingMessage]);
+
+      try {
+        // Upload all PDFs
+        for (const file of attachedFiles) {
+          const docName = await uploadPDFToKnowledgeBase(file);
+          uploadedDocs.push(docName);
+        }
+
+        // Update message to show success
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: 'assistant',
+            content: `✅ Indexed ${uploadedDocs.length} document${uploadedDocs.length > 1 ? 's' : ''}: ${uploadedDocs.join(', ')}\n\nNow I can answer your questions about ${uploadedDocs.length > 1 ? 'these documents' : 'this document'}.`,
+            timestamp: new Date()
+          };
+          return updated;
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 800)); // Brief pause so user sees confirmation
+
+      } catch (error) {
+        console.error('PDF upload error:', error);
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: 'assistant',
+            content: `❌ Failed to upload PDFs: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            timestamp: new Date()
+          };
+          return updated;
+        });
+        setUploadingPDF(false);
+        return;
+      } finally {
+        setUploadingPDF(false);
+      }
+    }
 
     const userMessage: Message = {
       role: 'user',
-      content: input.trim() + (attachedFiles.length > 0 ? `\n\n📎 Attached: ${attachedFiles.map(f => f.name).join(', ')}` : ''),
+      content: input.trim() + (uploadedDocs.length > 0 ? `\n\n📎 Context: ${uploadedDocs.join(', ')}` : ''),
       timestamp: new Date()
     };
 
@@ -136,8 +208,8 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
 
     try {
       console.log('📡 Calling chatStream endpoint...');
-      // Use streaming endpoint
-      const response = await agentAPI.chatStream(messageText);
+      // Use streaming endpoint with session ID for conversation continuity
+      const response = await agentAPI.chatStream(messageText, sessionId);
       
       console.log('📡 Response received, status:', response.status);
       
@@ -438,7 +510,8 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
             onClick={() => fileInputRef.current?.click()}
             className="glass-card p-3 rounded-lg hover-scale transition-smooth"
             style={{ color: 'var(--text-secondary)' }}
-            title="Attach PDF documents"
+            title="Upload PDF to knowledge base and query it"
+            disabled={uploadingPDF || loading}
           >
             <Paperclip className="w-5 h-5" />
           </button>
@@ -486,7 +559,7 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
           {/* Send Button - Floating Gradient */}
           <button
             type="submit"
-            disabled={loading || !input.trim()}
+            disabled={loading || uploadingPDF || !input.trim()}
             className="btn-primary p-4 rounded-lg hover-scale transition-smooth disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               background: 'linear-gradient(135deg, var(--accent-cyan), #0099CC)',
@@ -501,7 +574,7 @@ export default function ChatPanel({ compact = false, initialMessage }: ChatPanel
         {/* Help Text */}
         <div className="mt-2 flex items-center justify-between text-2xs text-mono" style={{ color: 'var(--text-tertiary)' }}>
           <span>Press Enter to send • Shift+Enter for new line</span>
-          <span>Attach PDFs for context-aware responses</span>
+          <span>📎 Attach PDFs - they'll be indexed automatically for Q&A</span>
         </div>
       </div>
       </div>

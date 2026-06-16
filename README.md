@@ -5,6 +5,8 @@ An autonomous predictive maintenance system for steel manufacturing plants. Buil
 **Live Demo:** https://alloy-agent.vercel.app  
 **API:** https://alloy-agent-production.up.railway.app
 
+> **🎯 Demo Access:** No login required! Click "Enter Command Center" and select any role (Technician/Supervisor/Manager) to explore the full system.
+
 ---
 
 ## What This Does

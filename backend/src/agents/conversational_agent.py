@@ -57,16 +57,21 @@ def conversational_node(state: AgentState) -> AgentState:
         # Capability keywords (allowed)
         capability_keywords = ['what can you', 'help', 'capabilities', 'what do you do', 'who are you']
         
+        # Document-related keywords (asking about PDFs, manuals, uploaded files)
+        document_keywords = ['pdf', 'document', 'manual', 'file', 'uploaded', 'this document', 'paper', 'specification', 'datasheet']
+        
         # Check if it's a greeting or capability question
         is_greeting = any(g in query_lower for g in greeting_keywords)
         is_capability = any(c in query_lower for c in capability_keywords)
         is_equipment_related = any(k in query_lower for k in equipment_keywords)
+        is_document_query = any(k in query_lower for k in document_keywords)
         
         # If query is very short (< 3 words) and not greeting/capability, it might be off-topic
         word_count = len(query.split())
         
         # Guardrail: Reject completely off-topic questions
-        if not (is_greeting or is_capability or is_equipment_related) and word_count > 2:
+        # Allow: greetings, capability questions, equipment questions, document questions
+        if not (is_greeting or is_capability or is_equipment_related or is_document_query) and word_count > 2:
             # This is likely an off-topic question
             off_topic_response = (
                 "I'm specialized in industrial equipment maintenance and can only help with topics like "
@@ -108,9 +113,18 @@ The equipment is currently operating. For detailed anomaly analysis, ask me to "
             logger.info("✅ Status summary provided")
             return state
         
-        # Fetch relevant knowledge from RAG if query is equipment-related
+        # Determine if RAG should be used
+        # Always use RAG for document-related queries (pdf, document, manual, etc.)
+        document_keywords = ['pdf', 'document', 'manual', 'file', 'uploaded', 'this document', 'paper']
+        is_document_query = any(k in query_lower for k in document_keywords)
+        
+        # Fetch relevant knowledge from RAG if:
+        # 1. Equipment-related query, OR
+        # 2. Document-related query (user asking about PDFs/manuals)
         rag_context = ""
-        if is_equipment_related and RAG_AVAILABLE:
+        should_use_rag = (is_equipment_related or is_document_query) and RAG_AVAILABLE
+        
+        if should_use_rag:
             try:
                 logger.info(f"🔍 Searching knowledge base for: {query[:100]}")
                 rag_pipeline = get_rag_pipeline()
@@ -130,16 +144,30 @@ The equipment is currently operating. For detailed anomaly analysis, ask me to "
         
         # Build prompt for in-scope queries
         if rag_context:
-            # Enhanced prompt with RAG context for technical questions
+            # Enhanced prompt with RAG context AND conversation history for follow-ups
+            history_text = ""
+            if history and len(history) > 0:
+                # Format last 3 exchanges for context
+                recent_history = history[-6:]  # Last 3 Q&A pairs
+                history_lines = []
+                for msg in recent_history:
+                    agent = msg.get("agent", "assistant")
+                    content = msg.get("content", "")
+                    if agent == "conversational":
+                        history_lines.append(f"Assistant: {content[:200]}")  # Truncate long responses
+                if history_lines:
+                    history_text = "\n\nPREVIOUS CONVERSATION:\n" + "\n".join(history_lines[-4:])  # Last 2 exchanges
+            
             prompt = f"""You are Alloy Agent, an AI maintenance assistant.
 
 USER QUERY: {query}
 
 KNOWLEDGE BASE INFORMATION:
-{rag_context}
+{rag_context}{history_text}
 
 INSTRUCTIONS:
 - Answer the question DIRECTLY using the knowledge base
+- If this is a follow-up question (e.g., "tell me more", "what about X"), use conversation history for context
 - Be CONCISE - 2-4 sentences maximum
 - NO greetings or introductions (unless user said "Hi")
 - Jump straight to the answer

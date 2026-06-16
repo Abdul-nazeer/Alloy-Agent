@@ -1,24 +1,25 @@
-/* Landing Page Theme - Isolated from existing app */
+/* Landing Page Theme - Professional Industrial */
 .landing-page {
   --landing-bg-primary: #050505;
-  --landing-bg-steel-1: #121212;
-  --landing-bg-steel-2: #1B1B1B;
-  --landing-bg-steel-3: #252525;
+  --landing-bg-steel-1: #0F0F0F;
+  --landing-bg-steel-2: #1A1A1A;
+  --landing-bg-steel-3: #222222;
   
-  --landing-glow-cyan: #00E5FF;
-  --landing-glow-orange: #FF6A00;
-  --landing-success: #00FF85;
-  --landing-warning: #FFC107;
-  --landing-danger: #FF3D3D;
+  /* Toned down accent colors - more subtle */
+  --landing-glow-cyan: #4A9EAF;
+  --landing-glow-orange: #D97941;
+  --landing-success: #4A9B6F;
+  --landing-warning: #C9A961;
+  --landing-danger: #C94A4A;
   
   --landing-text-primary: #FFFFFF;
-  --landing-text-secondary: #B8C1CC;
-  --landing-text-tertiary: #6B7280;
+  --landing-text-secondary: #A0A0A0;
+  --landing-text-tertiary: #6B6B6B;
   
-  --landing-glass: rgba(255, 255, 255, 0.05);
-  --landing-glass-hover: rgba(255, 255, 255, 0.08);
-  --landing-border: rgba(255, 255, 255, 0.08);
-  --landing-border-glow: rgba(0, 229, 255, 0.3);
+  --landing-glass: rgba(255, 255, 255, 0.03);
+  --landing-glass-hover: rgba(255, 255, 255, 0.06);
+  --landing-border: rgba(255, 255, 255, 0.06);
+  --landing-border-glow: rgba(74, 158, 175, 0.2);
   
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -48,27 +49,27 @@
   border-color: var(--landing-border-glow);
 }
 
-/* Glow Effects */
+/* Glow Effects - Subtle */
 .landing-glow-cyan {
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3),
-              0 0 40px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 15px rgba(74, 158, 175, 0.15),
+              0 0 30px rgba(74, 158, 175, 0.05);
 }
 
 .landing-glow-orange {
-  box-shadow: 0 0 20px rgba(255, 106, 0, 0.3),
-              0 0 40px rgba(255, 106, 0, 0.1);
+  box-shadow: 0 0 15px rgba(217, 121, 65, 0.15),
+              0 0 30px rgba(217, 121, 65, 0.05);
 }
 
-/* Text Gradients */
+/* Text Gradients - More subtle */
 .landing-text-gradient-cyan {
-  background: linear-gradient(135deg, #00E5FF 0%, #00A3CC 100%);
+  background: linear-gradient(135deg, #6BB3C5 0%, #4A9EAF 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .landing-text-gradient-orange {
-  background: linear-gradient(135deg, #FF6A00 0%, #FF3D3D 100%);
+  background: linear-gradient(135deg, #E59560 0%, #D97941 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -112,12 +113,12 @@
   overflow-x: hidden;
 }
 
-/* Button Styles */
+/* Button Styles - Professional */
 .landing-btn-primary {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--landing-glow-cyan) 0%, #0099CC 100%);
-  color: #000;
+  background: linear-gradient(135deg, #4A9EAF 0%, #3A8090 100%);
+  color: #fff;
   font-weight: 600;
   padding: 1rem 2rem;
   border-radius: 0.5rem;
@@ -128,7 +129,7 @@
 
 .landing-btn-primary:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+  box-shadow: 0 0 20px rgba(74, 158, 175, 0.3);
 }
 
 .landing-btn-secondary {

@@ -295,28 +295,47 @@ export default function HeroSection({ onEnterDashboard }: HeroSectionProps) {
               </div>
 
               {/* Buttons */}
-              <div className="flex flex-wrap gap-4">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={onEnterDashboard}
-                  className="landing-btn-primary flex items-center gap-2 text-lg"
-                  style={{ fontSize: '1.125rem' }}
-                >
-                  <span>Enter Command Center</span>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                  </svg>
-                </motion.button>
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-4">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onEnterDashboard}
+                    className="landing-btn-primary flex items-center gap-2 text-lg"
+                    style={{ fontSize: '1.125rem' }}
+                  >
+                    <span>Enter Command Center</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </motion.button>
 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="landing-btn-secondary flex items-center gap-2 text-lg"
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="landing-btn-secondary flex items-center gap-2 text-lg"
+                  >
+                    <Play className="w-5 h-5" />
+                    <span>Watch Failure Simulation</span>
+                  </motion.button>
+                </div>
+
+                {/* Demo Access Note */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.5, duration: 1 }}
+                  className="flex items-center gap-2 text-sm"
                 >
-                  <Play className="w-5 h-5" />
-                  <span>Watch Failure Simulation</span>
-                </motion.button>
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ backgroundColor: 'rgba(0, 229, 255, 0.1)', border: '1px solid rgba(0, 229, 255, 0.3)' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-[#00E5FF]">
+                      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="currentColor" strokeWidth="2"/>
+                      <path d="M12 16v-4m0-4h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    </svg>
+                    <span className="font-mono font-medium text-[#00E5FF]">Demo Access</span>
+                  </div>
+                  <span className="text-[#B8C1CC]">No login required - Select role to explore</span>
+                </motion.div>
               </div>
 
               {/* Stats Counters */}
